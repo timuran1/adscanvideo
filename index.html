@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdScanVideo — Understand any video</title>
+<meta name="description" content="Drop a video link or file. Get a shot-by-shot breakdown, cinematic AI prompts, and creative intelligence in seconds. For marketers, lawyers, creators, and researchers.">
+<meta name="keywords" content="video analysis, AI video, shot breakdown, cinematic prompts, ad intelligence, podcast notes, dashcam analysis, court evidence, video to text, marketing copy">
+<meta property="og:title" content="AdScanVideo — Understand any video">
+<meta property="og:description" content="Drop a video link or file. Get a shot-by-shot breakdown, cinematic AI prompts, and creative intelligence in seconds.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://adscanvideo.com">
+<meta property="og:image" content="https://adscanvideo.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AdScanVideo — Understand any video">
+<meta name="twitter:description" content="Drop a video link or file. Get a shot-by-shot breakdown, cinematic AI prompts, and creative intelligence in seconds.">
+<meta name="twitter:image" content="https://adscanvideo.com/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --surface2: #f1f3f6;
+  --border: rgba(0,0,0,0.06);
+  --border-strong: rgba(0,0,0,0.10);
+  --ink: #1a1a2e;
+  --ink-dim: #5a5a72;
+  --ink-muted: #9090a0;
+  --accent: #4f8cf7;
+  --accent-soft: rgba(79,140,247,0.08);
+  --accent-hover: #3b78e8;
+  --green: #10b981;
+  --green-soft: rgba(16,185,129,0.08);
+  --red: #ef4444;
+  --red-soft: rgba(239,68,68,0.06);
+  --amber: #f59e0b;
+  --amber-soft: rgba(245,158,11,0.08);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.03);
+  --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.03);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.07), 0 2px 8px rgba(0,0,0,0.03);
+  --radius: 12px;
+  --radius-sm: 7px;
+  --font: 'DM Sans', -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Nav ──────────────────────────────────────────── */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 32px;
+  max-width: 1140px;
+  margin: 0 auto;
+  background: rgba(248,249,251,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo { font-weight: 700; font-size: 1.05rem; letter-spacing: -0.02em; }
+.logo a { color: inherit; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+.logo svg { width: 20px; height: 20px; color: var(--accent); }
+.logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 28px; align-items: center; }
+.nav-links a {
+  color: var(--ink-dim);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+.nav-links a:hover { color: var(--ink); }
+.nav-cta {
+  padding: 8px 18px;
+  background: var(--ink);
+  color: #fff !important;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.15s, transform 0.1s;
+}
+.nav-cta:hover { background: #2a2a3e; color: #fff; transform: translateY(-1px); }
+
+/* ── Hero ─────────────────────────────────────────── */
+.hero {
+  text-align: center;
+  padding: 64px 24px 36px;
+  max-width: 720px;
+  margin: 0 auto;
+  animation: fadeUp 0.6s ease-out;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-bottom: 22px;
+}
+.hero-badge svg { width: 13px; height: 13px; }
+.hero h1 {
+  font-size: clamp(2.1rem, 5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+  color: var(--ink);
+}
+.hero h1 mark {
+  background: none;
+  color: var(--accent);
+  position: relative;
+}
+.hero h1 mark::after {
+  content: '';
+  position: absolute;
+  bottom: 1px;
+  left: 0;
+  right: 0;
+  height: 9px;
+  background: var(--accent-soft);
+  border-radius: 4px;
+  z-index: -1;
+}
+.hero .sub {
+  color: var(--ink-dim);
+  font-size: 1.1rem;
+  max-width: 520px;
+  margin: 18px auto 0;
+  line-height: 1.55;
+}
+
+/* ── Input zone ───────────────────────────────────── */
+.input-zone {
+  max-width: 600px;
+  margin: 32px auto 48px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-lg);
+  animation: fadeUp 0.7s ease-out;
+}
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--surface2);
+  padding: 3px;
+  border-radius: 9px;
+  margin-bottom: 16px;
+}
+.tab-btn {
+  flex: 1;
+  padding: 9px;
+  background: none;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--ink-dim);
+  transition: all 0.15s;
+}
+.tab-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+#url-input { display: none; }
+#url-input input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 0.92rem;
+  background: var(--bg);
+  color: var(--ink);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+#url-input input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+#url-input input::placeholder { color: var(--ink-muted); }
+.url-hint {
+  font-size: 0.76rem;
+  color: var(--ink-muted);
+  margin-top: 6px;
+}
+#upload-input { display: block; }
+.upload-area {
+  border: 2px dashed var(--border-strong);
+  border-radius: 12px;
+  padding: 32px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.upload-area:hover, .upload-area.dragover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.upload-area p { color: var(--ink-dim); font-size: 0.92rem; margin-bottom: 2px; }
+.upload-area small { color: var(--ink-muted); font-size: 0.78rem; }
+.upload-area input[type=file] { display: none; }
+.upload-icon {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 10px;
+  color: var(--accent);
+  opacity: 0.6;
+}
+.upload-file {
+  display: none;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: var(--green-soft);
+  border-radius: 7px;
+  font-size: 0.82rem;
+  color: var(--green);
+  font-weight: 500;
+}
+
+/* ── Mode selector ─────────────────────────────────── */
+.modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 16px;
+}
+.mode-ch {
+  padding: 7px 13px;
+  background: var(--surface2);
+  border: 1px solid transparent;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--ink-dim);
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.mode-ch:hover:not(.active) {
+  border-color: var(--border-strong);
+  color: var(--ink);
+}
+.mode-ch.active {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+.mode-ch svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+/* ── Actions ─────────────────────────────────────── */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+.btn {
+  padding: 12px 30px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: 0 2px 8px rgba(79,140,247,0.25);
+}
+.btn:hover { background: var(--accent-hover); box-shadow: 0 4px 12px rgba(79,140,247,0.3); }
+.btn:active { transform: scale(0.98); }
+.btn:disabled {
+  background: var(--surface2);
+  color: var(--ink-muted);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.free-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--green);
+  background: var(--green-soft);
+  padding: 5px 11px;
+  border-radius: 7px;
+}
+
+/* ── Trust strip ──────────────────────────────────── */
+.trust-strip {
+  max-width: 600px;
+  margin: 0 auto 56px;
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  font-weight: 500;
+}
+.trust-item svg { width: 15px; height: 15px; color: var(--green); flex-shrink: 0; }
+
+/* ── Progress ─────────────────────────────────────── */
+#progress {
+  display: none;
+  max-width: 600px;
+  margin: 0 auto 32px;
+  text-align: center;
+  padding: 32px;
+}
+.progress-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 2.5px solid var(--surface2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.prog-text {
+  color: var(--ink-dim);
+  font-size: 0.88rem;
+  font-family: var(--mono);
+}
+.progress-bar {
+  max-width: 300px;
+  height: 4px;
+  background: var(--surface2);
+  border-radius: 2px;
+  margin: 14px auto 0;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.5s ease;
+}
+
+/* ── Result ───────────────────────────────────────── */
+#result {
+  display: none;
+  max-width: 720px;
+  margin: 0 auto 48px;
+  animation: fadeUp 0.4s ease-out;
+}
+.result-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.result-top h2 { font-size: 1.15rem; font-weight: 600; }
+.result-badges { display: flex; gap: 6px; }
+.badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: var(--mono);
+}
+.badge-c { background: var(--surface2); color: var(--ink-dim); }
+.result-card {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 28px;
+  line-height: 1.75;
+  font-size: 0.92rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  box-shadow: var(--shadow);
+  max-height: 600px;
+  overflow-y: auto;
+}
+.result-card::-webkit-scrollbar { width: 6px; }
+.result-card::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 3px;
+}
+.result-actions { margin-top: 12px; display: flex; gap: 8px; }
+.btn-ghost {
+  padding: 8px 16px;
+  background: none;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Section headers ──────────────────────────────── */
+.section-header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 40px;
+  padding: 0 24px;
+}
+.section-header h2 {
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin-bottom: 8px;
+}
+.section-header p {
+  color: var(--ink-dim);
+  font-size: 1rem;
+}
+
+/* ── Use cases ────────────────────────────────────── */
+.use-cases {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+.usecase-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.usecase-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px 20px;
+  transition: all 0.2s;
+  text-align: left;
+}
+.usecase-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.usecase-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  margin-bottom: 14px;
+}
+.usecase-icon svg { width: 19px; height: 19px; }
+.usecase-card h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.usecase-card p {
+  color: var(--ink-dim);
+  font-size: 0.83rem;
+  line-height: 1.5;
+}
+
+/* ── Example output ───────────────────────────────── */
+.example-section {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 64px 24px;
+}
+.example-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 48px;
+  align-items: center;
+}
+.example-text h2 {
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin-bottom: 10px;
+}
+.example-text p {
+  color: var(--ink-dim);
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+.example-text ul {
+  list-style: none;
+  padding: 0;
+}
+.example-text ul li {
+  padding: 6px 0;
+  color: var(--ink-dim);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.example-text ul li svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; }
+.example-mockup {
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+.mockup-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+.mockup-bar span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border-strong);
+}
+.mockup-bar span:nth-child(1) { background: #ff5f57; }
+.mockup-bar span:nth-child(2) { background: #febc2e; }
+.mockup-bar span:nth-child(3) { background: #28c840; }
+.mockup-bar .mockup-title {
+  width: auto; height: auto; border-radius: 0; background: none;
+  margin-left: 10px;
+  font-size: 0.78rem; color: var(--ink-muted); font-weight: 500;
+}
+.mockup-body {
+  padding: 18px;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  max-height: 380px;
+  overflow: hidden;
+  position: relative;
+}
+.mockup-body::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 80px;
+  background: linear-gradient(transparent, var(--bg));
+}
+.mockup-body h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--accent); font-family: var(--mono); }
+.mockup-body p { color: var(--ink-dim); margin-bottom: 10px; font-size: 0.8rem; }
+.mockup-body .mockup-shot {
+  border-left: 2px solid var(--accent);
+  padding: 8px 12px;
+  margin: 8px 0;
+  background: var(--surface);
+  border-radius: 0 8px 8px 0;
+}
+.mockup-body .mockup-shot strong { color: var(--ink); font-size: 0.78rem; font-family: var(--mono); }
+
+/* ── Features ─────────────────────────────────────── */
+.features {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.info-item {
+  background: var(--surface);
+  padding: 28px 24px;
+  transition: box-shadow 0.2s;
+}
+.info-item:hover { box-shadow: var(--shadow-md); z-index: 1; }
+.info-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 9px;
+  margin-bottom: 14px;
+}
+.info-icon svg { width: 21px; height: 21px; }
+.info-item h3 { font-size: 0.98rem; font-weight: 600; margin-bottom: 6px; }
+.info-item p { color: var(--ink-dim); font-size: 0.88rem; }
+
+/* ── How it works ─────────────────────────────────── */
+.how {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+.steps { display: flex; flex-direction: column; gap: 26px; }
+.step { display: flex; gap: 20px; align-items: flex-start; }
+.step-num {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: var(--mono);
+}
+.step-body h3 { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+.step-body p { color: var(--ink-dim); font-size: 0.9rem; }
+
+/* ── Pricing ──────────────────────────────────────── */
+.pricing {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+.pricing-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.plan {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  padding: 30px 26px;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s;
+}
+.plan:hover { box-shadow: var(--shadow-md); }
+.plan.featured {
+  border-color: var(--accent);
+  border-width: 2px;
+  position: relative;
+}
+.plan.featured::before {
+  content: 'Most popular';
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 5px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.plan h3 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+.plan .price {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.plan .price span {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  font-weight: 400;
+}
+.plan ul { list-style: none; margin: 18px 0 0; padding: 0; flex: 1; }
+.plan ul li {
+  padding: 6px 0;
+  color: var(--ink-dim);
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.plan ul li svg { width: 15px; height: 15px; color: var(--green); flex-shrink: 0; }
+.plan .plan-cta {
+  display: block;
+  text-align: center;
+  padding: 11px;
+  margin-top: 22px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.plan .plan-cta.primary { background: var(--accent); color: #fff; }
+.plan .plan-cta.primary:hover { background: var(--accent-hover); }
+.plan .plan-cta.secondary { background: var(--surface2); color: var(--ink); }
+.plan .plan-cta.secondary:hover { background: var(--border-strong); }
+
+/* ── CTA banner ───────────────────────────────────── */
+.cta-banner {
+  max-width: 760px;
+  margin: 0 auto 0;
+  padding: 0 24px 64px;
+  text-align: center;
+}
+.cta-banner-inner {
+  background: var(--ink);
+  border-radius: 18px;
+  padding: 48px 36px;
+  position: relative;
+  overflow: hidden;
+}
+.cta-banner-inner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(79,140,247,0.15), transparent 70%);
+  border-radius: 50%;
+}
+.cta-banner h2 {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  position: relative;
+}
+.cta-banner p {
+  color: rgba(255,255,255,0.65);
+  font-size: 1rem;
+  margin-bottom: 26px;
+  position: relative;
+}
+.cta-banner .btn {
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+.cta-banner .btn:hover { background: var(--surface2); transform: translateY(-1px); }
+
+/* ── Footer ───────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 24px;
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+}
+.footer-left a { color: var(--ink-dim); text-decoration: none; transition: color 0.15s; }
+.footer-left a:hover { color: var(--accent); }
+.footer-right { display: flex; gap: 8px; }
+.footer-right a {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface2);
+  border-radius: 8px;
+  color: var(--ink-dim);
+  transition: all 0.15s;
+  text-decoration: none;
+}
+.footer-right a:hover { background: var(--accent-soft); color: var(--accent); }
+.footer-right svg { width: 16px; height: 16px; }
+
+/* ── Animations ───────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Responsive ───────────────────────────────────── */
+@media (max-width: 900px) {
+  .usecase-grid { grid-template-columns: repeat(2, 1fr); }
+  .example-inner { grid-template-columns: 1fr; gap: 32px; }
+}
+@media (max-width: 768px) {
+  .info-grid { grid-template-columns: 1fr; }
+  .pricing-row { grid-template-columns: 1fr; }
+  nav { padding: 12px 16px; }
+  .nav-links { gap: 16px; }
+  .nav-links a:not(.nav-cta) { display: none; }
+  .hero { padding: 48px 16px 28px; }
+  .input-zone { margin: 24px 16px 32px; }
+}
+@media (max-width: 640px) {
+  .hero h1 { font-size: 1.85rem; }
+  .hero .sub { font-size: 0.98rem; }
+  .modes { gap: 5px; }
+  .mode-ch { font-size: 0.78rem; padding: 6px 10px; }
+  .actions { flex-direction: column; align-items: stretch; }
+  .btn { justify-content: center; }
+  .info-item { padding: 20px 16px; }
+  .usecase-grid { grid-template-columns: 1fr; }
+  .trust-strip { gap: 16px; }
+  footer { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Nav ─────────────────────────────────────────── -->
+<nav>
+  <div class="logo">
+    <a href="/">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+      AdScan<span>Video</span>
+    </a>
+  </div>
+  <div class="nav-links">
+    <a href="#usecases">Use cases</a>
+    <a href="#how">How it works</a>
+    <a href="/blog/">Blog</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#input-zone" class="nav-cta">Try free</a>
+  </div>
+</nav>
+
+<!-- ── Hero ────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    AI-powered · No signup · 3 free daily
+  </div>
+  <h1>Watch any video <mark>frame by frame.</mark></h1>
+  <p class="sub">Drop a link or upload a file. Get a shot-by-shot breakdown, cinematic prompts, and structured intelligence — in about 60 seconds.</p>
+</section>
+
+<!-- ── Input zone ──────────────────────────────────── -->
+<div class="input-zone" id="input-zone">
+  <div class="tabs">
+    <button class="tab-btn" data-tab="upload">Upload a file</button>
+    <button class="tab-btn" data-tab="url">Paste a link</button>
+  </div>
+
+  <div id="url-input">
+    <input type="url" id="url" placeholder="youtube.com/watch?v=... or tiktok.com/@user/video/...">
+    <p class="url-hint">YouTube downloads may be slow. Upload is faster.</p>
+  </div>
+  <div id="upload-input">
+    <div class="upload-area" id="drop-zone" onclick="document.getElementById('file').click()">
+      <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <p>Drop a video here or click to browse</p>
+      <p><small>.mp4 .mov .webm .mkv — up to 200MB</small></p>
+      <input type="file" id="file" accept="video/*" onchange="fileSelected(event)">
+    </div>
+    <div class="upload-file" id="file-name"></div>
+  </div>
+
+  <div class="modes">
+    <button class="mode-ch active" data-mode="shots"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="12" cy="12" r="4"/></svg>Shot breakdown</button>
+    <button class="mode-ch" data-mode="ad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-3"/></svg>Ad intelligence</button>
+    <button class="mode-ch" data-mode="podcast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>Podcast notes</button>
+    <button class="mode-ch" data-mode="marketing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Marketing copy</button>
+    <button class="mode-ch" data-mode="tutorial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Tutorial steps</button>
+    <button class="mode-ch" data-mode="summary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Summary</button>
+  </div>
+
+  <div class="actions">
+    <button class="btn" id="try-btn" onclick="tryFree()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Analyze
+    </button>
+    <span class="free-badge" id="free-count"></span>
+  </div>
+</div>
+
+<!-- ── Trust strip ─────────────────────────────────── -->
+<div class="trust-strip">
+  <div class="trust-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    ~60 second turnaround
+  </div>
+  <div class="trust-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    100+ frames analyzed per video
+  </div>
+  <div class="trust-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    Files never stored permanently
+  </div>
+  <div class="trust-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    ~$0.009 per video in AI costs
+  </div>
+</div>
+
+<!-- ── Progress ────────────────────────────────────── -->
+<div id="progress">
+  <div class="progress-inner">
+    <div class="spinner"></div>
+    <span class="prog-text" id="progress-text">Downloading video...</span>
+  </div>
+  <div class="progress-bar"><div class="progress-bar-fill" id="progress-fill"></div></div>
+</div>
+
+<!-- ── Result ──────────────────────────────────────── -->
+<div id="result">
+  <div class="result-top">
+    <h2 id="result-title">Analysis</h2>
+    <div class="result-badges"><span class="badge badge-c" id="cost-badge">Ready</span></div>
+  </div>
+  <div class="result-card" id="result-content"></div>
+  <div class="result-actions">
+    <button class="btn-ghost" onclick="navigator.clipboard.writeText(document.getElementById('result-content').textContent)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      Copy result
+    </button>
+    <button class="btn-ghost" onclick="document.getElementById('result').style.display='none'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      Dismiss
+    </button>
+  </div>
+</div>
+
+<!-- ── Use cases ───────────────────────────────────── -->
+<div class="use-cases reveal" id="usecases">
+  <div class="section-header">
+    <h2>Built for real-world video</h2>
+    <p>Not just ads. Any video — dashcam footage, podcasts, tutorials, competitor content — becomes structured intelligence.</p>
+  </div>
+  <div class="usecase-grid">
+    <div class="usecase-card">
+      <div class="usecase-icon" style="background: var(--red-soft); color: var(--red);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </div>
+      <h3>Legal &amp; dashcam</h3>
+      <p>Dashcam, CCTV, bodycam footage. Get timestamped scene descriptions, object identification, and event sequence for court prep.</p>
+    </div>
+    <div class="usecase-card">
+      <div class="usecase-icon" style="background: var(--accent-soft); color: var(--accent);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-3"/></svg>
+      </div>
+      <h3>Ad intelligence</h3>
+      <p>Reverse-engineer competitor ads. Hook analysis, pacing, CTA structure, target audience — know what works before you spend.</p>
+    </div>
+    <div class="usecase-card">
+      <div class="usecase-icon" style="background: var(--green-soft); color: var(--green);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+      </div>
+      <h3>Podcasts &amp; interviews</h3>
+      <p>2-hour podcast in, structured notes out. Key topics, verbatim quotes, timestamps, action items — ready to publish.</p>
+    </div>
+    <div class="usecase-card">
+      <div class="usecase-icon" style="background: var(--amber-soft); color: var(--amber);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      </div>
+      <h3>Content &amp; marketing</h3>
+      <p>Turn any video into social captions, LinkedIn posts, blog headlines, and hooks. Stop staring at a blank page.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── Example output ──────────────────────────────── -->
+<div class="example-section reveal">
+  <div class="example-inner">
+    <div class="example-text">
+      <h2>See what you get back</h2>
+      <p>Every analysis is structured, timestamped, and ready to use. Not a vague summary — a detailed breakdown you can act on.</p>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Timestamped scene-by-scene breakdown</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Verbatim quotes with speaker attribution</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copy-paste ready marketing assets</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> AI video prompts for recreating shots</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Structured checklists for tutorials</li>
+      </ul>
+    </div>
+    <div class="example-mockup">
+      <div class="mockup-bar">
+        <span></span><span></span><span></span>
+        <div class="mockup-title">adscanvideo.com — result</div>
+      </div>
+      <div class="mockup-body">
+        <h4>SHOT 1 [00:00–00:03] — Establishing wide</h4>
+        <div class="mockup-shot">
+          <strong>Visual:</strong> Wide-angle dashboard camera shot. Clear daylight, dry road, sedan traveling northbound at ~40 km/h. Two vehicles visible ahead. Traffic light green in distance.
+          <br><br><strong>Note:</strong> No pedestrians visible. Road markings intact.
+        </div>
+        <h4>SHOT 2 [00:03–00:07] — Approach</h4>
+        <div class="mockup-shot">
+          <strong>Visual:</strong> Camera vehicle decelerates. White SUV ahead signals left. Speed reduced to ~20 km/h. Pedestrian enters crosswalk from right side.
+          <br><br><strong>Note:</strong> Crosswalk marked, no traffic signal at this section.
+        </div>
+        <h4>SHOT 3 [00:07–00:12] — Event</h4>
+        <div class="mockup-shot">
+          <strong>Visual:</strong> White SUV completes left turn. Pedestrian clears crosswalk. Camera vehicle resumes speed. No collision or contact observed.
+          <br><br><strong>Summary:</strong> No incident detected. All parties acted lawfully.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Features ────────────────────────────────────── -->
+<div class="features reveal" id="how">
+  <div class="section-header">
+    <h2>Six modes. One tool.</h2>
+    <p>Whatever video you throw at it, AdScanVideo gives you back something useful.</p>
+  </div>
+  <div class="info-grid">
+    <div class="info-item">
+      <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="12" cy="12" r="4"/></svg></div>
+      <h3>Shot-by-shot analysis</h3>
+      <p>Every camera angle, cut, and transition — identified with timestamps. Know exactly how a video is built.</p>
+    </div>
+    <div class="info-item">
+      <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+      <h3>Cinematic prompts</h3>
+      <p>Ready-to-use prompts for Seedance, Kling, and other AI video tools. Recreate any shot from a reference.</p>
+    </div>
+    <div class="info-item">
+      <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></div>
+      <h3>Podcast &amp; interview notes</h3>
+      <p>Drop a 2-hour podcast. Get key topics, verbatim quotes, speaker takeaways, and timestamps.</p>
+    </div>
+    <div class="info-item">
+      <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+      <h3>Marketing assets</h3>
+      <p>Turn any video into social captions, LinkedIn posts, blog headlines, and hooks — ready to publish.</p>
+    </div>
+    <div class="info-item">
+      <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+      <h3>Tutorial breakdown</h3>
+      <p>Extract every step from a how-to video. Tools, timestamps, warnings, and a checklist.</p>
+    </div>
+    <div class="info-item">
+      <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
+      <h3>Files or links</h3>
+      <p>YouTube, TikTok, podcasts, webinars, or any video file. Whatever format, we'll handle it.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── How it works ────────────────────────────────── -->
+<div class="how reveal">
+  <div class="section-header">
+    <h2>How it works</h2>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Drop your video</h3>
+        <p>Paste a YouTube, TikTok, or any video URL. Or upload a file directly — mp4, mov, webm, mkv up to 200MB.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Pick a mode</h3>
+        <p>Choose what you need: shot breakdown, ad intelligence, podcast notes, marketing copy, tutorial steps, or a full summary.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>Get your analysis</h3>
+        <p>AI extracts frames, deduplicates them, and analyzes each one. In about 60 seconds, you get structured, detailed output — copy it, paste it, use it.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Pricing ─────────────────────────────────────── -->
+<div class="pricing reveal" id="pricing">
+  <div class="section-header">
+    <h2>Simple pricing</h2>
+    <p>Start free. Pay only when you need more.</p>
+  </div>
+  <div class="pricing-row">
+    <div class="plan">
+      <h3>Free</h3>
+      <div class="price">$0</div>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>3 free daily</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Videos up to 10 min</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>All modes</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>No signup</li>
+      </ul>
+      <a href="#input-zone" class="plan-cta secondary">Start free</a>
+    </div>
+    <div class="plan featured">
+      <h3>Pay as you go</h3>
+      <div class="price">$0.50<span>/video</span></div>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Unlimited analyses</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Priority processing</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>All modes</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>No subscription</li>
+      </ul>
+      <a href="#input-zone" class="plan-cta primary">Analyze a video</a>
+    </div>
+    <div class="plan">
+      <h3>Heavy use</h3>
+      <div class="price">$19<span>/month</span></div>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>50 analyses per month</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Export to DOCX</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>API access</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Priority support</li>
+      </ul>
+      <a href="#input-zone" class="plan-cta secondary">Get started</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── CTA banner ──────────────────────────────────── -->
+<div class="cta-banner reveal">
+  <div class="cta-banner-inner">
+    <h2>Got a video to analyze?</h2>
+    <p>First three are on us. No credit card, no signup.</p>
+    <a href="#input-zone" class="btn">Try it free →</a>
+  </div>
+</div>
+
+<!-- ── Footer ─────────────────────────────────────── -->
+<footer>
+  <div class="footer-left">
+    <span>AdScanVideo</span>
+    <span>·</span>
+    <a href="/privacy">Privacy</a>
+    <span>·</span>
+    <span>Questions?</span>
+    <a href="mailto:hello@adscanvideo.com">hello@adscanvideo.com</a>
+  </div>
+  <div class="footer-right">
+    <a href="https://x.com/adscanvideo" aria-label="X / Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+    <a href="mailto:hello@adscanvideo.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
+  </div>
+</footer>
+
+<script>
+const API = '/api';
+let mode = 'shots', tab = 'upload', file = null, jobId = null;
+let freeCount = 3;
+let freeDate = null;
+
+function checkDailyReset() {
+  const today = new Date().toDateString();
+  const saved = localStorage.getItem('adsv_date');
+  if (saved !== today) {
+    localStorage.setItem('adsv_date', today);
+    localStorage.setItem('adsv_free', '3');
+    freeCount = 3;
+  } else {
+    freeCount = parseInt(localStorage.getItem('adsv_free') || '3');
+  }
+}
+checkDailyReset();
+
+document.getElementById('upload-input').style.display = 'block';
+document.querySelector('.tab-btn:first-child').classList.add('active');
+
+document.querySelectorAll('.mode-ch').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.mode-ch').forEach(x => x.classList.remove('active'));
+    b.classList.add('active'); mode = b.dataset.mode;
+  });
+});
+
+document.querySelectorAll('.tab-btn').forEach(b => {
+  b.addEventListener('click', () => switchTab(b.dataset.tab));
+});
+function switchTab(t) {
+  tab = t;
+  document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', (i===0)===(t==='upload')));
+  document.getElementById('url-input').style.display = t === 'url' ? 'block' : 'none';
+  document.getElementById('upload-input').style.display = t === 'upload' ? 'block' : 'none';
+}
+
+function fileSelected(e) {
+  file = e.target.files[0];
+  const el = document.getElementById('file-name');
+  if (file) { el.textContent = '✓ ' + file.name; el.style.display = 'block'; }
+}
+
+const dz = document.getElementById('drop-zone');
+['dragenter','dragover'].forEach(e => dz.addEventListener(e, ev => { ev.preventDefault(); dz.classList.add('dragover'); }));
+['dragleave','drop'].forEach(e => dz.addEventListener(e, ev => { ev.preventDefault(); dz.classList.remove('dragover'); }));
+dz.addEventListener('drop', ev => {
+  const f = ev.dataTransfer.files[0];
+  if (f) { file = f; document.getElementById('file-name').textContent = '✓ ' + f.name; document.getElementById('file-name').style.display = 'block'; }
+});
+
+function q() {
+  return {
+    shots: 'Break this video down shot-by-shot. For each shot: timestamp range, visual description (subject, composition, lighting, camera movement), and a cinematic AI video prompt (Seedance format) for recreating that exact shot.',
+    ad: 'Analyze this advertisement. Identify the product, target audience, hook (first 3 seconds), structure, pacing, music, text overlays, call to action. What makes it effective? What could be improved?',
+    podcast: 'Extract insights from this conversation. List: key topics discussed (with timestamps), notable quotes (verbatim with speaker and timestamp), main arguments or takeaways, actionable advice given, and a brief summary.',
+    marketing: 'Turn this video into marketing assets. Generate: 3 social media captions (short, punchy), 3 LinkedIn post drafts, 5 headline options for a blog post, and 3 hook ideas for promoting this content.',
+    tutorial: 'Extract the step-by-step process from this video. List each step with timestamp, what to do, tools or resources mentioned, and tips or warnings. End with a quick reference checklist.',
+    summary: 'Summarize this video comprehensively. Cover: what happens (chronologically), who is in it, key moments, main message, visual style, tone, and intended audience.'
+  }[mode] || '';
+}
+
+function updateUI() {
+  document.getElementById('free-count').textContent = freeCount + ' free today';
+  document.getElementById('try-btn').disabled = freeCount <= 0;
+}
+updateUI();
+
+const progressSteps = ['downloading', 'extracting', 'dedup', 'analyzing'];
+const stepProgress = { 'downloading': 25, 'extracting': 50, 'dedup': 70, 'analyzing': 90, 'done': 100 };
+
+async function tryFree() {
+  if (freeCount <= 0) return;
+  const isUpload = tab === 'upload';
+  if (!isUpload && !document.getElementById('url').value.trim()) return;
+  if (isUpload && !file) return;
+  freeCount--;
+  localStorage.setItem('adsv_free', freeCount);
+  updateUI();
+  const prog = document.getElementById('progress'), res = document.getElementById('result');
+  document.getElementById('try-btn').disabled = true;
+  document.getElementById('progress-fill').style.width = '0%';
+  prog.style.display = 'block'; res.style.display = 'none';
+  try {
+    let resp;
+    if (isUpload) {
+      const fd = new FormData(); fd.append('file', file); fd.append('question', q()); fd.append('max_duration', '600');
+      resp = await fetch(API + '/analyze-upload', { method: 'POST', body: fd });
+    } else {
+      resp = await fetch(API + '/analyze', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({url: document.getElementById('url').value.trim(), question: q(), max_duration: 600}) });
+    }
+    const d = await resp.json();
+    if (d.error) throw new Error(d.error);
+    jobId = d.job_id;
+    const iv = setInterval(async () => {
+      const s = await fetch(API + '/status/' + jobId).then(r => r.json());
+      const si = progressSteps.indexOf(s.status);
+      if (si >= 0) {
+        document.getElementById('progress-text').textContent = s.status + '... (' + (s.frames_kept||0) + ' frames)';
+        document.getElementById('progress-fill').style.width = (stepProgress[s.status] || 0) + '%';
+      }
+      if (s.status === 'done') {
+        clearInterval(iv);
+        document.getElementById('progress-fill').style.width = '100%';
+        const r = await fetch(API + '/result/' + jobId).then(r => r.json());
+        prog.style.display = 'none'; document.getElementById('try-btn').disabled = false;
+        document.getElementById('result-title').textContent = s.title || 'Analysis';
+        document.getElementById('cost-badge').textContent = r.cost > 0 ? '$' + r.cost.toFixed(4) : 'free';
+        document.getElementById('result-content').textContent = r.result;
+        res.style.display = 'block';
+        res.scrollIntoView({behavior: 'smooth'});
+      }
+      if (s.status === 'error') { clearInterval(iv); prog.style.display = 'none'; document.getElementById('try-btn').disabled = false; alert(s.error); }
+    }, 1500);
+  } catch(e) { prog.style.display = 'none'; document.getElementById('try-btn').disabled = false; alert(e.message); }
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — AdScanVideo</title>
+<meta name="description" content="Video analysis tips, ad intelligence guides, AI video prompts, and marketing insights from the AdScanVideo team.">
+<meta property="og:title" content="Blog — AdScanVideo">
+<meta property="og:description" content="Video analysis tips, ad intelligence guides, and marketing insights.">
+<meta property="og:url" content="https://adscanvideo.com/blog/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --surface2: #f1f3f6;
+  --border: rgba(0,0,0,0.06);
+  --border-strong: rgba(0,0,0,0.10);
+  --ink: #1a1a2e;
+  --ink-dim: #5a5a72;
+  --ink-muted: #9090a0;
+  --accent: #4f8cf7;
+  --accent-soft: rgba(79,140,247,0.08);
+  --accent-hover: #3b78e8;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.03);
+  --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.03);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.07), 0 2px 8px rgba(0,0,0,0.03);
+  --radius: 12px;
+  --radius-sm: 7px;
+  --font: 'DM Sans', -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 32px;
+  max-width: 800px;
+  margin: 0 auto;
+  background: rgba(248,249,251,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo { font-weight: 700; font-size: 1.05rem; }
+.logo a { color: inherit; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+.logo svg { width: 20px; height: 20px; color: var(--accent); }
+.logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 28px; align-items: center; }
+.nav-links a { color: var(--ink-dim); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: color 0.15s; }
+.nav-links a:hover { color: var(--ink); }
+.nav-links a.active { color: var(--accent); }
+.container { max-width: 720px; margin: 0 auto; padding: 48px 24px; }
+h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 6px; }
+.sub { color: var(--ink-dim); font-size: 1rem; margin-bottom: 40px; }
+.post-list { display: flex; flex-direction: column; gap: 20px; }
+.post-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  transition: all 0.2s;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.post-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.post-card h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; color: var(--ink); }
+.post-card .meta { font-size: 0.8rem; color: var(--ink-muted); font-family: var(--mono); margin-bottom: 8px; }
+.post-card p { color: var(--ink-dim); font-size: 0.9rem; line-height: 1.5; }
+.tag { 
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-right: 4px;
+}
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 24px;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+}
+footer a { color: var(--ink-dim); text-decoration: none; }
+footer a:hover { color: var(--accent); }
+@media (max-width: 768px) {
+  nav { padding: 12px 16px; }
+  .nav-links { gap: 16px; }
+  .container { padding: 32px 16px; }
+  h1 { font-size: 1.5rem; }
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">
+    <a href="/">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+      AdScan<span>Video</span>
+    </a>
+  </div>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/blog/" class="active">Blog</a>
+  </div>
+</nav>
+
+<div class="container">
+  <h1>Blog</h1>
+  <p class="sub">Video analysis tips, ad intelligence, AI prompts, and marketing insights.</p>
+
+  <div class="post-list">
+
+    <a class="post-card" href="analyze-competitor-video-ads-fast">
+      <h2>How to Analyze Competitor Video Ads in 60 Seconds</h2>
+      <div class="meta"><span class="tag">Ad Intelligence</span> July 2026 · 4 min read</div>
+      <p>Stop guessing what makes competitor ads work. With AdScanVideo, you can reverse-engineer any video ad — hook, pacing, CTA, audience targeting — in about a minute.</p>
+    </a>
+
+    <a class="post-card" href="what-makes-great-video-ad-hook">
+      <h2>Shot-by-Shot: What Makes a Great Video Ad Hook</h2>
+      <div class="meta"><span class="tag">Video Analysis</span> July 2026 · 5 min read</div>
+      <p>We analyzed 50 high-performing video ads frame-by-frame. Here's what the first 3 seconds have in common — and how you can apply it to your next campaign.</p>
+    </a>
+
+    <a class="post-card" href="ai-video-prompts-recreate-any-shot">
+      <h2>AI Video Prompts: How to Recreate Any Shot from a Reference</h2>
+      <div class="meta"><span class="tag">AI Video</span> July 2026 · 4 min read</div>
+      <p>Extract cinematic prompts from any reference video — Seedance, Kling, or Sora format. Stop describing shots from scratch; let real footage write your prompts.</p>
+    </a>
+
+    <a class="post-card" href="video-analysis-legal-dashcam-bodycam">
+      <h2>Video Analysis for Legal Teams: Dashcam &amp; Bodycam Footage</h2>
+      <div class="meta"><span class="tag">Legal</span> July 2026 · 3 min read</div>
+      <p>Timestamped scene descriptions, object identification, and event sequences from video evidence — ready for court exhibits and case prep.</p>
+    </a>
+
+    <a class="post-card" href="video-marketing-copy-social-media">
+      <h2>From Video to Marketing Copy: A Step-by-Step Guide</h2>
+      <div class="meta"><span class="tag">Marketing</span> July 2026 · 4 min read</div>
+      <p>Turn any video — your own or a competitor's — into social captions, LinkedIn posts, blog headlines, and hooks. No more staring at a blank page.</p>
+    </a>
+
+    <a class="post-card" href="why-video-ad-intelligence-matters-roi">
+      <h2>Why Video Ad Intelligence Matters for Your Campaign ROI</h2>
+      <div class="meta"><span class="tag">Ad Intelligence</span> July 2026 · 3 min read</div>
+      <p>Most brands spend on video ads blind. Here's how systematic ad analysis — hook structure, pacing, visual language — directly improves ROAS.</p>
+    </a>
+
+  </div>
+</div>
+
+<footer>
+  <div>
+    <a href="/">AdScanVideo</a> · <a href="/privacy">Privacy</a>
+  </div>
+  <div>hello@adscanvideo.com</div>
+</footer>
+</body>
+</html>
