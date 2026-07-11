@@ -1600,7 +1600,7 @@ function q() {
   return {
     shots: 'Break this video down shot-by-shot. For each shot: timestamp range, visual description (subject, composition, lighting, camera movement), and a cinematic AI video prompt (Seedance format) for recreating that exact shot.',
     ad: 'Analyze this advertisement. Identify the product, target audience, hook (first 3 seconds), structure, pacing, music, text overlays, call to action. What makes it effective? What could be improved?',
-    podcast: 'Extract insights from this conversation. List: key topics discussed (with timestamps), notable quotes (verbatim with speaker and timestamp), main arguments or takeaways, actionable advice given, and a brief summary.',
+    podcast: 'This is a podcast or conversation. Identify EVERY speaker — label each person by name, role, or distinguishing features. For each segment: timestamp, WHO is speaking (with visual cues like "man with glasses on left", "woman in red jacket"), and EXACTLY what they say. Include: key speakers with descriptions, complete transcript with speaker labels, main topics discussed (with timestamps), notable quotes verbatim, and a brief summary of the conversation.',
     marketing: 'Turn this video into marketing assets. Generate: 3 social media captions (short, punchy), 3 LinkedIn post drafts, 5 headline options for a blog post, and 3 hook ideas for promoting this content.',
     tutorial: 'Extract the step-by-step process from this video. List each step with timestamp, what to do, tools or resources mentioned, and tips or warnings. End with a quick reference checklist.',
     summary: 'Summarize this video comprehensively. Cover: what happens (chronologically), who is in it, key moments, main message, visual style, tone, and intended audience.'
@@ -1631,10 +1631,10 @@ async function tryFree() {
   try {
     let resp;
     if (isUpload) {
-      const fd = new FormData(); fd.append('file', file); fd.append('question', q()); fd.append('max_duration', '600');
+      const fd = new FormData(); fd.append('file', file); fd.append('question', q()); fd.append('mode', mode); fd.append('max_duration', '600');
       resp = await fetch(API + '/analyze-upload', { method: 'POST', body: fd });
     } else {
-      resp = await fetch(API + '/analyze', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({url: document.getElementById('url').value.trim(), question: q(), max_duration: 600}) });
+      resp = await fetch(API + '/analyze', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({url: document.getElementById('url').value.trim(), question: q(), mode: mode, max_duration: 600}) });
     }
     const d = await resp.json();
     if (d.error) throw new Error(d.error);
