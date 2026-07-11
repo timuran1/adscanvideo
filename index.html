@@ -15,7 +15,6 @@
 <meta name="twitter:title" content="AdScanVideo — Understand any video">
 <meta name="twitter:description" content="Drop a video link or file. Get a shot-by-shot breakdown, cinematic AI prompts, and creative intelligence in seconds.">
 <meta name="twitter:image" content="https://adscanvideo.com/og-image.png">
-<!-- Change this to https://api.adscanvideo.com/api after the VPS API is live. -->
 <meta name="adscan-api-base" content="/api">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1234,7 +1233,7 @@ nav {
   </div>
   <div class="trust-item">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-    ~$0.009 per video in AI costs
+    No credit card. No signup.
   </div>
 </div>
 
@@ -1251,7 +1250,6 @@ nav {
 <div id="result">
   <div class="result-top">
     <h2 id="result-title">Analysis</h2>
-    <div class="result-badges"><span class="badge badge-c" id="cost-badge">Ready</span></div>
   </div>
   <div class="result-card" id="result-content"></div>
   <div class="result-actions">
@@ -1653,7 +1651,6 @@ async function tryFree() {
         const r = await fetch(API + '/result/' + jobId).then(r => r.json());
         prog.style.display = 'none'; document.getElementById('try-btn').disabled = false;
         document.getElementById('result-title').textContent = s.title || 'Analysis';
-        document.getElementById('cost-badge').textContent = r.cost > 0 ? '$' + r.cost.toFixed(4) : 'free';
         document.getElementById('result-content').textContent = r.result;
         res.style.display = 'block';
         res.scrollIntoView({behavior: 'smooth'});
