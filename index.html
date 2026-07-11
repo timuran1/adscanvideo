@@ -15,6 +15,8 @@
 <meta name="twitter:title" content="AdScanVideo — Understand any video">
 <meta name="twitter:description" content="Drop a video link or file. Get a shot-by-shot breakdown, cinematic AI prompts, and creative intelligence in seconds.">
 <meta name="twitter:image" content="https://adscanvideo.com/og-image.png">
+<!-- Change this to https://api.adscanvideo.com/api after the VPS API is live. -->
+<meta name="adscan-api-base" content="/api">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -28,9 +30,12 @@
   --ink: #1a1a2e;
   --ink-dim: #5a5a72;
   --ink-muted: #9090a0;
-  --accent: #4f8cf7;
-  --accent-soft: rgba(79,140,247,0.08);
-  --accent-hover: #3b78e8;
+  --accent: #4F8CF7;
+  --accent-rgb: 79, 140, 247;
+  --accent-soft: rgba(var(--accent-rgb), 0.10);
+  --accent-faint: rgba(var(--accent-rgb), 0.055);
+  --accent-border: rgba(var(--accent-rgb), 0.24);
+  --accent-hover: #3B78E8;
   --green: #10b981;
   --green-soft: rgba(16,185,129,0.08);
   --red: #ef4444;
@@ -894,6 +899,176 @@ footer {
   .trust-strip { gap: 16px; }
   footer { flex-direction: column; text-align: center; }
 }
+
+/* ── 2026 interactive redesign ───────────────────── */
+body {
+  background:
+    radial-gradient(circle at 74% 13%, rgba(var(--accent-rgb),.12), transparent 25rem),
+    var(--bg);
+}
+nav {
+  max-width: 1180px;
+  padding: 16px 0;
+  border-bottom-color: rgba(26,26,46,.08);
+}
+.logo a { letter-spacing: -.035em; }
+.logo svg { width: 22px; height: 22px; }
+.nav-cta {
+  border-radius: 999px;
+  padding: 10px 18px;
+  background: var(--ink);
+  box-shadow: 0 8px 24px rgba(26,26,46,.13);
+}
+.hero {
+  max-width: 1180px;
+  min-height: 610px;
+  padding: 78px 0 64px;
+  display: grid;
+  grid-template-columns: .92fr 1.08fr;
+  gap: 72px;
+  align-items: center;
+  text-align: left;
+}
+.hero-copy { position: relative; z-index: 2; }
+.hero-badge { margin-bottom: 25px; }
+.hero h1 {
+  max-width: 620px;
+  font-size: clamp(3.45rem, 6vw, 5.55rem);
+  line-height: .92;
+  letter-spacing: -.07em;
+}
+.hero h1 mark { display: block; }
+.hero h1 mark::after { display: none; }
+.hero .sub {
+  max-width: 570px;
+  margin: 27px 0 0;
+  font-size: 1.08rem;
+  line-height: 1.65;
+}
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 31px;
+}
+.hero-primary,
+.hero-secondary {
+  min-height: 50px;
+  padding: 0 21px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: .85rem;
+  font-weight: 700;
+}
+.hero-primary { background: var(--ink); color: white; box-shadow: 0 14px 30px rgba(26,26,46,.14); }
+.hero-secondary { color: var(--ink); border: 1px solid var(--border-strong); background: rgba(255,255,255,.55); }
+.hero-primary svg,.hero-secondary svg { width: 17px; height: 17px; }
+.hero-proof { display: flex; gap: 18px; margin-top: 23px; color: var(--ink-muted); font-size: .74rem; }
+.hero-proof span { display: flex; gap: 6px; align-items: center; }
+.hero-proof svg { width: 13px; height: 13px; color: var(--accent); }
+.hero-visual { min-height: 480px; position: relative; display: grid; place-items: center; isolation: isolate; }
+.hero-visual::before {
+  content: '';
+  position: absolute;
+  width: 430px;
+  height: 430px;
+  z-index: -2;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--accent-rgb),.23), rgba(var(--accent-rgb),0) 68%);
+}
+.visual-orbit { position: absolute; width: 525px; height: 370px; border: 1px solid rgba(26,26,46,.11); border-radius: 50%; transform: rotate(-16deg); z-index: -1; }
+.scan-card {
+  width: min(100%, 510px);
+  padding: 13px;
+  color: white;
+  background: #111522;
+  border: 1px solid #2d3448;
+  border-radius: 18px;
+  box-shadow: 0 45px 90px rgba(23,31,54,.27);
+  transform: rotate(-1.4deg);
+}
+.scan-card-head { height: 32px; display: flex; justify-content: space-between; align-items: center; padding: 0 4px; color: #858da2; font: 500 .48rem/1 var(--mono); letter-spacing: .08em; }
+.scan-card-head span:last-child { color: #83adff; display: flex; gap: 6px; align-items: center; }
+.scan-card-head i { width: 5px; height: 5px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); }
+.scan-frame {
+  height: 315px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  background:
+    linear-gradient(125deg, transparent 20%, rgba(var(--accent-rgb),.11), transparent 73%),
+    radial-gradient(circle at 50% 48%, #394b70, #222b40 34%, #121723 76%);
+}
+.scan-frame::before { content: ''; position: absolute; inset: 0; opacity: .13; background-image: linear-gradient(rgba(255,255,255,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.14) 1px,transparent 1px); background-size: 34px 34px; }
+.scan-object {
+  width: 148px;
+  height: 182px;
+  position: absolute;
+  left: 50%; top: 52%;
+  transform: translate(-50%,-50%) rotate(5deg);
+  border-radius: 44% 56% 49% 51% / 53% 45% 55% 47%;
+  background: linear-gradient(135deg,#aecdff,#4F8CF7 48%,#173e86);
+  box-shadow: inset -22px -20px 40px rgba(9,23,54,.47),inset 18px 12px 28px rgba(255,255,255,.28),0 25px 50px rgba(0,0,0,.45);
+}
+.scan-object::after { content:''; position:absolute; width:44px; height:105px; top:18px; left:25px; border-radius:50%; background:rgba(255,255,255,.22); filter:blur(14px); }
+.scan-object span { position:absolute; inset:auto 0 27px; z-index:2; text-align:center; font:600 1.6rem/1 var(--mono); color:rgba(8,24,55,.7); }
+.scanner-line { position:absolute; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,#77a8ff,transparent); box-shadow:0 0 12px var(--accent); animation:heroScan 3.2s ease-in-out infinite; }
+@keyframes heroScan { 0%,100% { top:17%; opacity:.25; } 50% { top:82%; opacity:1; } }
+.scan-label { position:absolute; font:500 .45rem/1 var(--mono); letter-spacing:.08em; color:rgba(255,255,255,.65); }
+.scan-label.one { top:16px; left:17px; }.scan-label.two { right:17px; bottom:16px; }
+.scan-corner { position:absolute; width:23px; height:23px; border-color:#79aaff; opacity:.75; }
+.scan-corner.c1 { top:40px;left:94px;border-top:1px solid;border-left:1px solid }.scan-corner.c2 { top:40px;right:94px;border-top:1px solid;border-right:1px solid }.scan-corner.c3 { bottom:40px;left:94px;border-bottom:1px solid;border-left:1px solid }.scan-corner.c4 { bottom:40px;right:94px;border-bottom:1px solid;border-right:1px solid }
+.scan-wave { height:46px; display:flex; align-items:center; gap:4px; padding:11px 4px 2px; }
+.scan-wave i { flex:1; display:block; background:#465069; border-radius:1px; }.scan-wave i:nth-child(n+7):nth-child(-n+11) { background:var(--accent); }
+.scan-wave i:nth-child(1){height:28%}.scan-wave i:nth-child(2){height:52%}.scan-wave i:nth-child(3){height:37%}.scan-wave i:nth-child(4){height:76%}.scan-wave i:nth-child(5){height:65%}.scan-wave i:nth-child(6){height:43%}.scan-wave i:nth-child(7){height:88%}.scan-wave i:nth-child(8){height:58%}.scan-wave i:nth-child(9){height:35%}.scan-wave i:nth-child(10){height:70%}.scan-wave i:nth-child(11){height:48%}.scan-wave i:nth-child(12){height:82%}.scan-wave i:nth-child(13){height:62%}.scan-wave i:nth-child(14){height:33%}.scan-wave i:nth-child(15){height:55%}.scan-wave i:nth-child(16){height:74%}
+.floating-score,.floating-insight { position:absolute; z-index:3; background:rgba(255,255,255,.95); border:1px solid rgba(26,26,46,.13); box-shadow:0 18px 40px rgba(26,26,46,.15); backdrop-filter:blur(12px); }
+.floating-score { width:160px; left:-6px; bottom:34px; padding:16px; border-radius:14px; transform:rotate(2.5deg); }
+.floating-score small { display:block; color:var(--ink-muted); font:600 .48rem/1 var(--mono); letter-spacing:.08em; }.floating-score strong { display:block; margin:9px 0; font-size:1.85rem; line-height:1; letter-spacing:-.06em; }.floating-score strong span { font-size:.58rem;color:var(--ink-muted);letter-spacing:0 }.floating-score div { height:4px;background:#e2e6ee;border-radius:9px;overflow:hidden }.floating-score div i { display:block;width:92%;height:100%;background:var(--accent) }
+.floating-insight { right:-17px;top:74px;padding:12px 15px;border-radius:999px;font-size:.63rem;font-weight:700;display:flex;align-items:center;gap:7px }.floating-insight svg{width:14px;height:14px;color:var(--accent)}.floating-insight span{font:500 .48rem/1 var(--mono);color:var(--ink-muted)}
+
+.input-zone {
+  max-width: 960px;
+  margin: 20px auto 60px;
+  padding: 32px;
+  color: #f5f7fb;
+  background: #111522;
+  border-color: #2d3448;
+  border-radius: 20px;
+  box-shadow: 0 35px 80px rgba(23,31,54,.19);
+}
+.input-zone::before { content:'01 / INPUT'; display:block; margin-bottom:22px; color:#768098; font:600 .52rem/1 var(--mono); letter-spacing:.12em; }
+.tabs { max-width: 360px; background:#202636; }
+.tab-btn { color:#9da6ba; }.tab-btn.active { background:#30384c;color:white;box-shadow:none }
+#url-input input { background:#0b0e17;color:white;border-color:#343c50 }.url-hint{color:#707a91}
+.upload-area { border-color:#414a60;background:rgba(255,255,255,.015) }.upload-area:hover,.upload-area.dragover{border-color:var(--accent);background:rgba(var(--accent-rgb),.07)}
+.upload-area p { color:#c6ccda }.upload-area small{color:#7b8499}
+.modes { border-top:1px solid #2b3244;padding-top:20px;margin-top:20px }.mode-ch{background:#1c2230;border-color:#30384b;color:#aeb5c5}.mode-ch:hover:not(.active){border-color:#546077;background:#242b3c}.mode-ch.active{background:var(--accent);border-color:var(--accent);color:white;box-shadow:0 8px 20px rgba(var(--accent-rgb),.22)}
+.btn { border-radius:999px;background:var(--accent);box-shadow:0 10px 26px rgba(var(--accent-rgb),.25) }.btn:hover{background:var(--accent-hover)}.free-badge{color:#818ba1}
+#progress,#result { max-width:960px;border-radius:18px }
+.trust-strip { max-width:960px;margin-bottom:65px }
+.section-header h2 { font-size:clamp(2rem,4vw,3.4rem);letter-spacing:-.055em;line-height:1.03 }
+.section-header p{max-width:610px;margin-left:auto;margin-right:auto}
+.use-cases,.features,.how,.pricing,.blog-preview { max-width:1180px }
+.usecase-card,.info-item,.plan,.blog-card { border-radius:16px;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease }
+.usecase-card:hover,.info-item:hover { transform:translateY(-4px);border-color:var(--accent-border);box-shadow:0 18px 42px rgba(26,26,46,.08) }
+.example-section { background:#111522;color:#f5f7fb }.example-text p{color:#9ba4b7}.example-text li{color:#cbd1dd}.example-mockup{border-color:#323a4e;box-shadow:0 28px 60px rgba(0,0,0,.24)}
+.plan.featured { border-color:var(--accent);box-shadow:0 20px 50px rgba(var(--accent-rgb),.13) }
+.cta-section { background:var(--accent);color:white }.cta-section p{color:rgba(255,255,255,.8)}.cta-section .btn{background:white;color:var(--ink);box-shadow:none}
+
+@media (max-width: 1180px) { nav,.hero { width:calc(100% - 48px) } }
+@media (max-width: 900px) {
+  .hero { grid-template-columns:1fr;gap:18px;padding-top:64px }.hero-copy{max-width:760px}.hero-visual{min-height:500px}.input-zone{margin-left:24px;margin-right:24px}
+}
+@media (max-width: 640px) {
+  nav,.hero{width:calc(100% - 28px)}
+  .hero{padding:50px 0 40px}.hero h1{font-size:clamp(3rem,15vw,4.25rem)}.hero .sub{font-size:.98rem}.hero-actions{flex-direction:column;align-items:stretch}.hero-primary,.hero-secondary{width:100%}.hero-proof{flex-direction:column;gap:7px}
+  .hero-visual{min-height:420px}.scan-card{transform:none}.scan-frame{height:250px}.visual-orbit{width:390px;height:280px}.floating-insight{top:25px;right:0}.floating-score{left:3px;bottom:8px}
+  .input-zone{margin:14px 14px 45px;padding:22px}.trust-strip{padding:0 20px}
+}
 </style>
 </head>
 <body>
@@ -917,12 +1092,36 @@ footer {
 
 <!-- ── Hero ────────────────────────────────────────── -->
 <section class="hero">
-  <div class="hero-badge">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-    AI-powered · No signup · 3 free daily
+  <div class="hero-copy">
+    <div class="hero-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      AI-powered · No signup · 3 free daily
+    </div>
+    <h1>Decode what makes <mark>video work.</mark></h1>
+    <p class="sub">Drop in any ad, reel, interview, or video reference. AdScanVideo turns it into structured intelligence, production-ready prompts, and a blueprint you can use.</p>
+    <div class="hero-actions">
+      <a class="hero-primary" href="#input-zone">Analyze a video <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="hero-secondary" href="#example-output"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4V8z"/></svg> See sample output</a>
+    </div>
+    <div class="hero-proof">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 4 4L19 6"/></svg> No setup required</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 4 4L19 6"/></svg> Files, YouTube or TikTok URLs</span>
+    </div>
   </div>
-  <h1>Watch any video <mark>frame by frame.</mark></h1>
-  <p class="sub">Drop a link or upload a file. Get a shot-by-shot breakdown, cinematic prompts, and structured intelligence — in about 60 seconds.</p>
+  <div class="hero-visual" role="img" aria-label="AdScanVideo analysis preview">
+    <div class="visual-orbit"></div>
+    <div class="scan-card">
+      <div class="scan-card-head"><span>REFERENCE_014.MP4</span><span><i></i> ANALYZED</span></div>
+      <div class="scan-frame">
+        <div class="scan-object"><span>01</span></div><div class="scanner-line"></div>
+        <span class="scan-label one">OBJECT / PRODUCT</span><span class="scan-label two">00:08.4</span>
+        <i class="scan-corner c1"></i><i class="scan-corner c2"></i><i class="scan-corner c3"></i><i class="scan-corner c4"></i>
+      </div>
+      <div class="scan-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="floating-score"><small>HOOK SCORE</small><strong>92<span>/100</span></strong><div><i></i></div></div>
+    <div class="floating-insight"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.7 4.3L6 9l4.3 1.7L12 15l1.7-4.3L18 9l-4.3-1.7L12 3Z"/></svg> Pattern break detected <span>00:01.2</span></div>
+  </div>
 </section>
 
 <!-- ── Input zone ──────────────────────────────────── -->
@@ -1051,7 +1250,7 @@ footer {
 </div>
 
 <!-- ── Example output ──────────────────────────────── -->
-<div class="example-section reveal">
+<div class="example-section reveal" id="example-output">
   <div class="example-inner">
     <div class="example-text">
       <h2>See what you get back</h2>
@@ -1257,7 +1456,7 @@ footer {
 </footer>
 
 <script>
-const API = '/api';
+const API = document.querySelector('meta[name="adscan-api-base"]')?.content.replace(/\/$/, '') || '/api';
 let mode = 'shots', tab = 'upload', file = null, jobId = null;
 let freeCount = 3;
 let freeDate = null;
