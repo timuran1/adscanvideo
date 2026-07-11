@@ -20,6 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
 :root {
   --bg: #f8f9fb;
@@ -1203,7 +1204,15 @@ nav {
   <div class="result-actions">
     <button class="btn-ghost" onclick="navigator.clipboard.writeText(document.getElementById('result-content').textContent)">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-      Copy result
+      Copy
+    </button>
+    <button class="btn-ghost" onclick="exportDOCX()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      DOCX
+    </button>
+    <button class="btn-ghost" onclick="exportPDF()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h6"/><path d="M12 12v6"/></svg>
+      PDF
     </button>
     <button class="btn-ghost" onclick="document.getElementById('result').style.display='none'">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -1382,9 +1391,9 @@ nav {
       <h3>Pay as you go</h3>
       <div class="price">$0.50<span>/video</span></div>
       <ul>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Unlimited analyses</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Pay per video, no sub</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Priority processing</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>All modes</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Export to DOCX &amp; PDF</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>No subscription</li>
       </ul>
       <a href="#input-zone" class="plan-cta primary">Analyze a video</a>
@@ -1394,7 +1403,7 @@ nav {
       <div class="price">$19<span>/month</span></div>
       <ul>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>50 analyses per month</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Export to DOCX</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Export to DOCX &amp; PDF</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>API access</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Priority support</li>
       </ul>
@@ -1579,6 +1588,50 @@ const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ── Export functions ───────────────────────────────── */
+function exportDOCX() {
+  const title = document.getElementById('result-title').textContent;
+  const content = document.getElementById('result-content').textContent;
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title>
+<style>body{font-family:'DM Sans',sans-serif;font-size:11pt;line-height:1.6;padding:40px;color:#1a1a2e}
+h1{font-size:18pt;font-weight:700;border-bottom:2px solid #4f8cf7;padding-bottom:8px}
+.meta{color:#5a5a72;font-size:10pt;margin-bottom:20px}h2{font-size:14pt;font-weight:600;margin-top:24px;color:#1a1a2e}
+p{margin:6px 0}pre{background:#f1f3f6;padding:12px;border-radius:7px;font-size:9pt;white-space:pre-wrap}
+.footer{margin-top:32px;padding-top:12px;border-top:1px solid #ddd;font-size:9pt;color:#9090a0}</style></head>
+<body><h1>${title}</h1>
+<div class="meta">Generated by AdScanVideo · ${new Date().toLocaleDateString()}</div>
+${content.split('\n').filter(l => l.trim()).map(l => {
+  if (/^#{1,3}\s/.test(l)) return `<h2>${l.replace(/^#+\s+/,'')}</h2>`;
+  if (/^\d+\.\s/.test(l)) return `<p>${l}</p>`;
+  return `<p>${l}</p>`;
+}).join('\n')}
+<div class="footer">Generated by AdScanVideo — https://adscanvideo.com</div>
+</body></html>`;
+  const blob = new Blob([html], { type: 'application/msword' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (title || 'adscanvideo-analysis') + '.doc';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function exportPDF() {
+  const title = document.getElementById('result-title').textContent;
+  const content = document.getElementById('result-content').textContent;
+  const el = document.createElement('div');
+  el.style.cssText = 'padding:30px;font-family:DM Sans,sans-serif;font-size:11pt;line-height:1.6;color:#1a1a2e;max-width:700px;margin:0 auto';
+  el.innerHTML = `<h1 style="font-size:18pt;font-weight:700;border-bottom:2px solid #4f8cf7;padding-bottom:8px">${title}</h1>
+<p style="color:#5a5a72;font-size:10pt;margin-bottom:20px">Generated by AdScanVideo · ${new Date().toLocaleDateString()}</p>
+${content.split('\n').filter(l => l.trim()).map(l => `<p>${l}</p>`).join('\n')}
+<p style="margin-top:32px;padding-top:12px;border-top:1px solid #ddd;font-size:9pt;color:#9090a0">Generated by AdScanVideo — https://adscanvideo.com</p>`;
+  document.body.appendChild(el);
+  html2pdf().set({
+    margin: [15, 15], filename: (title || 'adscanvideo-analysis') + '.pdf',
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  }).from(el).save().then(() => document.body.removeChild(el));
+}
 </script>
 </body>
 </html>
