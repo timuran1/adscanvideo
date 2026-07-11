@@ -1616,7 +1616,7 @@ const progressSteps = ['downloading', 'extracting', 'dedup', 'analyzing'];
 const stepProgress = { 'downloading': 25, 'extracting': 50, 'dedup': 70, 'analyzing': 90, 'done': 100 };
 
 async function tryFree() {
-  if (freeCount <= 0) { showWaitlist(); return; }
+  if (freeCount <= 0 && !localStorage.getItem('adsv_unlimited')) { showWaitlist(); return; }
   const isUpload = tab === 'upload';
   if (!isUpload && !document.getElementById('url').value.trim()) return;
   if (isUpload && !file) return;
