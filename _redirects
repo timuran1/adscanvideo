@@ -1,0 +1,6 @@
+/.env        /.env         404
+/.git/config /.git/config  404
+/.git/*      /.git/*       404
+/config.json /config.json  404
+/wordpress/* /wordpress/*  404
+/test/*      /test/*       404

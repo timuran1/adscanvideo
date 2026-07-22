@@ -19,6 +19,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZS2C1B7429"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-ZS2C1B7429');
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
 :root {
@@ -1643,7 +1652,18 @@ async function tryFree() {
       const s = await fetch(API + '/status/' + jobId).then(r => r.json());
       const si = progressSteps.indexOf(s.status);
       if (si >= 0) {
-        document.getElementById('progress-text').textContent = s.status + '... (' + (s.frames_kept||0) + ' frames)';
+        let statusLabel = s.status;
+        if (s.status === 'downloading') statusLabel = 'Downloading video';
+        else if (s.status === 'extracting') statusLabel = 'Extracting frames';
+        else if (s.status === 'dedup') statusLabel = 'Deduplicating frames';
+        else if (s.status === 'analyzing') statusLabel = 'Analyzing with AI';
+        let frameInfo = '';
+        if (s.status === 'extracting' && s.frames_raw > 0) {
+          frameInfo = ` (${s.frames_raw} raw frames extracted)`;
+        } else if (s.status === 'dedup' || s.status === 'analyzing') {
+          frameInfo = ` (${s.frames_kept||0} unique frames)`;
+        }
+        document.getElementById('progress-text').textContent = statusLabel + '...' + frameInfo;
         document.getElementById('progress-fill').style.width = (stepProgress[s.status] || 0) + '%';
       }
       if (s.status === 'done') {
