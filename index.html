@@ -1158,7 +1158,7 @@ nav {
   <div class="hero-copy">
     <div class="hero-badge">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      AI-powered · No signup · 1 free daily
+      AI-powered · No signup · 3 free daily
     </div>
     <h1>Decode what makes <mark>video work.</mark></h1>
     <p class="sub">Drop in any ad, reel, interview, or video reference. AdScanVideo turns it into structured intelligence, production-ready prompts, and a blueprint you can use.</p>
@@ -1440,7 +1440,7 @@ nav {
       <h3>Free</h3>
       <div class="price">$0</div>
       <ul>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>1 free daily</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>3 free daily</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Videos up to 10 min</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>All modes</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>No signup</li>
@@ -1557,7 +1557,7 @@ const API = document.querySelector('meta[name="adscan-api-base"]')?.content.repl
 let mode = 'shots', tab = 'upload', file = null, jobId = null;
 // Single source of truth for the daily free allowance. Changing this number
 // here changes it everywhere (reset, display, depletion check).
-const FREE_PER_DAY = 1;
+const FREE_PER_DAY = 3;
 let freeCount = FREE_PER_DAY;
 let freeDate = null;
 
@@ -1569,8 +1569,6 @@ function checkDailyReset() {
     localStorage.setItem('adsv_free', String(FREE_PER_DAY));
     freeCount = FREE_PER_DAY;
   } else {
-    // Clamp to the current allowance so a visitor who had 3 saved from before
-    // this change doesn't keep the old, higher quota.
     const savedCount = parseInt(localStorage.getItem('adsv_free') || String(FREE_PER_DAY), 10);
     freeCount = Math.min(Number.isNaN(savedCount) ? FREE_PER_DAY : savedCount, FREE_PER_DAY);
   }
