@@ -1622,8 +1622,8 @@ function updateUI() {
 }
 updateUI();
 
-const progressSteps = ['downloading', 'extracting', 'dedup', 'analyzing'];
-const stepProgress = { 'downloading': 25, 'extracting': 50, 'dedup': 70, 'analyzing': 90, 'done': 100 };
+const progressSteps = ['downloading', 'transcribing', 'extracting', 'dedup', 'analyzing'];
+const stepProgress = { 'downloading': 20, 'transcribing': 35, 'extracting': 55, 'dedup': 75, 'analyzing': 90, 'done': 100 };
 
 async function tryFree() {
   if (freeCount <= 0 && !localStorage.getItem('adsv_unlimited')) { showWaitlist(); return; }
@@ -1654,6 +1654,7 @@ async function tryFree() {
       if (si >= 0) {
         let statusLabel = s.status;
         if (s.status === 'downloading') statusLabel = 'Downloading video';
+        else if (s.status === 'transcribing') statusLabel = 'Transcribing audio';
         else if (s.status === 'extracting') statusLabel = 'Extracting frames';
         else if (s.status === 'dedup') statusLabel = 'Deduplicating frames';
         else if (s.status === 'analyzing') statusLabel = 'Analyzing with AI';
