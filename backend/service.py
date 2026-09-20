@@ -20,6 +20,9 @@ import requests
 from flask import request, jsonify
 from network_guard import validate_url
 
+
+SINGLE_CREDIT_CENTS = 399
+
 ROOT = Path(__file__).parent
 TERMINAL = ('done', 'error')
 MAX_FILE = 200 * 1024 * 1024
@@ -287,7 +290,7 @@ def install(app, jobs, db_path, runner):
                     if not row:
                         # Retry if delivery races checkout persistence.
                         return jsonify(error='Unknown checkout session.'), 503
-                    if session.get('client_reference_id') != row[0] or session.get('amount_total') != 50 or session.get('currency') != 'usd':
+                    if session.get('client_reference_id') != row[0] or session.get('amount_total') != SINGLE_CREDIT_CENTS or session.get('currency') != 'usd':
                         return jsonify(error='Checkout details do not match.'), 400
                     db.execute('INSERT OR IGNORE INTO payments VALUES(?,?,?,?)', (session['id'], row[0], 1, time.time()))
         return jsonify(received=True)

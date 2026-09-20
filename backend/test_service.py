@@ -130,7 +130,7 @@ class ServiceTests(unittest.TestCase):
     def test_webhook_signature_and_idempotency(self):
         who=hashlib.sha256(TOKEN.encode()).hexdigest()
         with module._jobs_conn() as db: db.execute('INSERT INTO checkouts VALUES(?,?,?)',('cs_test',who,time.time()))
-        event={'type':'checkout.session.completed','data':{'object':{'id':'cs_test','payment_status':'paid','mode':'payment','client_reference_id':who,'amount_total':50,'currency':'usd'}}}
+        event={'type':'checkout.session.completed','data':{'object':{'id':'cs_test','payment_status':'paid','mode':'payment','client_reference_id':who,'amount_total':399,'currency':'usd'}}}
         raw=json.dumps(event).encode(); stamp=str(int(time.time())); secret='whsec_test'
         sig=hmac.new(secret.encode(),stamp.encode()+b'.'+raw,hashlib.sha256).hexdigest()
         with patch.dict(os.environ,{'STRIPE_WEBHOOK_SECRET':secret}):

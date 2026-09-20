@@ -79,7 +79,7 @@ ADSCAN_JOB_WORKER=1 does not perform production recovery.
 
 ## Stripe activation (template, not yet live-tested)
 
-1. Create a one-time **USD $0.50** Price in Stripe test mode.
+1. Create a one-time **USD $3.99** Price in Stripe test mode.
 2. Set STRIPE_SECRET_KEY, STRIPE_PRICE_VIDEO and STRIPE_WEBHOOK_SECRET server-side.
 3. Register `https://api.adscanvideo.com/api/billing/webhook` for
    checkout.session.completed and checkout.session.async_payment_succeeded.
@@ -92,7 +92,7 @@ ADSCAN_JOB_WORKER=1 does not perform production recovery.
 The $19/month plan is explicitly marked as planned. No subscription or unlimited
 entitlement is implemented. Checkout always selects the configured price on the
 server; fulfillment requires a known checkout, matching owner, paid status,
-payment mode, USD currency and exactly 50 cents. The checkout session ID is unique
+payment mode, USD currency and exactly 399 cents. The checkout session ID is unique
 in the credits ledger, so webhook replay cannot grant duplicate credits.
 
 ## Deployment safety

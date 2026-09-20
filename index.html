@@ -1487,7 +1487,7 @@ nav {
 <div class="pricing reveal" id="pricing">
   <div class="section-header">
     <h2>Simple pricing</h2>
-    <p>One free analysis daily per network. Additional analyses cost $0.50 once payments launch. Daily allowance resets at midnight UTC; failed jobs restore it.</p>
+    <p>One free analysis daily per network. Additional analyses cost $3.99 once payments launch. Daily allowance resets at midnight UTC; failed jobs restore it.</p>
   </div>
   <div class="pricing-row">
     <div class="plan">
@@ -1503,7 +1503,7 @@ nav {
     </div>
     <div class="plan featured">
       <h3>Pay as you go</h3>
-      <div class="price">$0.50<span>/video</span></div>
+      <div class="price">$3.99<span>/video</span></div>
       <ul>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Pay per video, no sub</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>One additional analysis</li>
@@ -1694,7 +1694,7 @@ async function buyCredit() {
     el.textContent = 'Payments are coming soon. Return tomorrow for your next free analysis, or join the launch waitlist below.';
     return;
   }
-  track('begin_checkout', { currency: 'USD', value: 0.50, items: [{ item_id: 'single_analysis', item_name: 'Single analysis credit', price: 0.50, quantity: 1 }] });
+  track('begin_checkout', { currency: 'USD', value: 3.99, items: [{ item_id: 'single_analysis', item_name: 'Single analysis credit', price: 3.99, quantity: 1 }] });
   el.textContent = 'Opening secure checkout…';
   try {
     const data = await api('/billing/checkout', { method: 'POST' });
@@ -1781,7 +1781,7 @@ function q() {
 function updateUI() {
   document.getElementById('free-count').textContent = freeCount + ' free today' + (paidCredits ? ' · ' + paidCredits + ' paid credits' : '');
   document.getElementById('try-btn').disabled = busy;
-  document.querySelectorAll('[data-checkout]').forEach(el => { el.textContent = billingEnabled ? 'Buy 1 analysis · $0.50' : 'Payments coming soon'; });
+  document.querySelectorAll('[data-checkout]').forEach(el => { el.textContent = billingEnabled ? 'Buy 1 analysis · $3.99' : 'Payments coming soon'; });
 }
 updateUI();
 const stepProgress = { starting: 5, downloading: 20, transcribing: 35, extracting: 55, dedup: 75, analyzing: 90, done: 100 };
@@ -1892,7 +1892,7 @@ refreshUsage().then(async () => {
     message('Checkout returned successfully. Credits appear after payment confirmation.');
     for (let i = 0; i < 8 && !paidCredits; i++) { await pause(2500); await refreshUsage(); }
     if (paidCredits) {
-      track('payment_confirmed', { currency: 'USD', value: 0.50, offer: 'single_credit' });
+      track('payment_confirmed', { currency: 'USD', value: 3.99, offer: 'single_credit' });
       message('Payment confirmed. Your analysis credit is ready.');
     }
   }

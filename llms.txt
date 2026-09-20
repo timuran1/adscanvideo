@@ -28,7 +28,7 @@ or public HTTP(S) video links. No account is required.
 ## Pricing status
 
 One analysis is free each day per network and resets at midnight UTC. Failed
-analyses restore the allowance. A USD $0.50 single-analysis credit and a planned
+analyses restore the allowance. A USD $3.99 single-analysis credit and a planned
 $19/month option are displayed for transparency but cannot be purchased yet.
 
 ## Official pages
