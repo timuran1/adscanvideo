@@ -29,26 +29,14 @@
 </style>
 </head>
 <body>
-<section class="auth" id="auth-view">
-  <form class="auth-box" id="auth-form">
-    <div class="auth-brand"><svg width="23" height="19" viewBox="0 0 24 20" fill="none" aria-hidden="true"><rect x="1" y="2" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2"/><path d="m17 7 6-3v12l-6-3" stroke="#4f8cf7" stroke-width="2" stroke-linejoin="round"/></svg>AdScan<span>Video</span></div>
-    <h1>Owner dashboard</h1>
-    <p>Monitor analyses, reliability, processing costs, and payment readiness without exposing video titles, URLs, or report contents.</p>
-    <div class="field"><label for="token">Admin access token</label><input id="token" name="token" type="password" autocomplete="current-password" required placeholder="Enter the server admin token"></div>
-    <button class="button" type="submit" id="login-button">Open dashboard</button>
-    <div class="error hidden" id="auth-error" role="alert"></div>
-    <p class="auth-note">The token is kept only in this browser tab and sent directly to api.adscanvideo.com over HTTPS.</p>
-  </form>
-</section>
-
-<div class="shell hidden" id="dashboard-view">
+<div class="shell" id="dashboard-view">
   <aside class="sidebar">
     <a class="brand" href="/"><svg width="22" height="18" viewBox="0 0 24 20" fill="none" aria-hidden="true"><rect x="1" y="2" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2"/><path d="m17 7 6-3v12l-6-3" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>AdScan<span>Video</span></a>
     <nav class="nav" aria-label="Dashboard"><a href="#overview" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13h6V4H4zm10 7h6v-9h-6zM4 20h6v-3H4zm10-13h6V4h-6z"/></svg>Overview</a><a href="#jobs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Recent jobs</a><a href="https://analytics.google.com/" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 20V10m7 10V4m7 16v-7"/></svg>Google Analytics</a><a href="https://search.google.com/search-console" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>Search Console</a></nav>
     <div class="sidebar-note">Private operations view<br><a href="/privacy/">Data handling policy</a></div>
   </aside>
   <main class="main" id="overview">
-    <header class="topbar"><div><h1>Operations overview</h1><p id="updated">Loading current metrics…</p></div><div class="actions"><button class="button secondary" id="signout">Sign out</button><button class="button" id="refresh">Refresh data</button></div></header>
+    <header class="topbar"><div><h1>Operations overview</h1><p id="updated">Loading current metrics…</p></div><div class="actions"><button class="button" id="refresh">Refresh data</button></div></header>
     <section class="metrics" aria-label="Key metrics">
       <div class="metric"><strong id="m-analyses" class="skeleton">000</strong><span>Analyses, 7 days</span><small id="m-analyses-note">Current demand</small></div>
       <div class="metric"><strong id="m-completion" class="skeleton">00%</strong><span>Completion rate</span><small>Finished jobs, 7 days</small></div>
@@ -71,24 +59,19 @@
 
 <script>
 const API=(document.querySelector('meta[name="adscan-api-base"]')?.content||'').replace(/\/$/,'');
-let token=sessionStorage.getItem('adscan_admin_token')||'';
 const $=id=>document.getElementById(id);
 const esc=value=>String(value??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 const pct=value=>value==null?'—':`${(Number(value)*100).toFixed(1)}%`;
 const usd=value=>`$${Number(value||0).toFixed(Number(value||0)<.01?4:2)}`;
 const duration=seconds=>seconds<60?`${Math.round(seconds)} sec`:`${Math.floor(seconds/60)} min ${Math.round(seconds%60)} sec`;
 const modeLabel=value=>({ads:'Ad intelligence',shots:'Shot breakdown',podcast:'Podcast notes',marketing:'Marketing copy',tutorial:'Tutorial steps',summary:'Summary'}[value]||value||'Unknown');
-function showAuth(message=''){$('dashboard-view').classList.add('hidden');$('auth-view').classList.remove('hidden');$('auth-error').textContent=message;$('auth-error').classList.toggle('hidden',!message);setTimeout(()=>$('token').focus(),0)}
-function showDashboard(){$('auth-view').classList.add('hidden');$('dashboard-view').classList.remove('hidden')}
 async function load(){
-  if(!token)return showAuth();
   $('refresh').disabled=true;$('refresh').textContent='Refreshing…';
   try{
-    const response=await fetch(`${API}/admin/dashboard`,{headers:{Authorization:`Bearer ${token}`},cache:'no-store'});
-    if(response.status===403){sessionStorage.removeItem('adscan_admin_token');token='';return showAuth('That token was not accepted. Check the server admin token and try again.')}
+    const response=await fetch(`${API}/admin/dashboard`,{cache:'no-store'});
     if(!response.ok)throw new Error(`Dashboard request failed (${response.status})`);
-    render(await response.json());showDashboard();
-  }catch(error){if(!$('dashboard-view').classList.contains('hidden'))$('updated').textContent=`Could not refresh: ${error.message}`;else showAuth('The dashboard could not reach the API. Please try again.')}finally{$('refresh').disabled=false;$('refresh').textContent='Refresh data'}
+    render(await response.json());
+  }catch(error){$('updated').textContent=`Could not refresh: ${error.message}`}finally{$('refresh').disabled=false;$('refresh').textContent='Refresh data'}
 }
 function render(data){
   const o=data.overview,ops=data.operations,rev=data.revenue;
@@ -116,8 +99,7 @@ function renderJobs(rows){
   if(!rows.length){$('jobs-body').innerHTML='<tr><td colspan="8" class="empty">No analyses have been recorded yet.</td></tr>';return}
   $('jobs-body').innerHTML=rows.map(row=>{const statusClass=row.status==='done'?'good':row.status==='error'?'bad':'warn';return `<tr><td class="num">${esc(new Date(row.created*1000).toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}))}</td><td><span class="pill ${statusClass}">${esc(row.status)}</span></td><td>${esc(modeLabel(row.mode))}</td><td>${esc(row.tier)}</td><td class="num">${esc(row.duration||'—')}</td><td class="num">${row.frames}</td><td>${row.has_transcript?'Available':'Visual only'}</td><td class="num">${usd(row.cost)}</td></tr>`}).join('');
 }
-$('auth-form').addEventListener('submit',event=>{event.preventDefault();token=$('token').value.trim();if(!token)return;sessionStorage.setItem('adscan_admin_token',token);$('login-button').textContent='Checking…';$('login-button').disabled=true;load().finally(()=>{$('login-button').textContent='Open dashboard';$('login-button').disabled=false})});
-$('refresh').addEventListener('click',load);$('signout').addEventListener('click',()=>{sessionStorage.removeItem('adscan_admin_token');token='';$('token').value='';showAuth()});
+ $('refresh').addEventListener('click',load);
 load();
 </script>
 </body>

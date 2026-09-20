@@ -88,7 +88,7 @@ def install(app, jobs, db_path, runner):
     def access_control():
         if request.method == 'OPTIONS':
             return None
-        if request.path in ('/api/recover', '/api/reap', '/api/admin/dashboard', '/admin'):
+        if request.path in ('/api/recover', '/api/reap', '/admin'):
             expected = os.getenv('ADSCAN_ADMIN_TOKEN', '')
             actual = request.headers.get('Authorization', '').removeprefix('Bearer ')
             if not expected or not hmac.compare_digest(actual, expected):

@@ -90,12 +90,11 @@ class ServiceTests(unittest.TestCase):
     def test_admin_is_protected(self):
         self.assertEqual(self.client.post('/api/recover',json={'recover':'1'}).status_code,403)
         self.assertEqual(self.client.get('/api/reap').status_code,403)
-        self.assertEqual(self.client.get('/api/admin/dashboard').status_code,403)
         self.assertEqual(self.client.get('/admin').status_code,403)
 
     def test_admin_dashboard_returns_privacy_safe_metrics(self):
         first=self.post(); self.finish(first)
-        response=self.client.get('/api/admin/dashboard',headers={'Authorization':'Bearer test-admin-token'})
+        response=self.client.get('/api/admin/dashboard')
         self.assertEqual(response.status_code,200)
         data=response.json
         self.assertEqual(data['overview']['total'],1)
