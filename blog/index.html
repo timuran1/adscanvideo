@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blog — AdScanVideo</title>
-<meta name="description" content="Video analysis tips, ad intelligence guides, AI video prompts, and marketing insights from the AdScanVideo team.">
+<title>AI Video Analysis Guides for Ads, Prompts &amp; Shot Lists | AdScanVideo</title>
+<meta name="description" content="Practical guides for AI video analysis, competitor ad research, video-to-prompt workflows, shot lists, transcripts, and creative production.">
 <meta property="og:title" content="Blog — AdScanVideo">
 <meta property="og:description" content="Video analysis tips, ad intelligence guides, and marketing insights.">
 <meta property="og:url" content="https://adscanvideo.com/blog/">
@@ -100,6 +100,10 @@ h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 
   font-weight: 600;
   margin-right: 4px;
 }
+.tool-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:0 0 38px; }
+.tool-card { background:var(--accent-soft); border:1px solid rgba(79,140,247,.16); border-radius:10px; color:var(--ink); padding:16px; text-decoration:none; }
+.tool-card strong { display:block; font-size:.9rem; margin-bottom:3px; }
+.tool-card span { color:var(--ink-dim); font-size:.79rem; }
 footer {
   border-top: 1px solid var(--border);
   padding: 32px 24px;
@@ -120,6 +124,7 @@ footer a:hover { color: var(--accent); }
   .nav-links { gap: 16px; }
   .container { padding: 32px 16px; }
   h1 { font-size: 1.5rem; }
+  .tool-grid { grid-template-columns:1fr; }
 }
 </style>
 <link rel="canonical" href="https://adscanvideo.com/blog/">
@@ -149,8 +154,15 @@ footer a:hover { color: var(--accent); }
 </nav>
 
 <div class="container">
-  <h1>Blog</h1>
+  <h1>Video analysis guides</h1>
   <p class="sub">Video analysis tips, ad intelligence, AI prompts, and marketing insights.</p>
+
+  <div class="tool-grid" aria-label="Video analysis tools">
+    <a class="tool-card" href="/ai-video-analyzer/"><strong>AI video analyzer</strong><span>Scenes, dialogue, chronology, and takeaways</span></a>
+    <a class="tool-card" href="/video-ad-analyzer/"><strong>Video ad analyzer</strong><span>Hook, audience, proof, pacing, and CTA</span></a>
+    <a class="tool-card" href="/video-to-shot-list/"><strong>Video to shot list</strong><span>Timestamped production breakdown</span></a>
+    <a class="tool-card" href="/video-to-prompt/"><strong>Video to prompt</strong><span>Camera, motion, light, and model-ready prompts</span></a>
+  </div>
 
   <div class="post-list">
 
@@ -187,7 +199,7 @@ footer a:hover { color: var(--accent); }
     <a class="post-card" href="what-makes-great-video-ad-hook/">
       <h2>Shot-by-Shot: What Makes a Great Video Ad Hook</h2>
       <div class="meta"><span class="tag">Video Analysis</span> July 2026 · 5 min read</div>
-      <p>We analyzed 50 high-performing video ads frame-by-frame. Here's what the first 3 seconds have in common — and how you can apply it to your next campaign.</p>
+      <p>Seven practical hook patterns to look for in the first three seconds, with a framework you can apply to your next campaign.</p>
     </a>
 
     <a class="post-card" href="ai-video-prompts-recreate-any-shot/">

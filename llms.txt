@@ -35,6 +35,10 @@ $19/month option are displayed for transparency but cannot be purchased yet.
 
 - [Analyzer and pricing](https://adscanvideo.com/)
 - [What AdScanVideo is](https://adscanvideo.com/what-is-adscanvideo/)
+- [AI video analyzer](https://adscanvideo.com/ai-video-analyzer/)
+- [Video ad analyzer](https://adscanvideo.com/video-ad-analyzer/)
+- [Video to shot list](https://adscanvideo.com/video-to-shot-list/)
+- [Video to prompt generator](https://adscanvideo.com/video-to-prompt/)
 - [All video-analysis guides](https://adscanvideo.com/blog/)
 - [Extract dialogue and transcripts](https://adscanvideo.com/blog/extract-transcript-dialogue-from-video/)
 - [Analyze competitor video ads](https://adscanvideo.com/blog/analyze-competitor-video-ads-fast/)
