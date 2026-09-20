@@ -23,7 +23,7 @@ or public HTTP(S) video links. No account is required.
 - Dialogue is included when captions or a usable audio transcript are available
 - Some video platforms block server downloads; uploading the file is the reliable alternative
 - Results are AI-generated and should be checked before legal, editorial, or production use
-- Uploaded working files are not stored permanently
+- Video and temporary audio, caption, and frame files are deleted after a job finishes, fails, or times out; analysis text and limited job and usage metadata are retained
 
 ## Pricing status
 

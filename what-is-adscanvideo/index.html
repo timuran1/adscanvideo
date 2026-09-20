@@ -124,7 +124,7 @@ footer{border-top:1px solid var(--border);padding:24px;max-width:760px;margin:0 
 <li>It is <strong>not</strong> a video editor. It does not cut, trim, or modify video.</li>
 <li>It is <strong>not</strong> a video generator. It does not create new footage — it describes existing footage.</li>
 <li>It is <strong>not</strong> a transcription service. It focuses on what is visible on screen, not only on speech.</li>
-<li>It does <strong>not</strong> store your videos. Files are processed and the analysis is returned.</li>
+<li>It does <strong>not</strong> keep your video after processing. The temporary video, audio, caption, and frame files are deleted when the job finishes, fails, or times out.</li>
 </ul>
 
 <div class="cta-box">
@@ -143,10 +143,10 @@ footer{border-top:1px solid var(--border);padding:24px;max-width:760px;margin:0 
 <p class="faq-a">Yes. The free tier gives you 1 analysis per day with videos up to 10 minutes and access to all six modes, with no signup and no credit card.</p>
 
 <p class="faq-q">How much does it cost after free?</p>
-<p class="faq-a">$0.50 per video on pay-as-you-go with no subscription, or $19 per month for unlimited analyses, DOCX and PDF export, and API access.</p>
+<p class="faq-a">During early access, one analysis is free each day per network. Additional analyses will cost $3.99 per video when payments launch. The planned monthly tier is not available yet.</p>
 
 <p class="faq-q">What kinds of videos work best?</p>
-<p class="faq-a">Short-form video under 15 minutes works best — ads, TikTok clips, YouTube shorts, product demos, and individual scenes. Long-form works too but costs more processing time.</p>
+<p class="faq-a">Videos up to 10 minutes work best — ads, TikTok clips, YouTube shorts, product demos, interviews, and individual scenes.</p>
 
 <p class="faq-q">Does it work on competitor ads?</p>
 <p class="faq-a">Yes. Reverse-engineering a competitor's video ad is one of the main uses. Upload or link the ad and use shot-by-shot analysis to see its hook, pacing, and structure with timestamps.</p>
@@ -158,7 +158,7 @@ footer{border-top:1px solid var(--border);padding:24px;max-width:760px;margin:0 
 <p class="faq-a">No. You can paste a link or upload a file and get an analysis without creating an account.</p>
 
 <p class="faq-q">Is my video stored?</p>
-<p class="faq-a">No. Videos are processed to produce the analysis and are not kept as a library of your uploads.</p>
+<p class="faq-a"><strong>Not after processing.</strong> Your video is held in a temporary working directory while the analysis runs. The video and temporary audio, caption, and frame files are deleted when the job finishes, fails, or times out. We retain the analysis text and limited job and usage metadata so you can retrieve the result. Selected frames, available captions, and your analysis request are sent to the configured AI provider during processing. See our <a href="/privacy/">privacy page</a> for details.</p>
 </div>
 
 </div>
