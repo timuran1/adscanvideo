@@ -1,143 +1,78 @@
-# AdScanVideo deployment
+# AdScanVideo deployment — verified September 20, 2026
 
 ## Frontend
 
-The public website is a static HTML site hosted by GitHub Pages.
+Static HTML/CSS/JS, repository `timuran1/adscanvideo`, branch `main`. GitHub Pages
+builds on push; CNAME is `adscanvideo.com`. There is no npm build.
 
-- Repository: `timuran1/adscanvideo`
-- Production branch: `main`
-- Custom domain: `adscanvideo.com`
-- `CNAME` must continue to contain `adscanvideo.com`
-- A push to `main` triggers the GitHub Pages deployment automatically
+**Do not assume a successful GitHub build means the public domain is updated.**
+The public Cloudflare-served site was still returning an older page while the
+GitHub origin had the latest files. The saved Wrangler configuration identifies
+a separate Cloudflare Pages project named `adscanvideo`. Inspect that project's
+custom domains and deployment after `wrangler login` before changing routing.
+The exact active Cloudflare binding remains to be verified after authentication.
 
-The site does not require an npm build. All CSS and JavaScript are contained in `index.html`; blog posts remain under `blog/`.
+Verify both the GitHub origin and the public hostname:
 
-## Recommended API architecture
-
-GitHub Pages cannot proxy `/api/*` to a Node.js server. Run the Express API on the VPS and expose it as:
-
-`https://api.adscanvideo.com/api`
-
-Then change this line in the `<head>` of `index.html`:
-
-```html
-<meta name="adscan-api-base" content="https://api.adscanvideo.com/api">
+```
+gh api repos/timuran1/adscanvideo/pages/builds/latest --jq '.status, .commit'
+curl --resolve adscanvideo.com:443:185.199.108.153 https://adscanvideo.com/llms.txt
+curl https://adscanvideo.com/llms.txt
 ```
 
-### Netlify DNS
+`_config.yml` excludes backend code from the GitHub Pages site. When deploying to
+Cloudflare Pages, stage only public HTML, blog/, privacy/, what-is-adscanvideo/,
+sitemap.xml, robots.txt, llms.txt and intentional public assets. Never upload
+backend/, .git/, .env, .wrangler/ or server backups. 404.html prevents unknown
+paths from silently becoming the homepage.
 
-Netlify is only managing DNS in the current architecture. Add:
+## Backend
 
-| Host | Type | Value |
-| --- | --- | --- |
-| `api` | `A` | `YOUR_VPS_PUBLIC_IP` |
+The API is **Flask/Python**, not Node/Express.
 
-Keep the existing GitHub Pages apex and `www` records unchanged.
+- Host: `170.168.6.33`
+- Directory: `/opt/adscanvideo-api`
+- Service: `adscanvideo-api`
+- Python environment: `/opt/adscanvideo-api/venv`
+- Entry: `app.py`, with `service.py`, `network_guard.py`, `job_worker.py` and pipeline/
+- Bind: `127.0.0.1:5001`, behind nginx and HTTPS
+- Secrets: `/opt/adscanvideo-api/.env` (not in Git)
+- State: jobs.db and analytics.db in the API directory
+- Capacity: shared 2-core, 2 GB VPS; one analysis at a time
 
-## VPS setup
+Gunicorn runs `-w 1 --threads 4 -b 127.0.0.1:5001 app:app --timeout 60`.
+Do not increase worker count without replacing startup recovery. Each analysis
+runs separately with a process-group deadline. See backend/README.md for the API
+contract, test command, limits and Stripe activation checklist.
 
-These commands assume Ubuntu, a Node.js API project, and an Express entry file such as `server.js`.
+Nginx trusts CF-Connecting-IP only from official Cloudflare address ranges in
+`/etc/nginx/snippets/adscan-cloudflare-real-ip.conf`, then overwrites X-Real-IP.
+The upload request cap is 201 MB to allow multipart overhead; the application
+caps actual video bytes at 200 MB. /admin and /admin/ are IP-restricted. Recovery
+and reap endpoints require a server-side admin bearer token.
 
-```bash
-sudo mkdir -p /opt/adscanvideo-api
-sudo chown -R "$USER":"$USER" /opt/adscanvideo-api
-cd /opt/adscanvideo-api
-# Copy or clone the backend source here.
-npm ci --omit=dev
-```
+## Safe deployment
 
-Create `/etc/systemd/system/adscanvideo-api.service`:
+1. Stage source under releases/ and run backend/test_service.py with the venv.
+2. Wait for zero active analyses. Back up code/config plus both DBs using SQLite
+   backup; do not copy only a SQLite main file while its WAL is active.
+3. Preserve stable quota/admin secrets. Disable local Whisper on this small VPS.
+4. Install code, validate `nginx -t` and Python compilation, restart API, check
+   `/health`, and reload nginx if its configuration changed.
+5. Test an analysis to terminal `done`, then a second request (402), private
+   result access (404 without owner token), and failures restoring allowance.
+6. Deploy frontend and verify actual public content, not only build status.
 
-```ini
-[Unit]
-Description=AdScanVideo API
-After=network.target
+Production backup for the September 20 rollout:
+`/opt/adscanvideo-api/backups/20260920-121224/`.
+Rollback should restore matching code/configuration, not overwrite newer user
+records with an old database. No SSH credentials belong in this repository.
 
-[Service]
-Type=simple
-User=www-data
-WorkingDirectory=/opt/adscanvideo-api
-EnvironmentFile=/opt/adscanvideo-api/.env
-ExecStart=/usr/bin/node server.js
-Restart=always
-RestartSec=5
+## Payments
 
-[Install]
-WantedBy=multi-user.target
-```
-
-Start it:
-
-```bash
-sudo chown -R www-data:www-data /opt/adscanvideo-api
-sudo systemctl daemon-reload
-sudo systemctl enable --now adscanvideo-api
-sudo systemctl status adscanvideo-api
-```
-
-The Express server should listen on `127.0.0.1:3000`, not directly on the public interface.
-
-## Nginx reverse proxy
-
-Create `/etc/nginx/sites-available/adscanvideo-api`:
-
-```nginx
-server {
-    listen 80;
-    server_name api.adscanvideo.com;
-
-    client_max_body_size 200M;
-    proxy_read_timeout 600s;
-    proxy_send_timeout 600s;
-
-    location /api/ {
-        proxy_pass http://127.0.0.1:3000/api/;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
-
-Enable Nginx and HTTPS:
-
-```bash
-sudo ln -s /etc/nginx/sites-available/adscanvideo-api /etc/nginx/sites-enabled/adscanvideo-api
-sudo nginx -t
-sudo systemctl reload nginx
-sudo certbot --nginx -d api.adscanvideo.com
-```
-
-## Express requirements
-
-Allow only the production and GitHub Pages frontend origins:
-
-```js
-import cors from 'cors';
-
-app.use(cors({
-  origin: [
-    'https://adscanvideo.com',
-    'https://www.adscanvideo.com',
-    'https://timuran1.github.io',
-  ],
-  methods: ['GET', 'POST'],
-}));
-```
-
-Keep API keys in `/opt/adscanvideo-api/.env`. Never commit that file to the public frontend repository.
-
-## Deployment order
-
-1. Deploy and test the backend locally on the VPS.
-2. Add the `api` DNS record in Netlify DNS.
-3. Configure Nginx and obtain the SSL certificate.
-4. Test `https://api.adscanvideo.com/api/status/test`.
-5. Update the `adscan-api-base` meta tag in `index.html`.
-6. Push the frontend change to `main`.
-
-## Google Analytics
-
-The numeric GA4 property ID is not enough for the website tag. Add the GA4 Measurement ID in the form `G-XXXXXXXXXX` before enabling analytics in `index.html`.
+Stripe is disabled until server-only test credentials and a USD $0.50 one-time
+Price are configured. The $19/month plan is marked planned, not purchasable.
+Signature-verified, idempotent webhook fulfillment is implemented and tested
+with synthetic signed events; real Stripe Checkout still needs test-mode
+verification when credentials arrive. Add account recovery and refund/dispute
+handling before broadly promoting paid usage.

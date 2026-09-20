@@ -15,7 +15,7 @@ if sys.platform == 'linux':
         raise RuntimeError('Could not configure worker parent-death protection')
     if os.getppid() != parent or parent == 1:
         parent_died()
-os.environ['ADSCAN_JOB_WORKER'] = '1' 
+os.environ['ADSCAN_JOB_WORKER'] = '1'
 from network_guard import start_proxy
 proxy, address = start_proxy()
 os.environ['ADSCAN_DOWNLOAD_PROXY'] = address
