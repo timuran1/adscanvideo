@@ -454,6 +454,39 @@ nav {
 }
 .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
 
+.analyzer-outcomes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 16px 0 2px;
+  color: var(--ink-dim);
+  font-size: 0.78rem;
+}
+.analyzer-outcomes span { display: inline-flex; align-items: center; gap: 6px; }
+.analyzer-outcomes svg { width: 13px; height: 13px; color: var(--green); flex: 0 0 auto; }
+
+.workflow-links {
+  max-width: 980px;
+  margin: 0 auto 74px;
+  padding: 0 24px;
+  text-align: center;
+}
+.workflow-links h2 { font-size: 1.28rem; margin-bottom: 7px; }
+.workflow-links > p { color: var(--ink-dim); font-size: 0.9rem; margin-bottom: 18px; }
+.workflow-link-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; }
+.workflow-link-list a {
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  padding: 8px 13px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.workflow-link-list a:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-faint); }
+
 /* ── Section headers ──────────────────────────────── */
 .section-header {
   text-align: center;
@@ -1131,6 +1164,7 @@ nav {
   .hero{padding:50px 0 40px}.hero h1{font-size:clamp(3rem,15vw,4.25rem)}.hero .sub{font-size:.98rem}.hero-actions{flex-direction:column;align-items:stretch}.hero-primary,.hero-secondary{width:100%}.hero-proof{flex-direction:column;gap:7px}
   .hero-visual{min-height:420px}.scan-card{transform:none}.scan-frame{height:250px}.visual-orbit{width:390px;height:280px}.floating-insight{top:25px;right:0}.floating-score{left:3px;bottom:8px}
   .input-zone{margin:14px 14px 45px;padding:22px}.trust-strip{padding:0 20px}
+  .analyzer-outcomes{display:grid;grid-template-columns:1fr}.workflow-links{margin-bottom:58px;padding:0 17px}.workflow-link-list{justify-content:flex-start}.workflow-link-list a{text-align:left}
 }
 </style>
 </head>
@@ -1148,7 +1182,7 @@ nav {
     <a href="/what-is-adscanvideo/">What is AdScanVideo?</a>
     <a href="#usecases">Use cases</a>
     <a href="#how">How it works</a>
-    <a href="/blog/">Blog</a>
+    <a href="/blog/">Guides</a>
     <a href="#pricing">Pricing</a>
     <a href="#input-zone" class="nav-cta">Try free</a>
   </div>
@@ -1218,14 +1252,32 @@ nav {
     <button class="mode-ch" data-mode="summary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Summary</button>
   </div>
 
+  <div class="analyzer-outcomes" aria-label="Analysis output details">
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Timestamps and visual detail</span>
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Dialogue when audio is available</span>
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Copy, Word, and PDF export</span>
+  </div>
+
   <div class="actions">
     <button class="btn" id="try-btn" onclick="tryFree()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      Analyze
+      Analyze free
     </button>
     <span class="free-badge" id="free-count"></span>
   </div>
 </div>
+
+<section class="workflow-links reveal" aria-labelledby="workflow-title">
+  <h2 id="workflow-title">What do you need from the video?</h2>
+  <p>Use a focused workflow, then open the analyzer with the right mode selected.</p>
+  <div class="workflow-link-list">
+    <a href="/blog/extract-transcript-dialogue-from-video/" data-content-topic="transcript_extraction">Extract dialogue</a>
+    <a href="/blog/analyze-competitor-video-ads-fast/" data-content-topic="competitor_ad_analysis">Analyze an ad</a>
+    <a href="/blog/why-video-ad-intelligence-matters-roi/" data-content-topic="ad_intelligence">Compare creative strategy</a>
+    <a href="/blog/turn-video-into-production-shot-list/" data-content-topic="production_shot_list">Build a shot list</a>
+    <a href="/blog/ai-video-prompts-recreate-any-shot/" data-content-topic="video_to_prompt">Write video prompts</a>
+  </div>
+</section>
 
 <!-- ── Trust strip ─────────────────────────────────── -->
 <div class="trust-strip">
@@ -1264,7 +1316,7 @@ nav {
   </div>
   <div class="result-card" id="result-content"></div>
   <div class="result-actions">
-    <button class="btn-ghost" onclick="navigator.clipboard.writeText(document.getElementById('result-content').textContent)">
+    <button class="btn-ghost" onclick="copyResult()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
       Copy
     </button>
@@ -1276,7 +1328,7 @@ nav {
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h6"/><path d="M12 12v6"/></svg>
       PDF
     </button>
-    <button class="btn-ghost" onclick="document.getElementById('result').style.display='none'">
+    <button class="btn-ghost" onclick="dismissResult()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       Dismiss
     </button>
@@ -1481,15 +1533,15 @@ nav {
     <p>Video analysis tips, ad intelligence, and marketing insights.</p>
   </div>
   <div class="blog-grid">
-    <a class="blog-card" href="/blog/analyze-competitor-video-ads-fast/">
-      <div class="blog-tag">Ad Intelligence</div>
-      <h3>How to Analyze Competitor Video Ads in 60 Seconds</h3>
-      <p>Reverse-engineer any video ad — hook, pacing, CTA, audience targeting — in about a minute.</p>
+    <a class="blog-card" href="/blog/extract-transcript-dialogue-from-video/">
+      <div class="blog-tag">Transcripts</div>
+      <h3>How to Extract Dialogue from Video</h3>
+      <p>Keep timestamps, speaker cues, reliable quotes, and the visual context around every line.</p>
     </a>
-    <a class="blog-card" href="/blog/what-makes-great-video-ad-hook/">
-      <div class="blog-tag">Video Analysis</div>
-      <h3>Shot-by-Shot: What Makes a Great Video Ad Hook</h3>
-      <p>We analyzed 50 high-performing ads frame-by-frame. Here's what the first 3 seconds have in common.</p>
+    <a class="blog-card" href="/blog/turn-video-into-production-shot-list/">
+      <div class="blog-tag">Production</div>
+      <h3>Turn a Reference into a Shot List</h3>
+      <p>Convert framing, action, camera movement, lighting, and dialogue into a shoot-ready plan.</p>
     </a>
     <a class="blog-card" href="/blog/ai-video-prompts-recreate-any-shot/">
       <div class="blog-tag">AI Video</div>
@@ -1570,6 +1622,12 @@ const storage = {
 function track(eventName, parameters = {}) {
   if (typeof gtag !== 'function') return;
   gtag('event', eventName, { transport_type: 'beacon', ...parameters });
+}
+function trackOnce(eventName, parameters = {}) {
+  const key = 'adsv_ga_once_' + eventName;
+  if (storage.get(key)) return;
+  track(eventName, parameters);
+  storage.set(key, '1');
 }
 function trackJobOnce(eventName, id, parameters = {}) {
   if (!id) return;
@@ -1669,20 +1727,44 @@ function switchTab(t) {
   document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', (i===0)===(t==='upload')));
   document.getElementById('url-input').style.display = t === 'url' ? 'block' : 'none';
   document.getElementById('upload-input').style.display = t === 'upload' ? 'block' : 'none';
+  track('input_method_selected', { input_method: t });
 }
 
 function fileSelected(e) {
   file = e.target.files[0];
   const el = document.getElementById('file-name');
-  if (file) { el.textContent = '✓ ' + file.name; el.style.display = 'block'; }
+  if (file) {
+    el.textContent = '✓ ' + file.name; el.style.display = 'block';
+    trackOnce('analyzer_engaged', { input_method: 'upload' });
+    track('file_selected', { size_bucket: file.size <= 25*1024*1024 ? '0_25mb' : file.size <= 100*1024*1024 ? '26_100mb' : '101_200mb' });
+  }
 }
+
+document.getElementById('url').addEventListener('change', event => {
+  if (/^https?:\/\//i.test(event.target.value.trim())) {
+    trackOnce('analyzer_engaged', { input_method: 'url' });
+    track('video_url_entered', { input_method: 'url' });
+  }
+});
+
+document.querySelectorAll('[data-content-topic]').forEach(link => link.addEventListener('click', () => {
+  track('content_topic_selected', { content_topic: link.dataset.contentTopic, placement: 'homepage_workflows' });
+}));
+
+document.querySelectorAll('a[href="#input-zone"]').forEach(link => link.addEventListener('click', () => {
+  track('cta_clicked', { placement: link.closest('nav') ? 'navigation' : link.closest('.hero') ? 'hero' : 'page' });
+}));
 
 const dz = document.getElementById('drop-zone');
 ['dragenter','dragover'].forEach(e => dz.addEventListener(e, ev => { ev.preventDefault(); dz.classList.add('dragover'); }));
 ['dragleave','drop'].forEach(e => dz.addEventListener(e, ev => { ev.preventDefault(); dz.classList.remove('dragover'); }));
 dz.addEventListener('drop', ev => {
   const f = ev.dataTransfer.files[0];
-  if (f) { file = f; document.getElementById('file-name').textContent = '✓ ' + f.name; document.getElementById('file-name').style.display = 'block'; }
+  if (f) {
+    file = f; document.getElementById('file-name').textContent = '✓ ' + f.name; document.getElementById('file-name').style.display = 'block';
+    trackOnce('analyzer_engaged', { input_method: 'upload' });
+    track('file_selected', { size_bucket: f.size <= 25*1024*1024 ? '0_25mb' : f.size <= 100*1024*1024 ? '26_100mb' : '101_200mb' });
+  }
 });
 
 function q() {
@@ -1761,12 +1843,13 @@ async function pollJob(id) {
 }
 async function tryFree() {
   if (busy) return;
+  track('analysis_cta_clicked', { analysis_mode: mode, input_method: tab });
   jobId = null;
   const isUpload = tab === 'upload';
-  if (isUpload && !file) { message('Choose a video file first.'); return; }
-  if (isUpload && (file.size > 200 * 1024 * 1024 || !/\.(mp4|mov|webm|mkv)$/i.test(file.name))) { message('Choose an MP4, MOV, WebM or MKV video up to 200 MB.'); return; }
+  if (isUpload && !file) { track('analysis_validation_failed', { failure_type: 'missing_file', input_method: 'upload' }); message('Choose a video file first.'); return; }
+  if (isUpload && (file.size > 200 * 1024 * 1024 || !/\.(mp4|mov|webm|mkv)$/i.test(file.name))) { track('analysis_validation_failed', { failure_type: 'invalid_file', input_method: 'upload' }); message('Choose an MP4, MOV, WebM or MKV video up to 200 MB.'); return; }
   const url = document.getElementById('url').value.trim();
-  if (!isUpload && !/^https?:\/\//i.test(url)) { message('Enter a complete video link starting with https://'); return; }
+  if (!isUpload && !/^https?:\/\//i.test(url)) { track('analysis_validation_failed', { failure_type: 'invalid_url', input_method: 'url' }); message('Enter a complete video link starting with https://'); return; }
   busy = true; updateUI(); message(isUpload ? 'Uploading your video…' : 'Submitting your video…');
   document.getElementById('result').style.display = 'none';
   try {
@@ -1815,6 +1898,12 @@ refreshUsage().then(async () => {
   }
 });
 
+const requestedMode = new URLSearchParams(location.search).get('mode');
+if (['shots','ad','podcast','marketing','tutorial','summary'].includes(requestedMode)) {
+  const requestedButton = document.querySelector(`.mode-ch[data-mode="${requestedMode}"]`);
+  if (requestedButton) requestedButton.click();
+}
+
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
 }, { threshold: 0.1 });
@@ -1859,6 +1948,19 @@ async function submitWaitlist(e) {
 }
 /* ── Export functions ───────────────────────────────── */
 function escapeHTML(value) { return value.replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char])); }
+async function copyResult() {
+  try {
+    await navigator.clipboard.writeText(document.getElementById('result-content').textContent);
+    track('result_copied', { analysis_mode: mode });
+    message('Analysis copied to your clipboard.');
+  } catch {
+    message('Copy failed. Select the result text and copy it manually.');
+  }
+}
+function dismissResult() {
+  document.getElementById('result').style.display = 'none';
+  track('result_dismissed', { analysis_mode: mode });
+}
 function exportDOCX() {
   const title = escapeHTML(document.getElementById('result-title').textContent);
   const content = escapeHTML(document.getElementById('result-content').textContent);
@@ -1883,6 +1985,7 @@ ${content.split('\n').filter(l => l.trim()).map(l => {
   a.download = (title || 'adscanvideo-analysis') + '.doc';
   a.click();
   URL.revokeObjectURL(a.href);
+  track('result_downloaded', { analysis_mode: mode, export_format: 'doc' });
 }
 
 function exportPDF() {
@@ -1899,7 +2002,7 @@ ${content.split('\n').filter(l => l.trim()).map(l => `<p>${l}</p>`).join('\n')}
     margin: [15, 15], filename: (title || 'adscanvideo-analysis') + '.pdf',
     html2canvas: { scale: 2, useCORS: true },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  }).from(el).save().catch(() => message('PDF export failed. Please try again.')).finally(() => el.remove());
+  }).from(el).save().then(() => track('result_downloaded', { analysis_mode: mode, export_format: 'pdf' })).catch(() => message('PDF export failed. Please try again.')).finally(() => el.remove());
 }
 </script>
 </body>

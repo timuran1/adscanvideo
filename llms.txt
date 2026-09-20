@@ -1,31 +1,46 @@
 # AdScanVideo
 
-> AI video analysis for creators, editors, and marketers.
+> Analyze a video into timestamps, dialogue when available, shot descriptions, ad insights, production prompts, notes, or marketing copy.
 
-AdScanVideo accepts video uploads (MP4, MOV, WebM, MKV) and public video links.
-Videos must be at most 10 minutes and uploads at most 200 MB. Some platforms
-restrict downloads; uploading a file is the alternative.
+AdScanVideo is a browser-based AI video analyzer for creators, editors, marketers,
+agencies, researchers, and legal teams. It accepts MP4, MOV, WebM, and MKV uploads
+or public HTTP(S) video links. No account is required.
 
-## Analysis modes
-- Shot breakdown, including creative cinematic prompts
-- Ad intelligence
-- Podcast notes
-- Marketing copy
-- Tutorial steps
-- Summary
+## What it can produce
 
-Analysis uses sampled video frames. Spoken quotes require available captions;
-without a transcript the result is visual-only. AI output should be reviewed.
+- Shot breakdown: timestamped shots, composition, lighting, camera movement, available dialogue, and prompts for recreating each shot
+- Ad intelligence: hook, audience, structure, pacing, overlays, call to action, strengths, and improvements
+- Podcast notes: speaker-aware segments, transcript-backed quotes, topics, and summary
+- Marketing copy: captions, LinkedIn drafts, headlines, and promotional hooks
+- Tutorial steps: timestamped actions, tools, tips, warnings, and a checklist
+- Summary: chronology, people, key moments, visual style, tone, and intended audience
 
-## Pricing
-One free analysis per day per network, resetting at midnight UTC. Failed analyses
-restore the allowance. Additional analysis credits are planned at USD $0.50 each;
-payments are not available yet. The planned $19/month subscription is not launched.
+## Limits and accuracy
 
-## Links
-- [Analyzer](https://adscanvideo.com/)
-- [What is AdScanVideo?](https://adscanvideo.com/what-is-adscanvideo/)
-- [Guides](https://adscanvideo.com/blog/)
-- [Pricing](https://adscanvideo.com/#pricing)
+- Maximum video duration: 10 minutes
+- Maximum uploaded file size: 200 MB
+- Up to 20 selected frames are analyzed across the video
+- Dialogue is included when captions or a usable audio transcript are available
+- Some video platforms block server downloads; uploading the file is the reliable alternative
+- Results are AI-generated and should be checked before legal, editorial, or production use
+- Uploaded working files are not stored permanently
 
+## Pricing status
+
+One analysis is free each day per network and resets at midnight UTC. Failed
+analyses restore the allowance. A USD $0.50 single-analysis credit and a planned
+$19/month option are displayed for transparency but cannot be purchased yet.
+
+## Official pages
+
+- [Analyzer and pricing](https://adscanvideo.com/)
+- [What AdScanVideo is](https://adscanvideo.com/what-is-adscanvideo/)
+- [All video-analysis guides](https://adscanvideo.com/blog/)
+- [Extract dialogue and transcripts](https://adscanvideo.com/blog/extract-transcript-dialogue-from-video/)
+- [Analyze competitor video ads](https://adscanvideo.com/blog/analyze-competitor-video-ads-fast/)
+- [Build a production shot list](https://adscanvideo.com/blog/turn-video-into-production-shot-list/)
+- [Turn reference footage into AI video prompts](https://adscanvideo.com/blog/ai-video-prompts-recreate-any-shot/)
+- [Privacy](https://adscanvideo.com/privacy/)
+
+Last updated: 2026-09-20
 Contact: hello@adscanvideo.com

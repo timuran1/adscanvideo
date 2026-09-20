@@ -1,4 +1,6 @@
 exclude:
   - backend
+  - analytics
   - DEPLOYMENT.md
+  - PRODUCT.md
   - scripts

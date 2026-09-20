@@ -1,0 +1,7 @@
+{
+  "files": ["**/*.html"],
+  "exclude": [".git/**", ".wrangler/**"],
+  "insertBefore": "</body>",
+  "commentSyntax": "html",
+  "cspChecked": true
+}
