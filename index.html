@@ -700,7 +700,7 @@ nav {
   position: relative;
 }
 .plan.featured::before {
-  content: 'Most popular';
+  content: 'Pay per video';
   position: absolute;
   top: -11px;
   left: 50%;
@@ -1074,7 +1074,7 @@ nav {
   display:flex; align-items:center; justify-content:center;
   padding:20px;
 }
-.overlay.hidden { display:none; }
+.hidden { display:none !important; }
 .waitlist-modal {
   background:#fff; border-radius:16px; padding:36px 32px 28px;
   max-width:400px; width:100%; text-align:center;
@@ -1231,11 +1231,11 @@ nav {
 <div class="trust-strip">
   <div class="trust-item">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-    ~60 second turnaround
+    Progress updates at every step
   </div>
   <div class="trust-item">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-    100+ frames analyzed per video
+    Up to 20 selected frames analyzed
   </div>
   <div class="trust-item">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1248,7 +1248,8 @@ nav {
 </div>
 
 <!-- ── Progress ────────────────────────────────────── -->
-<div id="progress">
+<p id="analysis-message" role="status" aria-live="polite" style="max-width:900px;margin:16px auto;padding:0 24px"></p>
+<div id="progress" aria-live="polite">
   <div class="progress-inner">
     <div class="spinner"></div>
     <span class="prog-text" id="progress-text">Downloading video...</span>
@@ -1269,7 +1270,7 @@ nav {
     </button>
     <button class="btn-ghost" onclick="exportDOCX()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      DOCX
+      Word (.doc)
     </button>
     <button class="btn-ghost" onclick="exportPDF()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h6"/><path d="M12 12v6"/></svg>
@@ -1308,7 +1309,7 @@ nav {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
       </div>
       <h3>Podcasts &amp; interviews</h3>
-      <p>2-hour podcast in, structured notes out. Key topics, verbatim quotes, timestamps, action items — ready to publish.</p>
+      <p>Upload a podcast clip up to 10 minutes. Get structured notes; spoken quotes require available captions.</p>
     </div>
     <div class="usecase-card">
       <div class="usecase-icon" style="background: var(--amber-soft); color: var(--amber);">
@@ -1328,7 +1329,7 @@ nav {
       <p>Every analysis is structured, timestamped, and ready to use. Not a vague summary — a detailed breakdown you can act on.</p>
       <ul>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Timestamped scene-by-scene breakdown</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Verbatim quotes with speaker attribution</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Quoted captions when available</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copy-paste ready marketing assets</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> AI video prompts for recreating shots</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Structured checklists for tutorials</li>
@@ -1380,7 +1381,7 @@ nav {
     <div class="info-item">
       <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></div>
       <h3>Podcast &amp; interview notes</h3>
-      <p>Drop a 2-hour podcast. Get key topics, verbatim quotes, speaker takeaways, and timestamps.</p>
+      <p>Analyze a podcast clip up to 10 minutes. Captions support spoken takeaways; otherwise results cover visuals only.</p>
     </div>
     <div class="info-item">
       <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
@@ -1424,7 +1425,7 @@ nav {
       <div class="step-num">3</div>
       <div class="step-body">
         <h3>Get your analysis</h3>
-        <p>AI extracts frames, deduplicates them, and analyzes each one. In about 60 seconds, you get structured, detailed output — copy it, paste it, use it.</p>
+        <p>AI extracts frames, deduplicates them, and analyzes each one. You get structured, detailed output with live progress updates — copy it, paste it, use it.</p>
       </div>
     </div>
   </div>
@@ -1434,7 +1435,7 @@ nav {
 <div class="pricing reveal" id="pricing">
   <div class="section-header">
     <h2>Simple pricing</h2>
-    <p>Start free. Pay only when you need more.</p>
+    <p>One free analysis daily per network. Additional analyses cost $0.50 once payments launch. Daily allowance resets at midnight UTC; failed jobs restore it.</p>
   </div>
   <div class="pricing-row">
     <div class="plan">
@@ -1453,22 +1454,22 @@ nav {
       <div class="price">$0.50<span>/video</span></div>
       <ul>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Pay per video, no sub</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Priority processing</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Export to DOCX &amp; PDF</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>One additional analysis</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Export to Word &amp; PDF</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>No subscription</li>
       </ul>
-      <a href="#input-zone" class="plan-cta primary">Analyze a video</a>
+      <button type="button" class="plan-cta primary" onclick="buyCredit()" data-checkout>Payments coming soon</button>
     </div>
     <div class="plan">
       <h3>Heavy use</h3>
-      <div class="price">$19<span>/month</span></div>
+      <div class="price">$19<span>/month · planned</span></div>
       <ul>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Unlimited analyses</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Export to DOCX &amp; PDF</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>API access</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Priority support</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Monthly plan in development</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Export to Word &amp; PDF</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Details available at launch</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Not available to purchase yet</li>
       </ul>
-      <a href="#input-zone" class="plan-cta secondary">Get started</a>
+      <button type="button" class="plan-cta secondary" disabled>Coming soon</button>
     </div>
   </div>
 </div>
@@ -1505,20 +1506,22 @@ nav {
 <div class="cta-banner reveal">
   <div class="cta-banner-inner">
     <h2>Got a video to analyze?</h2>
-    <p>First three are on us. No credit card, no signup.</p>
-    <p style="color:var(--ink-dim);font-size:0.82rem;margin-top:4px;">Works best for videos under 15 minutes</p>
+    <p>One free analysis per day. No credit card, no signup.</p>
+    <p style="color:var(--ink-dim);font-size:0.82rem;margin-top:4px;">Videos up to 10 minutes and 200 MB</p>
     <a href="#input-zone" class="btn">Try it free →</a>
   </div>
 </div>
 
 <!-- ── Waitlist Modal ───────────────────────────────── -->
 <div id="waitlist-overlay" class="overlay hidden" onclick="if(event.target===this)closeWaitlist()">
-  <div class="waitlist-modal">
+  <div class="waitlist-modal" role="dialog" aria-modal="true" aria-label="Analysis credits">
     <button class="modal-close" onclick="closeWaitlist()">&times;</button>
     <div class="waitlist-icon">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     </div>
-    <h3>You're out of free analyses</h3>
+    <h3>Continue analyzing</h3>
+    <p id="billing-message" role="status">One analysis is free each day. Additional analyses require a paid credit. Payments are coming soon.</p>
+    <button type="button" class="plan-cta primary" onclick="buyCredit()" data-checkout>Payments coming soon</button>
     <p>Join the waitlist — get early access, updates, and launch discounts straight to your inbox or Telegram.</p>
     <form id="waitlist-form" onsubmit="return submitWaitlist(event)">
       <input type="text" id="wl-name" placeholder="Your name" required autocomplete="name">
@@ -1556,25 +1559,48 @@ nav {
 <script>
 const API = document.querySelector('meta[name="adscan-api-base"]')?.content.replace(/\/$/, '') || '/api';
 let mode = 'shots', tab = 'upload', file = null, jobId = null;
-// Single source of truth for the daily free allowance. Changing this number
-// here changes it everywhere (reset, display, depletion check).
-const FREE_PER_DAY = 1;
-let freeCount = FREE_PER_DAY;
-let freeDate = null;
-
-function checkDailyReset() {
-  const today = new Date().toDateString();
-  const saved = localStorage.getItem('adsv_date');
-  if (saved !== today) {
-    localStorage.setItem('adsv_date', today);
-    localStorage.setItem('adsv_free', String(FREE_PER_DAY));
-    freeCount = FREE_PER_DAY;
-  } else {
-    const savedCount = parseInt(localStorage.getItem('adsv_free') || String(FREE_PER_DAY), 10);
-    freeCount = Math.min(Number.isNaN(savedCount) ? FREE_PER_DAY : savedCount, FREE_PER_DAY);
-  }
+let freeCount = 1, paidCredits = 0, billingEnabled = false, busy = false;
+const storage = {
+  get(key) { try { return localStorage.getItem(key); } catch { return null; } },
+  set(key, value) { try { localStorage.setItem(key, value); } catch {} },
+  remove(key) { try { localStorage.removeItem(key); } catch {} }
+};
+let ownerToken = storage.get('adsv_owner');
+if (!ownerToken) {
+  ownerToken = Array.from(crypto.getRandomValues(new Uint8Array(32)), b => b.toString(16).padStart(2, '0')).join('');
+  storage.set('adsv_owner', ownerToken);
 }
-checkDailyReset();
+function message(text) { document.getElementById('analysis-message').textContent = text; }
+async function api(path, options = {}) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), options.body instanceof FormData ? 300000 : 25000);
+  try {
+    const response = await fetch(API + path, { ...options, signal: controller.signal,
+      headers: { Authorization: 'Bearer ' + ownerToken, ...options.headers } });
+    const data = await response.json().catch(() => ({ error: 'The server is temporarily unavailable. Please try again.' }));
+    if (!response.ok) { const error = new Error(data.error || 'Request failed. Please try again.'); error.code = data.code; error.status = response.status; throw error; }
+    return data;
+  } finally { clearTimeout(timer); }
+}
+async function refreshUsage() {
+  try {
+    const data = await api('/usage');
+    freeCount = data.free_remaining; paidCredits = data.paid_credits; billingEnabled = data.billing_enabled;
+    updateUI();
+  } catch { document.getElementById('free-count').textContent = 'Allowance checked when you analyze'; }
+}
+async function buyCredit() {
+  showWaitlist();
+  const el = document.getElementById('billing-message');
+  if (!billingEnabled) { el.textContent = 'Payments are coming soon. Return tomorrow for your next free analysis, or join the launch waitlist below.'; return; }
+  el.textContent = 'Opening secure checkout…';
+  try {
+    const data = await api('/billing/checkout', { method: 'POST' });
+    const target = new URL(data.url);
+    if (target.protocol !== 'https:' || target.hostname !== 'checkout.stripe.com') throw new Error('Checkout is unavailable.');
+    location.assign(target.href);
+  } catch (error) { el.textContent = error.message; }
+}
 
 document.getElementById('upload-input').style.display = 'block';
 document.querySelector('.tab-btn:first-child').classList.add('active');
@@ -1622,70 +1648,87 @@ function q() {
 }
 
 function updateUI() {
-  document.getElementById('free-count').textContent = freeCount + ' free today';
-  document.getElementById('try-btn').disabled = freeCount <= 0;
+  document.getElementById('free-count').textContent = freeCount + ' free today' + (paidCredits ? ' · ' + paidCredits + ' paid credits' : '');
+  document.getElementById('try-btn').disabled = busy;
+  document.querySelectorAll('[data-checkout]').forEach(el => { el.textContent = billingEnabled ? 'Buy 1 analysis · $0.50' : 'Payments coming soon'; });
 }
 updateUI();
-
-const progressSteps = ['downloading', 'transcribing', 'extracting', 'dedup', 'analyzing'];
-const stepProgress = { 'downloading': 20, 'transcribing': 35, 'extracting': 55, 'dedup': 75, 'analyzing': 90, 'done': 100 };
-
-async function tryFree() {
-  if (freeCount <= 0 && !localStorage.getItem('adsv_unlimited')) { showWaitlist(); return; }
-  const isUpload = tab === 'upload';
-  if (!isUpload && !document.getElementById('url').value.trim()) return;
-  if (isUpload && !file) return;
-  freeCount--;
-  localStorage.setItem('adsv_free', freeCount);
-  updateUI();
-  const prog = document.getElementById('progress'), res = document.getElementById('result');
-  document.getElementById('try-btn').disabled = true;
-  document.getElementById('progress-fill').style.width = '0%';
-  prog.style.display = 'block'; res.style.display = 'none';
+const stepProgress = { starting: 5, downloading: 20, transcribing: 35, extracting: 55, dedup: 75, analyzing: 90, done: 100 };
+const statusLabels = { starting: 'Starting analysis', downloading: 'Preparing video', transcribing: 'Reading audio', extracting: 'Extracting frames', dedup: 'Selecting frames', analyzing: 'Analyzing with AI' };
+const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
+async function pollJob(id) {
+  busy = true; updateUI();
+  const prog = document.getElementById('progress');
+  prog.style.display = 'block';
+  let failures = 0;
+  const deadline = Date.now() + 11 * 60 * 1000;
   try {
-    let resp;
-    if (isUpload) {
-      const fd = new FormData(); fd.append('file', file); fd.append('question', q()); fd.append('mode', mode); fd.append('max_duration', '600');
-      resp = await fetch(API + '/analyze-upload', { method: 'POST', body: fd });
-    } else {
-      resp = await fetch(API + '/analyze', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({url: document.getElementById('url').value.trim(), question: q(), mode: mode, max_duration: 600}) });
+    while (Date.now() < deadline) {
+      let data;
+      try { data = await api('/status/' + id); failures = 0; }
+      catch (error) {
+        if (error.status === 404) { storage.remove('adsv_active_job'); throw error; }
+        if (++failures >= 5) throw new Error('Connection lost. Reload this page to reconnect to your analysis.');
+        document.getElementById('progress-text').textContent = 'Connection interrupted. Reconnecting…';
+        await pause(Math.min(1500 * 2 ** failures, 12000)); continue;
+      }
+      document.getElementById('progress-text').textContent = (statusLabels[data.status] || 'Processing video') + '…';
+      document.getElementById('progress-fill').style.width = (stepProgress[data.status] || 5) + '%';
+      if (data.status === 'done') {
+        const result = await api('/result/' + id);
+        if (!result.result) throw new Error('The result is not available yet. Reload to reconnect.');
+        document.getElementById('result-title').textContent = data.title || 'Analysis';
+        document.getElementById('result-content').textContent = result.result;
+        document.getElementById('result').style.display = 'block';
+        document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        storage.remove('adsv_active_job');
+        message(data.transcript_chars ? 'Analysis complete.' : 'Analysis complete. No transcript was available; this result covers visuals only.');
+        return;
+      }
+      if (data.status === 'error' || data.status === 'not_found') {
+        storage.remove('adsv_active_job');
+        throw new Error(data.error || 'Analysis not found. Please try again.');
+      }
+      await pause(2000);
     }
-    const d = await resp.json();
-    if (d.error) throw new Error(d.error);
-    jobId = d.job_id;
-    const iv = setInterval(async () => {
-      const s = await fetch(API + '/status/' + jobId).then(r => r.json());
-      const si = progressSteps.indexOf(s.status);
-      if (si >= 0) {
-        let statusLabel = s.status;
-        if (s.status === 'downloading') statusLabel = 'Downloading video';
-        else if (s.status === 'transcribing') statusLabel = 'Transcribing audio';
-        else if (s.status === 'extracting') statusLabel = 'Extracting frames';
-        else if (s.status === 'dedup') statusLabel = 'Deduplicating frames';
-        else if (s.status === 'analyzing') statusLabel = 'Analyzing with AI';
-        let frameInfo = '';
-        if (s.status === 'extracting' && s.frames_raw > 0) {
-          frameInfo = ` (${s.frames_raw} raw frames extracted)`;
-        } else if (s.status === 'dedup' || s.status === 'analyzing') {
-          frameInfo = ` (${s.frames_kept||0} unique frames)`;
-        }
-        document.getElementById('progress-text').textContent = statusLabel + '...' + frameInfo;
-        document.getElementById('progress-fill').style.width = (stepProgress[s.status] || 0) + '%';
-      }
-      if (s.status === 'done') {
-        clearInterval(iv);
-        document.getElementById('progress-fill').style.width = '100%';
-        const r = await fetch(API + '/result/' + jobId).then(r => r.json());
-        prog.style.display = 'none'; document.getElementById('try-btn').disabled = false;
-        document.getElementById('result-title').textContent = s.title || 'Analysis';
-        document.getElementById('result-content').textContent = r.result;
-        res.style.display = 'block';
-        res.scrollIntoView({behavior: 'smooth'});
-      }
-      if (s.status === 'error') { clearInterval(iv); prog.style.display = 'none'; document.getElementById('try-btn').disabled = false; alert(s.error); }
-    }, 1500);
-  } catch(e) { prog.style.display = 'none'; document.getElementById('try-btn').disabled = false; alert(e.message); }
+    throw new Error('This is taking longer than expected. Reload to check your analysis again.');
+  } catch (error) { message(error.message); }
+  finally { busy = false; prog.style.display = 'none'; updateUI(); await refreshUsage(); }
 }
+async function tryFree() {
+  if (busy) return;
+  const isUpload = tab === 'upload';
+  if (isUpload && !file) { message('Choose a video file first.'); return; }
+  if (isUpload && (file.size > 200 * 1024 * 1024 || !/\.(mp4|mov|webm|mkv)$/i.test(file.name))) { message('Choose an MP4, MOV, WebM or MKV video up to 200 MB.'); return; }
+  const url = document.getElementById('url').value.trim();
+  if (!isUpload && !/^https?:\/\//i.test(url)) { message('Enter a complete video link starting with https://'); return; }
+  busy = true; updateUI(); message(isUpload ? 'Uploading your video…' : 'Submitting your video…');
+  document.getElementById('result').style.display = 'none';
+  try {
+    let data;
+    if (isUpload) {
+      const body = new FormData(); body.append('file', file); body.append('question', q()); body.append('mode', mode);
+      data = await api('/analyze-upload', { method: 'POST', body });
+    } else {
+      data = await api('/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url, question: q(), mode }) });
+    }
+    if (!data.job_id) throw new Error('The server did not start an analysis. Please try again.');
+    jobId = data.job_id; storage.set('adsv_active_job', jobId); message('You can reload this page and reconnect to this analysis.');
+    await pollJob(jobId);
+  } catch (error) {
+    message(error.name === 'AbortError' ? 'The request timed out. Please check your connection and retry.' : error.message);
+    if (error.code === 'payment_required') showWaitlist();
+  } finally { busy = false; updateUI(); await refreshUsage(); }
+}
+refreshUsage().then(async () => {
+  const active = storage.get('adsv_active_job');
+  if (active && /^[a-f0-9]{32}$/.test(active)) { jobId = active; await pollJob(active); }
+  if (new URLSearchParams(location.search).get('payment') === 'success') {
+    message('Checkout returned successfully. Credits appear after payment confirmation.');
+    for (let i = 0; i < 8 && !paidCredits; i++) { await pause(2500); await refreshUsage(); }
+    if (paidCredits) message('Payment confirmed. Your analysis credit is ready.');
+  }
+});
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
@@ -1695,42 +1738,44 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 /* ── Waitlist modal ────────────────────────────────── */
 const WAITLIST_URL = 'https://formspree.io/f/mrewnnov';
 
+let previousFocus = null;
 function showWaitlist() {
+  previousFocus = document.activeElement;
   document.getElementById('waitlist-overlay').classList.remove('hidden');
+  document.querySelector('.modal-close').focus();
 }
 function closeWaitlist() {
   document.getElementById('waitlist-overlay').classList.add('hidden');
+  previousFocus?.focus();
 }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeWaitlist(); });
 async function submitWaitlist(e) {
   e.preventDefault();
   const name = document.getElementById('wl-name').value.trim();
   const email = document.getElementById('wl-email').value.trim();
   const telegram = document.getElementById('wl-telegram').value.trim();
-  if (!name) return false;
+  if (!name || (!email && !telegram)) { document.getElementById('wl-btn').textContent = 'Add an email or Telegram username'; return false; }
   const btn = document.getElementById('wl-btn');
   btn.textContent = 'Sending...'; btn.disabled = true;
   try {
-    await fetch(WAITLIST_URL, {
+    const response = await fetch(WAITLIST_URL, {
       method: 'POST', headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email: email || '—', telegram: telegram || '—', source: 'adscanvideo.com/waitlist' })
     });
-  } catch(_) { /* formspree will still catch it even on network error */ }
+    if (!response.ok) throw new Error('Could not join the waitlist.');
+  } catch(_) { btn.textContent = 'Please retry — message not sent'; btn.disabled = false; return false; }
   document.getElementById('waitlist-form').classList.add('wl-submitted');
   document.getElementById('wl-thanks').classList.remove('hidden');
   btn.textContent = 'Joined ✓';
   // Store submission in localStorage so we don't show again
-  localStorage.setItem('adsv_waitlist', '1');
+  storage.set('adsv_waitlist', '1');
   return false;
 }
-// Auto-show waitlist if user has used all credits and hasn't signed up yet
-if (freeCount <= 0 && !localStorage.getItem('adsv_waitlist')) {
-  setTimeout(showWaitlist, 3000);
-}
-
 /* ── Export functions ───────────────────────────────── */
+function escapeHTML(value) { return value.replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char])); }
 function exportDOCX() {
-  const title = document.getElementById('result-title').textContent;
-  const content = document.getElementById('result-content').textContent;
+  const title = escapeHTML(document.getElementById('result-title').textContent);
+  const content = escapeHTML(document.getElementById('result-content').textContent);
   const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title>
 <style>body{font-family:'DM Sans',sans-serif;font-size:11pt;line-height:1.6;padding:40px;color:#1a1a2e}
 h1{font-size:18pt;font-weight:700;border-bottom:2px solid #4f8cf7;padding-bottom:8px}
@@ -1755,8 +1800,8 @@ ${content.split('\n').filter(l => l.trim()).map(l => {
 }
 
 function exportPDF() {
-  const title = document.getElementById('result-title').textContent;
-  const content = document.getElementById('result-content').textContent;
+  const title = escapeHTML(document.getElementById('result-title').textContent);
+  const content = escapeHTML(document.getElementById('result-content').textContent);
   const el = document.createElement('div');
   el.style.cssText = 'padding:30px;font-family:DM Sans,sans-serif;font-size:11pt;line-height:1.6;color:#1a1a2e;max-width:700px;margin:0 auto';
   el.innerHTML = `<h1 style="font-size:18pt;font-weight:700;border-bottom:2px solid #4f8cf7;padding-bottom:8px">${title}</h1>
@@ -1768,7 +1813,7 @@ ${content.split('\n').filter(l => l.trim()).map(l => `<p>${l}</p>`).join('\n')}
     margin: [15, 15], filename: (title || 'adscanvideo-analysis') + '.pdf',
     html2canvas: { scale: 2, useCORS: true },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  }).from(el).save().then(() => document.body.removeChild(el));
+  }).from(el).save().catch(() => message('PDF export failed. Please try again.')).finally(() => el.remove());
 }
 </script>
 </body>
