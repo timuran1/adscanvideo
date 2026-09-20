@@ -88,7 +88,7 @@ def install(app, jobs, db_path, runner):
     def access_control():
         if request.method == 'OPTIONS':
             return None
-        if request.path in ('/api/recover', '/api/reap'):
+        if request.path in ('/api/recover', '/api/reap', '/api/admin/dashboard', '/admin'):
             expected = os.getenv('ADSCAN_ADMIN_TOKEN', '')
             actual = request.headers.get('Authorization', '').removeprefix('Bearer ')
             if not expected or not hmac.compare_digest(actual, expected):
@@ -118,6 +118,114 @@ def install(app, jobs, db_path, runner):
         with connect() as db:
             data = allowance(db, who, ip_key())
         return jsonify(**data, owner_token=token)
+
+    @app.get('/api/admin/dashboard')
+    def admin_dashboard():
+        """Privacy-safe operational metrics for the private owner dashboard."""
+        now = time.time()
+        day_ago = now - 86400
+        week_ago = now - 7 * 86400
+        chart_start = now - 13 * 86400
+        with connect() as db:
+            db.row_factory = sqlite3.Row
+            rows = db.execute(
+                "SELECT id,status,created,updated,mode,cost,frames_kept,"
+                "transcript_chars,duration FROM jobs ORDER BY created DESC"
+            ).fetchall()
+            access_rows = db.execute(
+                "SELECT a.job,a.tier FROM access a"
+            ).fetchall()
+            payment = db.execute(
+                "SELECT COALESCE(SUM(credits),0) AS credits, COUNT(*) AS payments FROM payments"
+            ).fetchone()
+            checkout_count = db.execute("SELECT COUNT(*) AS count FROM checkouts").fetchone()["count"]
+
+        tier_by_job = {row["job"]: row["tier"] for row in access_rows}
+        terminal = {"done", "error"}
+        total = len(rows)
+        completed = sum(row["status"] == "done" for row in rows)
+        failed = sum(row["status"] == "error" for row in rows)
+        active_rows = [row for row in rows if row["status"] not in terminal]
+        last_24h = [row for row in rows if (row["created"] or 0) >= day_ago]
+        last_7d = [row for row in rows if (row["created"] or 0) >= week_ago]
+        last_7d_terminal = [row for row in last_7d if row["status"] in terminal]
+        last_7d_done = [row for row in last_7d if row["status"] == "done"]
+
+        def rate(numerator, denominator):
+            return round(numerator / denominator, 4) if denominator else None
+
+        def iso_day(timestamp):
+            return time.strftime('%Y-%m-%d', time.gmtime(timestamp))
+
+        days = []
+        for offset in range(13, -1, -1):
+            timestamp = now - offset * 86400
+            key = iso_day(timestamp)
+            bucket = [row for row in rows if iso_day(row["created"] or 0) == key]
+            days.append({
+                "date": key,
+                "total": len(bucket),
+                "completed": sum(row["status"] == "done" for row in bucket),
+                "failed": sum(row["status"] == "error" for row in bucket),
+            })
+
+        mode_counts = {}
+        for row in last_7d:
+            mode = row["mode"] or "unknown"
+            entry = mode_counts.setdefault(mode, {"mode": mode, "total": 0, "completed": 0, "failed": 0})
+            entry["total"] += 1
+            entry["completed"] += row["status"] == "done"
+            entry["failed"] += row["status"] == "error"
+
+        recent = []
+        for row in rows[:30]:
+            created = row["created"] or 0
+            recent.append({
+                "created": int(created),
+                "status": row["status"] or "unknown",
+                "mode": row["mode"] or "unknown",
+                "duration": row["duration"] or "",
+                "frames": row["frames_kept"] or 0,
+                "has_transcript": bool(row["transcript_chars"]),
+                "cost": round(row["cost"] or 0, 6),
+                "tier": tier_by_job.get(row["id"], "unknown"),
+            })
+
+        paid_jobs = sum(tier_by_job.get(row["id"]) == "paid" for row in rows)
+        free_jobs = sum(tier_by_job.get(row["id"]) == "free" for row in rows)
+        longest_active = max((now - (row["updated"] or row["created"] or now) for row in active_rows), default=0)
+        return jsonify({
+            "generated_at": int(now),
+            "overview": {
+                "total": total,
+                "last_24h": len(last_24h),
+                "last_7d": len(last_7d),
+                "completed": completed,
+                "failed": failed,
+                "active": len(active_rows),
+                "completion_rate_7d": rate(len(last_7d_done), len(last_7d_terminal)),
+                "failure_rate_7d": rate(sum(row["status"] == "error" for row in last_7d), len(last_7d_terminal)),
+                "cost_7d": round(sum(row["cost"] or 0 for row in last_7d_done), 6),
+                "avg_cost_7d": round(sum(row["cost"] or 0 for row in last_7d_done) / len(last_7d_done), 6) if last_7d_done else None,
+                "frames_7d": sum(row["frames_kept"] or 0 for row in last_7d_done),
+            },
+            "operations": {
+                "billing_enabled": billing_enabled(),
+                "price_cents": SINGLE_CREDIT_CENTS,
+                "longest_active_seconds": int(max(0, longest_active)),
+                "active_statuses": [row["status"] for row in active_rows],
+            },
+            "revenue": {
+                "checkouts_started": checkout_count,
+                "payment_records": payment["payments"],
+                "credits_issued": payment["credits"],
+                "paid_jobs": paid_jobs,
+                "free_jobs": free_jobs,
+            },
+            "daily": days,
+            "modes": sorted(mode_counts.values(), key=lambda item: (-item["total"], item["mode"])),
+            "recent": recent,
+        })
 
     def reserve():
         who, token = owner()

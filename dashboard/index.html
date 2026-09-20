@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="adscan-api-base" content="https://api.adscanvideo.com/api">
+<title>Operations dashboard | AdScanVideo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--page:#f5f7fb;--surface:#fff;--surface-2:#eef2f8;--ink:#17182d;--muted:#62697a;--faint:#8c93a3;--line:#dfe4ed;--accent:#4f8cf7;--accent-strong:#2f6edb;--accent-soft:#e9f1ff;--good:#087a55;--good-soft:#e8f7f1;--bad:#bd3232;--bad-soft:#fceded;--warn:#98600b;--warn-soft:#fff4dd;--radius:14px;--focus:0 0 0 3px rgba(79,140,247,.25)}
+*{box-sizing:border-box}html{color-scheme:light}body{margin:0;background:var(--page);color:var(--ink);font-family:"DM Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}button,input{font:inherit}button{cursor:pointer}a{color:inherit}.hidden{display:none!important}
+.shell{min-height:100vh;display:grid;grid-template-columns:232px minmax(0,1fr)}
+.sidebar{position:sticky;top:0;height:100vh;background:#171b29;color:#e8ecf5;padding:24px 18px;display:flex;flex-direction:column}.brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;padding:4px 7px 24px}.brand svg{color:#6fa3ff}.brand span{color:#6fa3ff}.nav{display:grid;gap:5px}.nav a{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:9px;color:#aeb7ca;text-decoration:none;font-size:.9rem}.nav a[aria-current="page"]{background:#252b3d;color:#fff}.nav svg{width:17px;height:17px}.sidebar-note{margin-top:auto;border-top:1px solid #2c3347;padding:18px 8px 0;color:#8f99ad;font-size:.78rem;line-height:1.55}.sidebar-note a{color:#cdd5e4}
+.main{min-width:0;padding:28px 34px 48px}.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:26px}.topbar h1{font-size:1.65rem;line-height:1.2;letter-spacing:-.025em;margin:0 0 6px}.topbar p{margin:0;color:var(--muted);font-size:.9rem}.actions{display:flex;gap:8px;align-items:center}.button{border:0;border-radius:9px;padding:9px 13px;font-weight:600;font-size:.84rem;background:var(--accent);color:white}.button:hover{background:var(--accent-strong)}.button.secondary{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}.button.secondary:hover{background:var(--surface-2)}.button:focus-visible,.nav a:focus-visible,input:focus-visible{outline:0;box-shadow:var(--focus)}
+.metrics{display:grid;grid-template-columns:repeat(5,minmax(120px,1fr));background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:18px}.metric{padding:20px;min-width:0}.metric+.metric{border-left:1px solid var(--line)}.metric strong{display:block;font-size:1.55rem;line-height:1.1;letter-spacing:-.035em}.metric span{display:block;margin-top:7px;color:var(--muted);font-size:.78rem}.metric small{display:block;margin-top:4px;color:var(--faint);font-size:.7rem}
+.layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(290px,.8fr);gap:18px}.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;min-width:0}.panel.full{grid-column:1/-1}.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px}.panel h2{font-size:1rem;margin:0}.panel-head p{font-size:.76rem;color:var(--muted);margin:4px 0 0}.period{font-size:.72rem;color:var(--faint);white-space:nowrap}
+.chart{height:208px;display:flex;align-items:stretch;gap:7px;padding-top:12px;border-bottom:1px solid var(--line)}.day{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;gap:7px}.bar-wrap{height:166px;display:flex;align-items:flex-end;justify-content:center}.bar{width:min(24px,72%);min-height:2px;background:var(--accent-soft);border-radius:5px 5px 0 0;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end}.bar .done{background:var(--accent)}.bar .failed{background:#e45f5f}.day-label{text-align:center;font-size:.64rem;color:var(--faint);height:17px;white-space:nowrap}.chart-legend{display:flex;gap:15px;margin-top:13px;color:var(--muted);font-size:.72rem}.chart-legend span{display:flex;align-items:center;gap:6px}.dot{width:8px;height:8px;border-radius:2px;background:var(--accent)}.dot.bad{background:#e45f5f}
+.health{display:grid;gap:0}.health-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 0;border-top:1px solid var(--line)}.health-row:first-child{border-top:0;padding-top:2px}.health-row span{font-size:.8rem;color:var(--muted)}.health-row strong{font-size:.84rem;text-align:right}.pill{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:5px 9px;font-size:.7rem;font-weight:700}.pill.good{background:var(--good-soft);color:var(--good)}.pill.bad{background:var(--bad-soft);color:var(--bad)}.pill.warn{background:var(--warn-soft);color:var(--warn)}.pill.neutral{background:var(--surface-2);color:var(--muted)}.pulse{width:6px;height:6px;border-radius:50%;background:currentColor}
+.modes{display:grid;gap:14px}.mode-line{display:grid;grid-template-columns:105px minmax(0,1fr) 34px;align-items:center;gap:10px}.mode-name{font-size:.78rem;font-weight:600;text-transform:capitalize;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.track{height:7px;background:var(--surface-2);border-radius:10px;overflow:hidden}.fill{height:100%;background:var(--accent);border-radius:inherit}.mode-value{text-align:right;font-size:.73rem;color:var(--muted)}
+.revenue-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);margin-top:8px}.revenue-item{padding:17px 14px 0}.revenue-item:first-child{padding-left:0}.revenue-item strong{display:block;font-size:1.1rem}.revenue-item span{display:block;color:var(--muted);font-size:.72rem;margin-top:4px}
+.table-wrap{overflow:auto;margin:0 -20px -20px}.jobs{width:100%;border-collapse:collapse;min-width:760px}.jobs th{text-align:left;padding:10px 20px;background:var(--surface-2);color:var(--muted);font-size:.68rem;font-weight:700}.jobs td{padding:11px 20px;border-top:1px solid var(--line);font-size:.77rem}.jobs td.num{font-variant-numeric:tabular-nums}.jobs tbody tr:hover{background:#fafbfe}.empty{padding:34px;text-align:center;color:var(--muted);font-size:.84rem}
+.auth{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 70% 20%,rgba(79,140,247,.13),transparent 28rem),var(--page)}.auth-box{width:min(430px,100%);background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:30px}.auth-brand{display:flex;align-items:center;gap:10px;font-weight:700;margin-bottom:28px}.auth-brand span{color:var(--accent)}.auth h1{font-size:1.45rem;letter-spacing:-.025em;margin:0 0 8px}.auth p{color:var(--muted);line-height:1.55;font-size:.86rem;margin:0 0 22px}.field label{display:block;font-size:.76rem;font-weight:700;margin-bottom:7px}.field input{width:100%;height:44px;border:1px solid var(--line);border-radius:9px;padding:0 12px;color:var(--ink);background:white}.auth .button{width:100%;height:44px;margin-top:12px}.auth-note{margin-top:14px!important;font-size:.72rem!important;color:var(--faint)!important}.error{background:var(--bad-soft);color:var(--bad);border-radius:8px;padding:10px 12px;font-size:.76rem;margin-top:12px}.skeleton{position:relative;overflow:hidden;background:var(--surface-2);color:transparent!important;border-radius:5px;min-height:1em}.skeleton:after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);animation:load 1.2s infinite}@keyframes load{to{transform:translateX(100%)}}
+@media(max-width:1050px){.metrics{grid-template-columns:repeat(3,1fr)}.metric:nth-child(4){border-left:0;border-top:1px solid var(--line)}.metric:nth-child(5){border-top:1px solid var(--line)}.layout{grid-template-columns:1fr}.panel.full{grid-column:auto}}
+@media(max-width:760px){.shell{display:block}.sidebar{position:static;height:auto;padding:14px 18px;flex-direction:row;align-items:center}.brand{padding:0}.nav,.sidebar-note{display:none}.main{padding:22px 16px 38px}.topbar{align-items:flex-start}.topbar h1{font-size:1.35rem}.actions .secondary{display:none}.metrics{grid-template-columns:repeat(2,1fr)}.metric{padding:16px}.metric:nth-child(3),.metric:nth-child(5){border-left:0}.metric:nth-child(n+3){border-top:1px solid var(--line)}.metric:last-child{grid-column:1/-1}.revenue-strip{grid-template-columns:repeat(2,1fr)}.panel{padding:17px}.table-wrap{margin:0 -17px -17px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<section class="auth" id="auth-view">
+  <form class="auth-box" id="auth-form">
+    <div class="auth-brand"><svg width="23" height="19" viewBox="0 0 24 20" fill="none" aria-hidden="true"><rect x="1" y="2" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2"/><path d="m17 7 6-3v12l-6-3" stroke="#4f8cf7" stroke-width="2" stroke-linejoin="round"/></svg>AdScan<span>Video</span></div>
+    <h1>Owner dashboard</h1>
+    <p>Monitor analyses, reliability, processing costs, and payment readiness without exposing video titles, URLs, or report contents.</p>
+    <div class="field"><label for="token">Admin access token</label><input id="token" name="token" type="password" autocomplete="current-password" required placeholder="Enter the server admin token"></div>
+    <button class="button" type="submit" id="login-button">Open dashboard</button>
+    <div class="error hidden" id="auth-error" role="alert"></div>
+    <p class="auth-note">The token is kept only in this browser tab and sent directly to api.adscanvideo.com over HTTPS.</p>
+  </form>
+</section>
+
+<div class="shell hidden" id="dashboard-view">
+  <aside class="sidebar">
+    <a class="brand" href="/"><svg width="22" height="18" viewBox="0 0 24 20" fill="none" aria-hidden="true"><rect x="1" y="2" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2"/><path d="m17 7 6-3v12l-6-3" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>AdScan<span>Video</span></a>
+    <nav class="nav" aria-label="Dashboard"><a href="#overview" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13h6V4H4zm10 7h6v-9h-6zM4 20h6v-3H4zm10-13h6V4h-6z"/></svg>Overview</a><a href="#jobs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Recent jobs</a><a href="https://analytics.google.com/" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 20V10m7 10V4m7 16v-7"/></svg>Google Analytics</a><a href="https://search.google.com/search-console" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>Search Console</a></nav>
+    <div class="sidebar-note">Private operations view<br><a href="/privacy/">Data handling policy</a></div>
+  </aside>
+  <main class="main" id="overview">
+    <header class="topbar"><div><h1>Operations overview</h1><p id="updated">Loading current metrics…</p></div><div class="actions"><button class="button secondary" id="signout">Sign out</button><button class="button" id="refresh">Refresh data</button></div></header>
+    <section class="metrics" aria-label="Key metrics">
+      <div class="metric"><strong id="m-analyses" class="skeleton">000</strong><span>Analyses, 7 days</span><small id="m-analyses-note">Current demand</small></div>
+      <div class="metric"><strong id="m-completion" class="skeleton">00%</strong><span>Completion rate</span><small>Finished jobs, 7 days</small></div>
+      <div class="metric"><strong id="m-active" class="skeleton">0</strong><span>Jobs processing</span><small id="m-active-note">Queue status</small></div>
+      <div class="metric"><strong id="m-cost" class="skeleton">$0.00</strong><span>AI cost, 7 days</span><small id="m-cost-note">Average per completion</small></div>
+      <div class="metric"><strong id="m-credits" class="skeleton">0</strong><span>Paid credits issued</span><small id="m-billing-note">Payments status</small></div>
+    </section>
+
+    <div class="layout">
+      <section class="panel"><div class="panel-head"><div><h2>Analysis volume</h2><p>Completed and failed jobs by UTC day</p></div><span class="period">Last 14 days</span></div><div class="chart" id="trend" aria-label="Fourteen-day analysis volume chart"></div><div class="chart-legend"><span><i class="dot"></i>Completed</span><span><i class="dot bad"></i>Failed</span></div></section>
+      <section class="panel"><div class="panel-head"><div><h2>System health</h2><p>Current queue and recent reliability</p></div><span id="health-pill" class="pill neutral"><i class="pulse"></i>Checking</span></div><div class="health"><div class="health-row"><span>Active jobs</span><strong id="h-active">0</strong></div><div class="health-row"><span>Longest active state</span><strong id="h-age">0 sec</strong></div><div class="health-row"><span>Failure rate, 7 days</span><strong id="h-failure">—</strong></div><div class="health-row"><span>Frames analyzed, 7 days</span><strong id="h-frames">0</strong></div></div></section>
+
+      <section class="panel"><div class="panel-head"><div><h2>Modes used</h2><p>Demand by analysis mode</p></div><span class="period">Last 7 days</span></div><div class="modes" id="modes"><div class="empty">No mode data yet.</div></div></section>
+      <section class="panel"><div class="panel-head"><div><h2>Revenue readiness</h2><p>Checkout and credit activity</p></div><span id="billing-pill" class="pill neutral">Checking</span></div><div class="revenue-strip"><div class="revenue-item"><strong id="r-price">$3.99</strong><span>Price per video</span></div><div class="revenue-item"><strong id="r-checkouts">0</strong><span>Checkouts started</span></div><div class="revenue-item"><strong id="r-paid">0</strong><span>Paid jobs</span></div><div class="revenue-item"><strong id="r-free">0</strong><span>Free jobs</span></div></div></section>
+
+      <section class="panel full" id="jobs"><div class="panel-head"><div><h2>Recent jobs</h2><p>Privacy-safe operational records. Video names, URLs, and report text are excluded.</p></div><span class="period">Latest 30</span></div><div class="table-wrap"><table class="jobs"><thead><tr><th>Started</th><th>Status</th><th>Mode</th><th>Tier</th><th>Video length</th><th>Frames</th><th>Transcript</th><th>AI cost</th></tr></thead><tbody id="jobs-body"><tr><td colspan="8" class="empty">Loading jobs…</td></tr></tbody></table></div></section>
+    </div>
+  </main>
+</div>
+
+<script>
+const API=(document.querySelector('meta[name="adscan-api-base"]')?.content||'').replace(/\/$/,'');
+let token=sessionStorage.getItem('adscan_admin_token')||'';
+const $=id=>document.getElementById(id);
+const esc=value=>String(value??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const pct=value=>value==null?'—':`${(Number(value)*100).toFixed(1)}%`;
+const usd=value=>`$${Number(value||0).toFixed(Number(value||0)<.01?4:2)}`;
+const duration=seconds=>seconds<60?`${Math.round(seconds)} sec`:`${Math.floor(seconds/60)} min ${Math.round(seconds%60)} sec`;
+const modeLabel=value=>({ads:'Ad intelligence',shots:'Shot breakdown',podcast:'Podcast notes',marketing:'Marketing copy',tutorial:'Tutorial steps',summary:'Summary'}[value]||value||'Unknown');
+function showAuth(message=''){$('dashboard-view').classList.add('hidden');$('auth-view').classList.remove('hidden');$('auth-error').textContent=message;$('auth-error').classList.toggle('hidden',!message);setTimeout(()=>$('token').focus(),0)}
+function showDashboard(){$('auth-view').classList.add('hidden');$('dashboard-view').classList.remove('hidden')}
+async function load(){
+  if(!token)return showAuth();
+  $('refresh').disabled=true;$('refresh').textContent='Refreshing…';
+  try{
+    const response=await fetch(`${API}/admin/dashboard`,{headers:{Authorization:`Bearer ${token}`},cache:'no-store'});
+    if(response.status===403){sessionStorage.removeItem('adscan_admin_token');token='';return showAuth('That token was not accepted. Check the server admin token and try again.')}
+    if(!response.ok)throw new Error(`Dashboard request failed (${response.status})`);
+    render(await response.json());showDashboard();
+  }catch(error){if(!$('dashboard-view').classList.contains('hidden'))$('updated').textContent=`Could not refresh: ${error.message}`;else showAuth('The dashboard could not reach the API. Please try again.')}finally{$('refresh').disabled=false;$('refresh').textContent='Refresh data'}
+}
+function render(data){
+  const o=data.overview,ops=data.operations,rev=data.revenue;
+  document.querySelectorAll('.skeleton').forEach(el=>el.classList.remove('skeleton'));
+  $('updated').textContent=`Updated ${new Date(data.generated_at*1000).toLocaleString()} · live backend data`;
+  $('m-analyses').textContent=o.last_7d.toLocaleString();$('m-analyses-note').textContent=`${o.last_24h} in the last 24 hours`;
+  $('m-completion').textContent=pct(o.completion_rate_7d);$('m-active').textContent=o.active;$('m-active-note').textContent=o.active?'Capacity currently occupied':'Queue available';
+  $('m-cost').textContent=usd(o.cost_7d);$('m-cost-note').textContent=o.avg_cost_7d==null?'No completed jobs':`${usd(o.avg_cost_7d)} average`;
+  $('m-credits').textContent=rev.credits_issued;$('m-billing-note').textContent=ops.billing_enabled?'Stripe enabled':'Stripe not enabled';
+  renderTrend(data.daily);renderModes(data.modes);renderJobs(data.recent);
+  $('h-active').textContent=o.active;$('h-age').textContent=duration(ops.longest_active_seconds);$('h-failure').textContent=pct(o.failure_rate_7d);$('h-frames').textContent=o.frames_7d.toLocaleString();
+  const healthy=o.active===0||ops.longest_active_seconds<600;const hp=$('health-pill');hp.className=`pill ${healthy?'good':'bad'}`;hp.innerHTML=`<i class="pulse"></i>${healthy?'Healthy':'Needs attention'}`;
+  const bp=$('billing-pill');bp.className=`pill ${ops.billing_enabled?'good':'warn'}`;bp.textContent=ops.billing_enabled?'Stripe enabled':'Payments pending';
+  $('r-price').textContent=`$${(ops.price_cents/100).toFixed(2)}`;$('r-checkouts').textContent=rev.checkouts_started;$('r-paid').textContent=rev.paid_jobs;$('r-free').textContent=rev.free_jobs;
+}
+function renderTrend(days){
+  const max=Math.max(1,...days.map(day=>day.total));
+  $('trend').innerHTML=days.map((day,index)=>{const totalHeight=Math.max(day.total?5:2,Math.round(day.total/max*160));const doneHeight=day.total?Math.round(day.completed/day.total*totalHeight):0;const failHeight=day.total?Math.round(day.failed/day.total*totalHeight):0;const label=(index%2===0||index===days.length-1)?new Date(`${day.date}T00:00:00Z`).toLocaleDateString(undefined,{month:'short',day:'numeric',timeZone:'UTC'}):'';return `<div class="day" title="${esc(day.date)}: ${day.completed} completed, ${day.failed} failed"><div class="bar-wrap"><div class="bar" style="height:${totalHeight}px"><i class="failed" style="height:${failHeight}px"></i><i class="done" style="height:${doneHeight}px"></i></div></div><div class="day-label">${esc(label)}</div></div>`}).join('');
+}
+function renderModes(modes){
+  if(!modes.length){$('modes').innerHTML='<div class="empty">No analyses recorded in the last seven days.</div>';return}
+  const max=Math.max(...modes.map(item=>item.total),1);$('modes').innerHTML=modes.map(item=>`<div class="mode-line"><span class="mode-name">${esc(modeLabel(item.mode))}</span><div class="track" title="${item.completed} completed, ${item.failed} failed"><div class="fill" style="width:${Math.max(4,item.total/max*100)}%"></div></div><span class="mode-value">${item.total}</span></div>`).join('');
+}
+function renderJobs(rows){
+  if(!rows.length){$('jobs-body').innerHTML='<tr><td colspan="8" class="empty">No analyses have been recorded yet.</td></tr>';return}
+  $('jobs-body').innerHTML=rows.map(row=>{const statusClass=row.status==='done'?'good':row.status==='error'?'bad':'warn';return `<tr><td class="num">${esc(new Date(row.created*1000).toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}))}</td><td><span class="pill ${statusClass}">${esc(row.status)}</span></td><td>${esc(modeLabel(row.mode))}</td><td>${esc(row.tier)}</td><td class="num">${esc(row.duration||'—')}</td><td class="num">${row.frames}</td><td>${row.has_transcript?'Available':'Visual only'}</td><td class="num">${usd(row.cost)}</td></tr>`}).join('');
+}
+$('auth-form').addEventListener('submit',event=>{event.preventDefault();token=$('token').value.trim();if(!token)return;sessionStorage.setItem('adscan_admin_token',token);$('login-button').textContent='Checking…';$('login-button').disabled=true;load().finally(()=>{$('login-button').textContent='Open dashboard';$('login-button').disabled=false})});
+$('refresh').addEventListener('click',load);$('signout').addEventListener('click',()=>{sessionStorage.removeItem('adscan_admin_token');token='';$('token').value='';showAuth()});
+load();
+</script>
+</body>
+</html>

@@ -12,7 +12,7 @@ import unittest
 from unittest.mock import patch, Mock
 
 TEMP = tempfile.TemporaryDirectory()
-os.environ.update(ADSCAN_TESTING='1', ADSCAN_DATA_DIR=TEMP.name, ADSCAN_QUOTA_SECRET='test-only-secret')
+os.environ.update(ADSCAN_TESTING='1', ADSCAN_DATA_DIR=TEMP.name, ADSCAN_QUOTA_SECRET='test-only-secret', ADSCAN_ADMIN_TOKEN='test-admin-token')
 import app as module
 from network_guard import validate_url, public_addresses
 
@@ -90,6 +90,20 @@ class ServiceTests(unittest.TestCase):
     def test_admin_is_protected(self):
         self.assertEqual(self.client.post('/api/recover',json={'recover':'1'}).status_code,403)
         self.assertEqual(self.client.get('/api/reap').status_code,403)
+        self.assertEqual(self.client.get('/api/admin/dashboard').status_code,403)
+        self.assertEqual(self.client.get('/admin').status_code,403)
+
+    def test_admin_dashboard_returns_privacy_safe_metrics(self):
+        first=self.post(); self.finish(first)
+        response=self.client.get('/api/admin/dashboard',headers={'Authorization':'Bearer test-admin-token'})
+        self.assertEqual(response.status_code,200)
+        data=response.json
+        self.assertEqual(data['overview']['total'],1)
+        self.assertEqual(data['overview']['completed'],1)
+        self.assertEqual(data['revenue']['free_jobs'],1)
+        self.assertNotIn('title',data['recent'][0])
+        self.assertNotIn('source',data['recent'][0])
+        self.assertNotIn('result',data['recent'][0])
 
     def test_global_capacity(self):
         self.post()
