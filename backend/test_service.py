@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import tempfile
+import shutil
 import time
 import unittest
 from unittest.mock import patch, Mock
@@ -27,6 +28,14 @@ class ServiceTests(unittest.TestCase):
         self.thread = patch('service.start_worker').start()
         self.validation = patch('service.validate_url', side_effect=lambda url: url).start()
         self.addCleanup(patch.stopall)
+        created = []
+        original_mkdtemp = tempfile.mkdtemp
+        def tracked_mkdtemp(*args, **kwargs):
+            directory = original_mkdtemp(*args, **kwargs)
+            created.append(directory)
+            return directory
+        patch('service.tempfile.mkdtemp', side_effect=tracked_mkdtemp).start()
+        self.addCleanup(lambda: [shutil.rmtree(p, ignore_errors=True) for p in created])
 
     def post(self, headers=HEADERS, **kwargs):
         return self.client.post('/api/analyze', json={'url':'https://example.com/video.mp4','mode':'summary'}, headers=headers, **kwargs)
