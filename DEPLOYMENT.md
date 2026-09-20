@@ -6,11 +6,11 @@ Static HTML/CSS/JS, repository `timuran1/adscanvideo`, branch `main`. GitHub Pag
 builds on push; CNAME is `adscanvideo.com`. There is no npm build.
 
 **Do not assume a successful GitHub build means the public domain is updated.**
-The public Cloudflare-served site was still returning an older page while the
-GitHub origin had the latest files. The saved Wrangler configuration identifies
-a separate Cloudflare Pages project named `adscanvideo`. Inspect that project's
-custom domains and deployment after `wrangler login` before changing routing.
-The exact active Cloudflare binding remains to be verified after authentication.
+The public domain is attached to a separate manually deployed Cloudflare Pages
+project named `adscanvideo`; pushes to GitHub do not update it. After each GitHub
+release, deploy the public-only staging directory to this Pages project and verify
+the custom domain. The September 20 release was deployed successfully as Pages
+deployment `1dab126f`.
 
 Verify both the GitHub origin and the public hostname:
 
@@ -23,8 +23,9 @@ curl https://adscanvideo.com/llms.txt
 `_config.yml` excludes backend code from the GitHub Pages site. When deploying to
 Cloudflare Pages, stage only public HTML, blog/, privacy/, what-is-adscanvideo/,
 sitemap.xml, robots.txt, llms.txt and intentional public assets. Never upload
-backend/, .git/, .env, .wrangler/ or server backups. 404.html prevents unknown
-paths from silently becoming the homepage.
+backend/, .git/, .env, .wrangler/ or server backups. `404.html` prevents unknown
+paths from silently becoming the homepage. The current `www.adscanvideo.com`
+hostname has no DNS record; production and canonical links use the apex hostname.
 
 ## Backend
 
