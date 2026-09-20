@@ -1565,6 +1565,45 @@ const storage = {
   set(key, value) { try { localStorage.setItem(key, value); } catch {} },
   remove(key) { try { localStorage.removeItem(key); } catch {} }
 };
+// Privacy-safe product analytics. Never send filenames, video URLs, job IDs,
+// analysis text, contact details, or raw error messages to Google Analytics.
+function track(eventName, parameters = {}) {
+  if (typeof gtag !== 'function') return;
+  gtag('event', eventName, { transport_type: 'beacon', ...parameters });
+}
+function trackJobOnce(eventName, id, parameters = {}) {
+  if (!id) return;
+  const key = 'adsv_ga_' + eventName + '_' + id;
+  if (storage.get(key)) return;
+  track(eventName, parameters);
+  storage.set(key, '1');
+}
+function setJobContext(id, analysisMode, inputMethod) {
+  storage.set('adsv_job_context_' + id, JSON.stringify({ analysis_mode: analysisMode, input_method: inputMethod }));
+}
+function jobContext(id) {
+  try { return JSON.parse(storage.get('adsv_job_context_' + id)) || {}; }
+  catch { return {}; }
+}
+function clearJobContext(id) { storage.remove('adsv_job_context_' + id); }
+function durationBucket(value) {
+  const match = /^(\d+):(\d{2})$/.exec(value || '');
+  if (!match) return 'unknown';
+  const seconds = Number(match[1]) * 60 + Number(match[2]);
+  if (seconds <= 30) return '0_30s';
+  if (seconds <= 60) return '31_60s';
+  if (seconds <= 180) return '1_3m';
+  if (seconds <= 600) return '3_10m';
+  return 'over_10m';
+}
+function requestFailureType(error) {
+  if (error?.code === 'payment_required') return 'quota_blocked';
+  if (error?.name === 'AbortError') return 'timeout';
+  if (error?.status === 429) return 'capacity';
+  if (error?.status >= 500) return 'server';
+  if (error?.status >= 400) return 'invalid_request';
+  return 'connection';
+}
 let ownerToken = storage.get('adsv_owner');
 if (!ownerToken) {
   ownerToken = Array.from(crypto.getRandomValues(new Uint8Array(32)), b => b.toString(16).padStart(2, '0')).join('');
@@ -1592,14 +1631,23 @@ async function refreshUsage() {
 async function buyCredit() {
   showWaitlist();
   const el = document.getElementById('billing-message');
-  if (!billingEnabled) { el.textContent = 'Payments are coming soon. Return tomorrow for your next free analysis, or join the launch waitlist below.'; return; }
+  if (!billingEnabled) {
+    track('pricing_interest', { offer: 'single_credit' });
+    el.textContent = 'Payments are coming soon. Return tomorrow for your next free analysis, or join the launch waitlist below.';
+    return;
+  }
+  track('begin_checkout', { currency: 'USD', value: 0.50, items: [{ item_id: 'single_analysis', item_name: 'Single analysis credit', price: 0.50, quantity: 1 }] });
   el.textContent = 'Opening secure checkout…';
   try {
     const data = await api('/billing/checkout', { method: 'POST' });
     const target = new URL(data.url);
     if (target.protocol !== 'https:' || target.hostname !== 'checkout.stripe.com') throw new Error('Checkout is unavailable.');
+    track('checkout_redirected', { offer: 'single_credit' });
     location.assign(target.href);
-  } catch (error) { el.textContent = error.message; }
+  } catch (error) {
+    track('checkout_failed', { failure_type: requestFailureType(error) });
+    el.textContent = error.message;
+  }
 }
 
 document.getElementById('upload-input').style.display = 'block';
@@ -1609,6 +1657,7 @@ document.querySelectorAll('.mode-ch').forEach(b => {
   b.addEventListener('click', () => {
     document.querySelectorAll('.mode-ch').forEach(x => x.classList.remove('active'));
     b.classList.add('active'); mode = b.dataset.mode;
+    track('analysis_mode_selected', { analysis_mode: mode });
   });
 });
 
@@ -1681,12 +1730,27 @@ async function pollJob(id) {
         document.getElementById('result-content').textContent = result.result;
         document.getElementById('result').style.display = 'block';
         document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        const context = jobContext(id);
         storage.remove('adsv_active_job');
         message(data.transcript_chars ? 'Analysis complete.' : 'Analysis complete. No transcript was available; this result covers visuals only.');
+        trackJobOnce('analysis_completed', id, {
+          analysis_mode: context.analysis_mode || mode,
+          input_method: context.input_method || tab,
+          duration_bucket: durationBucket(data.duration),
+          transcript_available: data.transcript_chars ? 'yes' : 'no'
+        });
+        clearJobContext(id);
         return;
       }
       if (data.status === 'error' || data.status === 'not_found') {
+        const context = jobContext(id);
         storage.remove('adsv_active_job');
+        trackJobOnce('analysis_failed', id, {
+          analysis_mode: context.analysis_mode || mode,
+          input_method: context.input_method || tab,
+          failure_type: data.status === 'not_found' ? 'not_found' : 'processing'
+        });
+        clearJobContext(id);
         throw new Error(data.error || 'Analysis not found. Please try again.');
       }
       await pause(2000);
@@ -1697,6 +1761,7 @@ async function pollJob(id) {
 }
 async function tryFree() {
   if (busy) return;
+  jobId = null;
   const isUpload = tab === 'upload';
   if (isUpload && !file) { message('Choose a video file first.'); return; }
   if (isUpload && (file.size > 200 * 1024 * 1024 || !/\.(mp4|mov|webm|mkv)$/i.test(file.name))) { message('Choose an MP4, MOV, WebM or MKV video up to 200 MB.'); return; }
@@ -1713,20 +1778,40 @@ async function tryFree() {
       data = await api('/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url, question: q(), mode }) });
     }
     if (!data.job_id) throw new Error('The server did not start an analysis. Please try again.');
-    jobId = data.job_id; storage.set('adsv_active_job', jobId); message('You can reload this page and reconnect to this analysis.');
+    jobId = data.job_id;
+    storage.set('adsv_active_job', jobId);
+    setJobContext(jobId, mode, isUpload ? 'upload' : 'url');
+    message('You can reload this page and reconnect to this analysis.');
+    trackJobOnce('analysis_started', jobId, {
+      analysis_mode: mode,
+      input_method: isUpload ? 'upload' : 'url'
+    });
     await pollJob(jobId);
   } catch (error) {
     message(error.name === 'AbortError' ? 'The request timed out. Please check your connection and retry.' : error.message);
-    if (error.code === 'payment_required') showWaitlist();
+    if (error.code === 'payment_required') {
+      track('quota_blocked', { analysis_mode: mode, input_method: isUpload ? 'upload' : 'url' });
+      showWaitlist();
+    } else if (!jobId) {
+      track('analysis_submission_failed', {
+        analysis_mode: mode,
+        input_method: isUpload ? 'upload' : 'url',
+        failure_type: requestFailureType(error)
+      });
+    }
   } finally { busy = false; updateUI(); await refreshUsage(); }
 }
 refreshUsage().then(async () => {
   const active = storage.get('adsv_active_job');
   if (active && /^[a-f0-9]{32}$/.test(active)) { jobId = active; await pollJob(active); }
   if (new URLSearchParams(location.search).get('payment') === 'success') {
+    track('checkout_returned', { offer: 'single_credit' });
     message('Checkout returned successfully. Credits appear after payment confirmation.');
     for (let i = 0; i < 8 && !paidCredits; i++) { await pause(2500); await refreshUsage(); }
-    if (paidCredits) message('Payment confirmed. Your analysis credit is ready.');
+    if (paidCredits) {
+      track('payment_confirmed', { currency: 'USD', value: 0.50, offer: 'single_credit' });
+      message('Payment confirmed. Your analysis credit is ready.');
+    }
   }
 });
 
@@ -1767,6 +1852,7 @@ async function submitWaitlist(e) {
   document.getElementById('waitlist-form').classList.add('wl-submitted');
   document.getElementById('wl-thanks').classList.remove('hidden');
   btn.textContent = 'Joined ✓';
+  track('waitlist_joined', { method: email ? 'email' : 'telegram' });
   // Store submission in localStorage so we don't show again
   storage.set('adsv_waitlist', '1');
   return false;
