@@ -166,6 +166,18 @@ class ServiceTests(unittest.TestCase):
             module.run_analysis(jid,'test','')
         self.assertIn('10 minutes',module.jobs[jid]['error']); paid.assert_not_called()
 
+    def test_short_video_audio_transcribes_without_global_whisper(self):
+        meta={'has_audio':True}
+        with patch.dict(os.environ,{'ADSCAN_ENABLE_WHISPER':'0'}):
+            self.assertTrue(module.should_transcribe_audio(meta,10,''))
+            self.assertFalse(module.should_transcribe_audio(meta,121,''))
+            self.assertFalse(module.should_transcribe_audio(meta,10,'captions'))
+            self.assertFalse(module.should_transcribe_audio({'has_audio':False},10,''))
+
+    def test_global_whisper_still_allows_long_video_audio(self):
+        with patch.dict(os.environ,{'ADSCAN_ENABLE_WHISPER':'1'}):
+            self.assertTrue(module.should_transcribe_audio({'has_audio':True},600,''))
+
     def test_reaper_does_not_touch_finished_jobs(self):
         for jid,status in [('old','extracting'),('done','done')]:
             module.jobs[jid]={'status':status,'created':1}

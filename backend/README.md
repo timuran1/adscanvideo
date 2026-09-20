@@ -10,8 +10,11 @@ one active analysis on the shared 2 GB VPS; a busy response does not consume quo
 Copy names from `.env.example` to `/opt/adscanvideo-api/.env` on the server. Generate
 `ADSCAN_QUOTA_SECRET` and `ADSCAN_ADMIN_TOKEN` with `secrets.token_urlsafe(48)`.
 Keep these stable and private. `ADSCAN_ENABLE_WHISPER=0` is intentional: subtitles
-are used when available; otherwise the model must disclose visual-only analysis.
-Optional Whisper runs in a disposable process with a deadline.
+are used when available, and otherwise videos up to
+`ADSCAN_WHISPER_AUTO_MAX_SECONDS` (120 seconds by default) use the isolated
+`base` Whisper model automatically. Longer videos stay visual-only unless
+`ADSCAN_ENABLE_WHISPER=1`. Whisper always runs in a disposable process with a
+deadline.
 
 Dependencies: Flask, flask-cors, requests, Pillow, gunicorn; system ffmpeg,
 ffprobe and yt-dlp with impersonation support. No dependency on the Hermes skill

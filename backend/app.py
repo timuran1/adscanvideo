@@ -42,8 +42,10 @@ MODES = {
         "Never use Chinese characters. Break the video into individual shots in "
         "order. For each shot give: a shot number, start-end timestamp, shot size "
         "(extreme-wide/wide/medium/close/extreme-close), what is visible, and any "
-        "camera movement implied by how the framing changes. One shot per line, "
-        "timestamps from the supplied [t=mm:ss] markers."
+        "camera movement implied by how the framing changes. When a transcript is "
+        "supplied, include the spoken dialogue that overlaps each shot, quoting it "
+        "accurately and never inventing words. One shot per line, timestamps from "
+        "the supplied [t=mm:ss] markers."
     ),
     "ads": (
         "You are a video advertising analyst. You ALWAYS respond in English. "
@@ -376,6 +378,19 @@ def deduplicate_frames(frames, threshold=8.0):
 
 # ── Analysis runner ──────────────────────────────────────
 WHISPER_TIMEOUT_SECONDS = int(os.getenv("ADSCAN_WHISPER_TIMEOUT", "150"))
+WHISPER_AUTO_MAX_SECONDS = int(os.getenv("ADSCAN_WHISPER_AUTO_MAX_SECONDS", "120"))
+
+
+def should_transcribe_audio(meta, duration, transcript, start_sec=None, end_sec=None):
+    """Use isolated Whisper automatically for short videos with uncovered audio.
+
+    Long-video transcription remains opt-in on the 2 GB VPS. A short clip is
+    bounded by both duration and the subprocess deadline, so it cannot strand a
+    job or exhaust the host indefinitely.
+    """
+    if transcript or not meta.get("has_audio") or start_sec is not None or end_sec is not None:
+        return False
+    return os.getenv("ADSCAN_ENABLE_WHISPER") == "1" or duration <= WHISPER_AUTO_MAX_SECONDS
 
 
 def _transcribe_with_deadline(audio_path, timeout_seconds):
@@ -413,7 +428,7 @@ def run_analysis(job_id: str, url: str, question: str, start_sec=None, end_sec=N
             transcript = format_transcript(segments)
 
         # Fallback: transcribe audio via faster-whisper when no subtitles
-        if not transcript and meta.get("has_audio") and os.getenv("ADSCAN_ENABLE_WHISPER") == "1" and start_sec is None and end_sec is None:
+        if should_transcribe_audio(meta, duration, transcript, start_sec, end_sec):
             import subprocess as _sp
             jobs[job_id]["status"] = "transcribing"
             audio_path = work_dir / "audio.mp3"
