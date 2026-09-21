@@ -825,6 +825,13 @@ nav {
 }
 .blog-card h3 { font-size: 0.98rem; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
 .blog-card p { color: var(--ink-dim); font-size: 0.85rem; line-height: 1.5; flex: 1; }
+.real-samples { display:grid;grid-template-columns:1fr 1fr;gap:12px; }
+.real-sample { background:#111522;border-radius:12px;color:#fff;overflow:hidden;text-decoration:none; }
+.real-sample img { aspect-ratio:9/11;display:block;object-fit:cover;width:100%; }
+.real-sample div { padding:14px; }
+.real-sample strong { display:block;font-size:.88rem;line-height:1.3;margin-bottom:4px; }
+.real-sample span { color:#aeb7c7;font-size:.72rem; }
+.real-sample:hover strong { color:#8db4ff; }
 
 /* ── CTA banner ───────────────────────────────────── */
 .cta-banner {
@@ -1184,7 +1191,8 @@ nav {
     </a>
   </div>
   <div class="nav-links">
-    <a href="/what-is-adscanvideo/">What is AdScanVideo?</a>
+    <a href="/about/">About</a>
+    <a href="/samples/">Samples</a>
     <a href="#usecases">Use cases</a>
     <a href="#how">How it works</a>
     <a href="/blog/">Guides</a>
@@ -1204,7 +1212,7 @@ nav {
     <p class="sub">Drop in any ad, reel, interview, or video reference. AdScanVideo turns it into structured intelligence, production-ready prompts, and a blueprint you can use.</p>
     <div class="hero-actions">
       <a class="hero-primary" href="#input-zone">Analyze a video <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      <a class="hero-secondary" href="#example-output"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4V8z"/></svg> See sample output</a>
+      <a class="hero-secondary" href="/samples/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4V8z"/></svg> See real reports</a>
     </div>
     <div class="hero-proof">
       <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 4 4L19 6"/></svg> No setup required</span>
@@ -1383,8 +1391,8 @@ nav {
 <div class="example-section reveal" id="example-output">
   <div class="example-inner">
     <div class="example-text">
-      <h2>See what you get back</h2>
-      <p>Every analysis is structured, timestamped, and ready to use. Not a vague summary — a detailed breakdown you can act on.</p>
+      <h2>See what the live analyzer produced</h2>
+      <p>Two supplied vertical videos were processed through the same production pipeline visitors use. The public reports include the actual output and its visible limitations.</p>
       <ul>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Timestamped scene-by-scene breakdown</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Dialogue when a transcript is available</li>
@@ -1393,28 +1401,9 @@ nav {
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Structured checklists for tutorials</li>
       </ul>
     </div>
-    <div class="example-mockup">
-      <div class="mockup-bar">
-        <span></span><span></span><span></span>
-        <div class="mockup-title">adscanvideo.com — result</div>
-      </div>
-      <div class="mockup-body">
-        <h4>SHOT 1 [00:00–00:03] — Establishing wide</h4>
-        <div class="mockup-shot">
-          <strong>Visual:</strong> Wide-angle dashboard camera shot. Clear daylight, dry road, sedan traveling northbound at ~40 km/h. Two vehicles visible ahead. Traffic light green in distance.
-          <br><br><strong>Note:</strong> No pedestrians visible. Road markings intact.
-        </div>
-        <h4>SHOT 2 [00:03–00:07] — Approach</h4>
-        <div class="mockup-shot">
-          <strong>Visual:</strong> Camera vehicle decelerates. White SUV ahead signals left. Speed reduced to ~20 km/h. Pedestrian enters crosswalk from right side.
-          <br><br><strong>Note:</strong> Crosswalk marked, no traffic signal at this section.
-        </div>
-        <h4>SHOT 3 [00:07–00:12] — Event</h4>
-        <div class="mockup-shot">
-          <strong>Visual:</strong> White SUV completes left turn. Pedestrian clears crosswalk. Camera vehicle resumes speed. No collision or contact observed.
-          <br><br><strong>Summary:</strong> No incident detected. All parties acted lawfully.
-        </div>
-      </div>
+    <div class="real-samples">
+      <a class="real-sample" href="/samples/animated-cat-shot-breakdown/"><img src="/samples/assets/cat-opening.jpg" alt="Animated cat and duck sample video"><div><strong>Animated short: shot breakdown</strong><span>8 seconds · 11 frames kept</span></div></a>
+      <a class="real-sample" href="/samples/semiconductor-podcast-analysis/"><img src="/samples/assets/semiconductor-speakers.jpg" alt="Podcast speaker sample video"><div><strong>Podcast clip: transcript and notes</strong><span>23 seconds · dialogue available</span></div></a>
     </div>
   </div>
 </div>
@@ -1604,6 +1593,10 @@ nav {
     <span>AdScanVideo</span>
     <span>·</span>
     <a href="/privacy">Privacy</a>
+    <span>·</span>
+    <a href="/samples/">Samples</a>
+    <span>·</span>
+    <a href="/about/">Methodology</a>
     <span>·</span>
     <span>Questions?</span>
     <a href="mailto:hello@adscanvideo.com">hello@adscanvideo.com</a>

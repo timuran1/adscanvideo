@@ -40,11 +40,15 @@ $19/month option are displayed for transparency but cannot be purchased yet.
 - [Video to shot list](https://adscanvideo.com/video-to-shot-list/)
 - [Video to prompt generator](https://adscanvideo.com/video-to-prompt/)
 - [All video-analysis guides](https://adscanvideo.com/blog/)
+- [Real sample reports](https://adscanvideo.com/samples/)
+- [Animated video shot-breakdown example](https://adscanvideo.com/samples/animated-cat-shot-breakdown/)
+- [Transcript-aware podcast analysis example](https://adscanvideo.com/samples/semiconductor-podcast-analysis/)
+- [Methodology, privacy, and limitations](https://adscanvideo.com/about/)
 - [Extract dialogue and transcripts](https://adscanvideo.com/blog/extract-transcript-dialogue-from-video/)
 - [Analyze competitor video ads](https://adscanvideo.com/blog/analyze-competitor-video-ads-fast/)
 - [Build a production shot list](https://adscanvideo.com/blog/turn-video-into-production-shot-list/)
 - [Turn reference footage into AI video prompts](https://adscanvideo.com/blog/ai-video-prompts-recreate-any-shot/)
 - [Privacy](https://adscanvideo.com/privacy/)
 
-Last updated: 2026-09-20
+Last updated: 2026-09-21
 Contact: hello@adscanvideo.com
