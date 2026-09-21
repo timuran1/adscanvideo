@@ -2,8 +2,11 @@
 """Submit canonical sitemap URLs to IndexNow after a production deploy."""
 import json
 from pathlib import Path
+import ssl
 import urllib.request
 import xml.etree.ElementTree as ET
+
+import certifi
 
 ROOT = Path(__file__).resolve().parents[1]
 KEY = "3dfc71b07cc6adb64167684ebe175cc1"
@@ -23,5 +26,6 @@ request = urllib.request.Request(
     headers={"Content-Type": "application/json; charset=utf-8"},
     method="POST",
 )
-with urllib.request.urlopen(request, timeout=30) as response:
+context = ssl.create_default_context(cafile=certifi.where())
+with urllib.request.urlopen(request, timeout=30, context=context) as response:
     print(f"IndexNow accepted {len(urls)} URLs (HTTP {response.status}).")
