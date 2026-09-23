@@ -18,7 +18,8 @@ FUNNEL_EVENTS = {
     "analyzer_engaged", "analysis_cta_clicked", "analysis_started",
     "analysis_completed", "analysis_failed", "analysis_submission_failed",
     "analysis_validation_failed", "quota_blocked", "result_copied",
-    "result_downloaded", "begin_checkout", "payment_confirmed",
+    "result_downloaded", "pricing_link_clicked", "pricing_section_viewed",
+    "pricing_interest", "begin_checkout", "payment_confirmed",
 }
 
 
@@ -116,6 +117,9 @@ def markdown(data):
         f"- Failure rate: **{pct(data['failureRate']) if data['failureRate'] is not None else 'No starts recorded'}**",
         f"- Submissions rejected before a job started: **{data['submissionFailures']}**",
         f"- Result copies/downloads: **{totals.get('result_copied', 0) + totals.get('result_downloaded', 0)}**",
+        f"- Pricing section reached: **{totals.get('pricing_section_viewed', 0)}** (tracked from September 23, 2026)",
+        f"- Pricing links clicked: **{totals.get('pricing_link_clicked', 0)}**",
+        f"- Paid-offer button clicked: **{totals.get('pricing_interest', 0)}**",
         f"- Confirmed payments: **{totals.get('payment_confirmed', 0)}**", "",
         "## Acquisition", "", "| Source / medium | Sessions | Engaged | Engagement |", "|---|---:|---:|---:|",
     ]

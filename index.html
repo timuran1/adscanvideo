@@ -1754,6 +1754,20 @@ document.querySelectorAll('a[href="#input-zone"]').forEach(link => link.addEvent
   track('cta_clicked', { placement: link.closest('nav') ? 'navigation' : link.closest('.hero') ? 'hero' : 'page' });
 }));
 
+document.querySelectorAll('a[href="#pricing"]').forEach(link => link.addEventListener('click', () => {
+  track('pricing_link_clicked', { placement: link.closest('nav') ? 'navigation' : 'page' });
+}));
+const pricingHeading = document.querySelector('#pricing .section-header');
+if (pricingHeading && 'IntersectionObserver' in window) {
+  const pricingObserver = new IntersectionObserver((entries) => {
+    if (entries.some(entry => entry.isIntersecting)) {
+      track('pricing_section_viewed');
+      pricingObserver.disconnect();
+    }
+  }, { threshold: 0.5 });
+  pricingObserver.observe(pricingHeading);
+}
+
 const dz = document.getElementById('drop-zone');
 ['dragenter','dragover'].forEach(e => dz.addEventListener(e, ev => { ev.preventDefault(); dz.classList.add('dragover'); }));
 ['dragleave','drop'].forEach(e => dz.addEventListener(e, ev => { ev.preventDefault(); dz.classList.remove('dragover'); }));
