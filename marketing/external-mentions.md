@@ -96,3 +96,32 @@ I would especially appreciate criticism of the report structure, the privacy exp
 Use the existing launch copy above. Make the first gallery image a side-by-side comparison titled **“Transcript only vs. transcript + visual context.”** Use the second image to show the two real sample reports. Link the maker's first comment to https://adscanvideo.com/samples/ and the methodology page rather than making unsupported accuracy claims.
 
 Product Hunt currently recommends launching from a real personal account, preparing the listing in advance, and letting users try a live product. Do not ask people directly for upvotes; ask them to visit and leave useful feedback.
+
+## Outreach prepared September 23, 2026: UGC ad scorecard
+
+These are founder drafts, not submissions. Check each destination's current rules before posting.
+
+### Founder LinkedIn post for paid social teams
+
+I keep seeing UGC ads judged by whether the creator feels authentic. That matters, but it misses the sequence viewers actually experience: hook, problem, demonstration, proof, offer, and next step.
+
+I made a free, timestamped scorecard for reviewing each beat. It includes a clearly hypothetical 24-second creator ad and a way to separate what is visible in the creative from what only campaign data can prove.
+
+Guide: https://adscanvideo.com/blog/how-to-analyze-ugc-video-ads/
+
+I built AdScanVideo, which can generate a first-pass ad breakdown. What would you add to this scorecard before testing a new creative?
+
+### Pitch for a performance-marketing newsletter's tools or resources section
+
+Subject: A practical UGC ad audit scorecard for your readers
+
+Hi,
+
+I built AdScanVideo and published a free guide for reviewing creator-style video ads beat by beat: https://adscanvideo.com/blog/how-to-analyze-ugc-video-ads/
+
+It gives media buyers and creative teams a timestamped checklist for the hook, demonstration, proof, offer, and CTA, plus a hypothetical worked example. It explicitly separates creative observations from conversion claims that need campaign data.
+
+If you accept reader resources or tool suggestions, I thought it could be useful to your audience. I can send the one-page scorecard as plain text if that is easier to evaluate.
+
+Best,
+Timurbek

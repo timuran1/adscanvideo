@@ -80,7 +80,7 @@ def build_report(reporter):
         totals[row["eventName"]] = totals.get(row["eventName"], 0) + int(number(row["eventCount"]))
     started = totals.get("analysis_started", 0)
     completed = totals.get("analysis_completed", 0)
-    failed = totals.get("analysis_failed", 0) + totals.get("analysis_submission_failed", 0)
+    failed = totals.get("analysis_failed", 0)
     return {
         "generated": date.today().isoformat(), "property": PROPERTY_ID,
         "period": "last 7 days through today", "overview": current,
@@ -89,6 +89,7 @@ def build_report(reporter):
         "funnelTotals": totals,
         "completionRate": completed / started if started else None,
         "failureRate": failed / started if started else None,
+        "submissionFailures": totals.get("analysis_submission_failed", 0),
         "qualityFlags": {
             "sources": quality_flags(sources, "sessionSourceMedium"),
             "countries": quality_flags(countries, "country"),
@@ -113,6 +114,7 @@ def markdown(data):
         f"- Analyses completed: **{totals.get('analysis_completed', 0)}**",
         f"- Completion rate: **{pct(data['completionRate']) if data['completionRate'] is not None else 'No starts recorded'}**",
         f"- Failure rate: **{pct(data['failureRate']) if data['failureRate'] is not None else 'No starts recorded'}**",
+        f"- Submissions rejected before a job started: **{data['submissionFailures']}**",
         f"- Result copies/downloads: **{totals.get('result_copied', 0) + totals.get('result_downloaded', 0)}**",
         f"- Confirmed payments: **{totals.get('payment_confirmed', 0)}**", "",
         "## Acquisition", "", "| Source / medium | Sessions | Engaged | Engagement |", "|---|---:|---:|---:|",
