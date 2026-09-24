@@ -125,3 +125,32 @@ If you accept reader resources or tool suggestions, I thought it could be useful
 
 Best,
 Timurbek
+
+## Outreach prepared September 24, 2026: vertical ad safe zones
+
+These are tailored drafts for the founder to adapt. They have not been posted or sent. Check current contribution rules before using them.
+
+### Founder LinkedIn post for paid social and video production teams
+
+A 9:16 export can still fail in a vertical feed: the hook sits under a label, the demo lands behind reaction buttons, or the final CTA is covered.
+
+I made a placement-aware checklist for reviewing Shorts, Reels, and TikTok ads. It starts with the important moments in the video, then asks you to verify them against each platform's current safe-zone template and ad preview. There is a clearly hypothetical 20-second example so you can use the method without buying anything.
+
+https://adscanvideo.com/blog/vertical-video-ad-safe-zone-checklist/
+
+I built AdScanVideo, which can help map those moments from a clip. What is the most common overlay mistake you catch before an ad goes live?
+
+### Video-editing newsletter or agency resource pitch
+
+Subject: A practical vertical-ad preflight checklist for your editors
+
+Hi,
+
+I built AdScanVideo and published a free checklist for reviewing vertical ad safe zones before export: https://adscanvideo.com/blog/vertical-video-ad-safe-zone-checklist/
+
+It covers hooks, product demonstrations, captions, prices, and CTAs with a timestamped example, and links directly to current Google, YouTube, and TikTok guidance. It avoids a universal pixel margin because placement controls vary. Editors can use it as a preflight sheet alongside each platform's preview.
+
+If you accept outside resources, I thought it may help your readers who adapt the same creative for several feeds.
+
+Best,
+Timurbek
