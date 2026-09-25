@@ -154,3 +154,26 @@ If you accept outside resources, I thought it may help your readers who adapt th
 
 Best,
 Timurbek
+
+## Outreach prepared September 25, 2026: Shorts shot-list template
+
+These are founder drafts, not posts or messages already sent. Check each destination's current contribution rules before sharing.
+
+### Founder LinkedIn post for editors and short-form creators
+
+I took a real eight-second vertical animation report and turned its nine timestamped observations into four production setups. The interesting part: the analyzer listed several similar cooking frames, but a crew would probably group them into one kitchen setup until the action changes.
+
+The free guide includes the original sample link, the editorial grouping, and a shot-list template you can copy:
+https://adscanvideo.com/blog/youtube-shorts-shot-list-template/
+
+I built AdScanVideo to help make that first observational pass. Which field is always missing from the shot lists you receive?
+
+### Indie Hackers build lesson, if its current rules allow a project link
+
+**Working title:** A model found nine moments in an eight-second clip. My production plan needed four.
+
+I run AdScanVideo, a tool that turns short videos into timestamped reports. I learned that a frame-by-frame description is not yet a shot list. In a real vertical animation sample, nine observations covered only three settings: a field, a brief travel beat, and a kitchen. For production, I grouped repeated frames into four setups and separated the model's observations from my own decisions.
+
+I wrote the exact transformation and a copyable template here: https://adscanvideo.com/blog/youtube-shorts-shot-list-template/
+
+If you work with video or AI outputs, where else do you see a useful analysis become an unusable plan without a human grouping step?
