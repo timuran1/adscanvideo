@@ -177,3 +177,28 @@ I run AdScanVideo, a tool that turns short videos into timestamped reports. I le
 I wrote the exact transformation and a copyable template here: https://adscanvideo.com/blog/youtube-shorts-shot-list-template/
 
 If you work with video or AI outputs, where else do you see a useful analysis become an unusable plan without a human grouping step?
+
+## Outreach prepared September 27, 2026 — screen recording to SOP
+
+These are drafts only; no messages or submissions were sent. Confirm each destination’s current contribution rules before posting.
+
+**Founder LinkedIn post:**
+
+A screen recording shows a task once. A usable SOP needs the starting conditions, exact actions, expected results, exceptions, and a test by someone who did not record it. I wrote a copyable template and an illustrative 90-second example here: https://adscanvideo.com/blog/screen-recording-to-step-by-step-sop/
+
+I built AdScanVideo; its Tutorial steps mode can draft the timestamp map, but I recommend replaying every transition before using it as a team procedure. What part of turning demos into documentation slows your team down?
+
+**For a documentation or operations newsletter that accepts tool suggestions:**
+
+Subject: Practical screen-recording-to-SOP checklist for your readers
+
+Hi [editor],
+
+I made a free guide that shows how to turn a short screen recording into a tested standard operating procedure. It includes a copyable outline, a timestamped example, and checks for prerequisites, permissions, exceptions, and UI changes: https://adscanvideo.com/blog/screen-recording-to-step-by-step-sop/
+
+I also built AdScanVideo, which can draft a timestamp map, but the guide is useful without the tool. If you cover process documentation, I’d welcome your feedback or consideration for a resources roundup.
+
+Best,
+Timurbek
+
+Potential fit: documentation and operations newsletters with a reader-submission channel; founder’s LinkedIn network of operations and enablement teams. Do not submit before checking editorial and promotion policies.
