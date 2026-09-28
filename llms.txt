@@ -55,6 +55,8 @@ $19/month option are displayed for transparency but cannot be purchased yet.
 - [Build a production shot list](https://adscanvideo.com/blog/turn-video-into-production-shot-list/)
 - [Turn reference footage into AI video prompts](https://adscanvideo.com/blog/ai-video-prompts-recreate-any-shot/)
 - [Privacy](https://adscanvideo.com/privacy/)
+- [Terms of service](https://adscanvideo.com/terms/)
+- [Support, billing and refunds](https://adscanvideo.com/support/)
 
 Last updated: 2026-09-28
-Contact: hello@adscanvideo.com
+Contact: support@adscanvideo.com
