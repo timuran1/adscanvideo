@@ -555,101 +555,6 @@ nav {
   line-height: 1.5;
 }
 
-/* ── Example output ───────────────────────────────── */
-.example-section {
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  padding: 64px 24px;
-}
-.example-inner {
-  max-width: 960px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1.3fr;
-  gap: 48px;
-  align-items: center;
-}
-.example-text h2 {
-  font-size: 1.65rem;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  margin-bottom: 10px;
-}
-.example-text p {
-  color: var(--ink-dim);
-  font-size: 1rem;
-  margin-bottom: 20px;
-}
-.example-text ul {
-  list-style: none;
-  padding: 0;
-}
-.example-text ul li {
-  padding: 6px 0;
-  color: var(--ink-dim);
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.example-text ul li svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; }
-.example-mockup {
-  background: var(--bg);
-  border: 1px solid var(--border-strong);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-}
-.mockup-bar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 14px;
-  background: var(--surface2);
-  border-bottom: 1px solid var(--border);
-}
-.mockup-bar span {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--border-strong);
-}
-.mockup-bar span:nth-child(1) { background: #ff5f57; }
-.mockup-bar span:nth-child(2) { background: #febc2e; }
-.mockup-bar span:nth-child(3) { background: #28c840; }
-.mockup-bar .mockup-title {
-  width: auto; height: auto; border-radius: 0; background: none;
-  margin-left: 10px;
-  font-size: 0.78rem; color: var(--ink-muted); font-weight: 500;
-}
-.mockup-body {
-  padding: 18px;
-  font-size: 0.82rem;
-  line-height: 1.7;
-  max-height: 380px;
-  overflow: hidden;
-  position: relative;
-}
-.mockup-body::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 80px;
-  background: linear-gradient(transparent, var(--bg));
-}
-.mockup-body h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--accent); font-family: var(--mono); }
-.mockup-body p { color: var(--ink-dim); margin-bottom: 10px; font-size: 0.8rem; }
-.mockup-body .mockup-shot {
-  border-left: 2px solid var(--accent);
-  padding: 8px 12px;
-  margin: 8px 0;
-  background: var(--surface);
-  border-radius: 0 8px 8px 0;
-  color: var(--ink-dim);
-}
-.mockup-body .mockup-shot strong { color: var(--ink); font-size: 0.78rem; font-family: var(--mono); }
-
 /* ── Features ─────────────────────────────────────── */
 .features {
   max-width: 1140px;
@@ -825,14 +730,6 @@ nav {
 }
 .blog-card h3 { font-size: 0.98rem; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
 .blog-card p { color: var(--ink-dim); font-size: 0.85rem; line-height: 1.5; flex: 1; }
-.real-samples { display:grid;grid-template-columns:1fr 1fr;gap:12px; }
-.real-sample { background:#111522;border-radius:12px;color:#fff;overflow:hidden;text-decoration:none; }
-.real-sample img { aspect-ratio:9/11;display:block;object-fit:cover;width:100%; }
-.real-sample div { padding:14px; }
-.real-sample strong { display:block;font-size:.88rem;line-height:1.3;margin-bottom:4px; }
-.real-sample span { color:#aeb7c7;font-size:.72rem; }
-.real-sample:hover strong { color:#8db4ff; }
-
 /* ── CTA banner ───────────────────────────────────── */
 .cta-banner {
   max-width: 760px;
@@ -930,7 +827,6 @@ footer {
 /* ── Responsive ───────────────────────────────────── */
 @media (max-width: 900px) {
   .usecase-grid { grid-template-columns: repeat(2, 1fr); }
-  .example-inner { grid-template-columns: 1fr; gap: 32px; }
 }
 @media (max-width: 768px) {
   .info-grid { grid-template-columns: 1fr; }
@@ -1109,6 +1005,10 @@ nav {
 .input-feedback.is-success { background:#effaf4; border-color:#ccebd8; color:#276846 }
 #upload-fallback { margin-top:10px; padding:0; border:0; background:none; color:#285fc2; font:700 .84rem var(--font); text-decoration:underline; cursor:pointer }
 #upload-fallback[hidden] { display:none }
+.recovery-actions { display:flex; flex-wrap:wrap; gap:16px; align-items:center; margin-top:10px }
+.recovery-actions[hidden] { display:none }
+.recovery-actions button { padding:0; border:0; background:none; color:#285fc2; font:700 .84rem var(--font); text-decoration:underline; cursor:pointer }
+.recovery-actions button[hidden] { display:none }
 #progress { max-width:none; margin:18px 0 0; padding:22px; text-align:left; border:1px solid #cfdffc; border-radius:14px; background:#f5f8ff; box-shadow:0 12px 30px rgba(54,100,180,.08) }
 .progress-inner { display:flex; align-items:flex-start; gap:12px }
 .progress-heading { display:block; color:var(--ink); font-size:1rem; font-weight:700; line-height:1.25 }
@@ -1123,13 +1023,23 @@ nav {
 #result { max-width:960px;border-radius:18px }
 #result-feedback { margin:10px 0; color:#43678f; font-size:.84rem }
 #result-feedback:empty { display:none }
+.proof-near-analyzer { max-width:960px; margin:-30px auto 52px; padding:0 4px }
+.proof-near-analyzer h2 { font-size:1.12rem; letter-spacing:-.025em; margin:0 0 5px }
+.proof-near-analyzer > p { color:var(--ink-dim); font-size:.85rem; margin:0 0 14px }
+.proof-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px }
+.proof-card { display:grid; grid-template-columns:96px minmax(0,1fr); gap:14px; align-items:start; padding:13px; border:1px solid #dce3ee; border-radius:13px; background:#fff; color:var(--ink); text-decoration:none; transition:border-color .2s,box-shadow .2s }
+.proof-card:hover { border-color:#a9c0ec; box-shadow:0 10px 25px rgba(23,31,54,.08) }
+.proof-card img { width:96px; height:116px; object-fit:cover; border-radius:8px }
+.proof-card small { display:block; color:#60708b; font:.68rem/1.3 var(--mono); text-transform:uppercase; letter-spacing:.06em }
+.proof-card strong { display:block; margin:5px 0; font-size:.89rem; line-height:1.25 }
+.proof-card q { display:block; color:#34445e; font-size:.78rem; line-height:1.42 }
+.proof-card em { display:block; margin-top:8px; color:#2865c2; font-size:.75rem; font-style:normal; font-weight:700 }
 .trust-strip { max-width:960px;margin-bottom:65px }
 .section-header h2 { font-size:clamp(2rem,4vw,3.4rem);letter-spacing:-.055em;line-height:1.03 }
 .section-header p{max-width:610px;margin-left:auto;margin-right:auto}
 .use-cases,.features,.how,.pricing,.blog-preview { max-width:1180px }
 .usecase-card,.info-item,.plan,.blog-card { border-radius:16px;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease }
 .usecase-card:hover,.info-item:hover { transform:translateY(-4px);border-color:var(--accent-border);box-shadow:0 18px 42px rgba(26,26,46,.08) }
-.example-section { background:#111522;color:#f5f7fb }.example-text p{color:#9ba4b7}.example-text li{color:#cbd1dd}.example-mockup{border-color:#323a4e;box-shadow:0 28px 60px rgba(0,0,0,.24)}
 
 /* ── Waitlist Modal ────────────────────────────────── */
 .overlay {
@@ -1195,6 +1105,7 @@ nav {
   .hero{padding:50px 0 40px}.hero h1{font-size:clamp(3rem,15vw,4.25rem)}.hero .sub{font-size:.98rem}.hero-actions{flex-direction:column;align-items:stretch}.hero-primary,.hero-secondary{width:100%}.hero-proof{flex-direction:column;gap:7px}
   .hero-visual{min-height:420px}.scan-card{transform:none}.scan-frame{height:250px}.visual-orbit{width:390px;height:280px}.floating-insight{top:25px;right:0}.floating-score{left:3px;bottom:8px}
   .input-zone{margin:14px 14px 45px;padding:22px}.trust-strip{padding:0 20px}
+  .proof-near-analyzer{margin:-25px 14px 45px}.proof-grid{grid-template-columns:1fr}
   .progress-stages{grid-template-columns:repeat(2,1fr)}
   .analyzer-outcomes{display:grid;grid-template-columns:1fr}.workflow-links{margin-bottom:58px;padding:0 17px}.workflow-link-list{justify-content:flex-start}.workflow-link-list a{text-align:left}
 }
@@ -1264,7 +1175,7 @@ nav {
 
   <div id="url-input">
     <input type="url" id="url" placeholder="https://youtube.com/watch?v=...">
-    <p class="url-hint">Public videos up to 10 minutes. Some platforms block downloads; if a link fails, upload the video file instead. Failed jobs restore your free try.</p>
+    <p class="url-hint">Public clips up to 10 minutes. If a platform blocks the download, upload a clip instead. Failed jobs restore your free try.</p>
   </div>
   <div id="upload-input">
     <div class="upload-area" id="drop-zone" onclick="document.getElementById('file').click()">
@@ -1299,7 +1210,11 @@ nav {
     <span class="free-badge" id="free-count"></span>
   </div>
   <p id="analysis-message" class="input-feedback" role="status" aria-live="polite"></p>
-  <button type="button" id="upload-fallback" hidden onclick="switchTab('upload'); document.getElementById('input-zone').scrollIntoView({behavior:'smooth',block:'center'}); document.getElementById('file').click()">Upload a file instead</button>
+  <div class="recovery-actions" id="recovery-actions" hidden>
+    <button type="button" id="upload-fallback" hidden onclick="track('analysis_recovery_clicked',{action:'upload'}); switchTab('upload'); document.getElementById('input-zone').scrollIntoView({behavior:'smooth',block:'center'}); document.getElementById('file').click()">Upload a file instead</button>
+    <button type="button" id="retry-link" hidden onclick="track('analysis_recovery_clicked',{action:'retry_link'}); tryFree()">Try this link again</button>
+    <button type="button" id="new-link" hidden onclick="track('analysis_recovery_clicked',{action:'new_link'}); switchTab('url'); document.getElementById('url').focus()">Paste a shorter link</button>
+  </div>
   <div id="progress" aria-label="Analysis progress">
     <div class="progress-inner">
       <div class="spinner" aria-hidden="true"></div>
@@ -1315,6 +1230,21 @@ nav {
     <p class="progress-note">Keep this page open. Once the job starts, you can reload to reconnect.</p>
   </div>
 </div>
+
+<section class="proof-near-analyzer" aria-labelledby="proof-title">
+  <h2 id="proof-title">See a real report before you try it</h2>
+  <p>These excerpts come from videos processed by the live analyzer. Open each report to see the full output and its limitations.</p>
+  <div class="proof-grid">
+    <a class="proof-card" href="/samples/animated-cat-shot-breakdown/" data-proof="shot_breakdown">
+      <img src="/samples/assets/cat-opening.jpg" alt="Animated cat and duck from the sample video" loading="lazy">
+      <span><small>Shot breakdown · 00:08 video</small><strong>What happened, second by second</strong><q>Medium shot of a cartoon orange cat with a gold chain and a small duck beside him, both standing in a grassy field under a blue sky with clouds.</q><em>Read the full report →</em></span>
+    </a>
+    <a class="proof-card" href="/samples/semiconductor-podcast-analysis/" data-proof="podcast_notes">
+      <img src="/samples/assets/semiconductor-speakers.jpg" alt="Speaker from the sample podcast clip" loading="lazy">
+      <span><small>Podcast notes · 00:23 video</small><strong>Dialogue with speaker cues</strong><q>00:00 — Speaker 1: So this is a semiconductor, and it's the basis of all technology, all computers.</q><em>Read the full report →</em></span>
+    </a>
+  </div>
+</section>
 
 <section class="workflow-links reveal" aria-labelledby="workflow-title">
   <h2 id="workflow-title">What do you need from the video?</h2>
@@ -1410,27 +1340,6 @@ nav {
       </div>
       <h3>Content &amp; marketing</h3>
       <p>Turn any video into social captions, LinkedIn posts, blog headlines, and hooks. Stop staring at a blank page.</p>
-    </div>
-  </div>
-</div>
-
-<!-- ── Example output ──────────────────────────────── -->
-<div class="example-section reveal" id="example-output">
-  <div class="example-inner">
-    <div class="example-text">
-      <h2>See what the live analyzer produced</h2>
-      <p>Two supplied vertical videos were processed through the same production pipeline visitors use. The public reports include the actual output and its visible limitations.</p>
-      <ul>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Timestamped scene-by-scene breakdown</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Dialogue when a transcript is available</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copy-paste ready marketing assets</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> AI video prompts for recreating shots</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Structured checklists for tutorials</li>
-      </ul>
-    </div>
-    <div class="real-samples">
-      <a class="real-sample" href="/samples/animated-cat-shot-breakdown/"><img src="/samples/assets/cat-opening.jpg" alt="Animated cat and duck sample video"><div><strong>Animated short: shot breakdown</strong><span>8 seconds · 11 frames kept</span></div></a>
-      <a class="real-sample" href="/samples/semiconductor-podcast-analysis/"><img src="/samples/assets/semiconductor-speakers.jpg" alt="Podcast speaker sample video"><div><strong>Podcast clip: transcript and notes</strong><span>23 seconds · dialogue available</span></div></a>
     </div>
   </div>
 </div>
@@ -1699,7 +1608,14 @@ function message(text, kind = 'info') {
   el.textContent = text;
   el.classList.toggle('is-error', kind === 'error');
   el.classList.toggle('is-success', kind === 'success');
-  document.getElementById('upload-fallback').hidden = !(text && kind === 'error' && tab === 'url');
+  const urlError = Boolean(text && kind === 'error' && tab === 'url' && !resultVisible);
+  const tooLong = urlError && /longer than 10 minutes|10 minutes or shorter|10-minute limit|live stream/i.test(text);
+  const blockedLink = urlError && /could not be downloaded|platform|private or unavailable|downloadable video|video link/i.test(text);
+  const recovery = document.getElementById('recovery-actions');
+  document.getElementById('upload-fallback').hidden = !blockedLink || tooLong;
+  document.getElementById('retry-link').hidden = !blockedLink || tooLong;
+  document.getElementById('new-link').hidden = !tooLong;
+  recovery.hidden = !(blockedLink || tooLong);
   document.getElementById('result-feedback').textContent = resultVisible ? text : '';
   if (text && kind === 'error' && !resultVisible) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
@@ -1784,6 +1700,9 @@ document.getElementById('url').addEventListener('change', event => {
 
 document.querySelectorAll('[data-content-topic]').forEach(link => link.addEventListener('click', () => {
   track('content_topic_selected', { content_topic: link.dataset.contentTopic, placement: 'homepage_workflows' });
+}));
+document.querySelectorAll('[data-proof]').forEach(link => link.addEventListener('click', () => {
+  track('sample_report_opened', { sample: link.dataset.proof, placement: 'beside_analyzer' });
 }));
 
 document.querySelectorAll('a[href="#input-zone"]').forEach(link => link.addEventListener('click', () => {
