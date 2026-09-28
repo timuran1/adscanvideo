@@ -36,9 +36,15 @@
   </url>
   <url>
     <loc>https://adscanvideo.com/blog/</loc>
-    <lastmod>2026-09-27</lastmod>
+    <lastmod>2026-09-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://adscanvideo.com/blog/product-demo-video-audit-checklist/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://adscanvideo.com/blog/screen-recording-to-step-by-step-sop/</loc>

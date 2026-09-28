@@ -202,3 +202,28 @@ Best,
 Timurbek
 
 Potential fit: documentation and operations newsletters with a reader-submission channel; founder’s LinkedIn network of operations and enablement teams. Do not submit before checking editorial and promotion policies.
+
+## Outreach prepared September 28, 2026 — product demo audit
+
+Drafts only; no messages, comments, or submissions were sent. Check each venue’s current editorial and self-promotion rules first.
+
+**Founder LinkedIn post:**
+
+A product demo can show every button and still fail to show the outcome. I made a five-part audit for the opening promise, product action, proof, clarity, and next step, with a timestamp worksheet anyone can copy: https://adscanvideo.com/blog/product-demo-video-audit-checklist/
+
+I built AdScanVideo, which can provide a first-pass ad breakdown. The scorecard deliberately does not claim to predict conversions; it should produce edits you can test with your own audience. What do you check before releasing a demo?
+
+**For a B2B video or product-marketing newsletter that accepts resources:**
+
+Subject: A copyable product-demo video audit for your readers
+
+Hi [editor],
+
+I put together a practical pre-launch audit for product demo videos: five criteria, a 0–2 editorial score, a timestamp worksheet, and an illustrative before/after edit list. It’s here: https://adscanvideo.com/blog/product-demo-video-audit-checklist/
+
+I also built AdScanVideo, but the worksheet can be used without the tool. It may be a useful resource for your product-marketing or video-production readers. If you cover demo quality, I’d value your feedback.
+
+Best,
+Timurbek
+
+Potential fit: the founder’s product-marketing LinkedIn network; established B2B product-marketing and video-production newsletters with resource-submission policies. Tailor the note to a specific publication after checking its editorial guidelines.
