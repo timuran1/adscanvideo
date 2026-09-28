@@ -87,6 +87,8 @@ ADSCAN_JOB_WORKER=1 does not perform production recovery.
    The current sandbox Price ID is `price_1UKfLtAuDBUbq28jU41dTSsU`.
    Stripe reports that this Price has inclusive tax behavior.
 2. Set STRIPE_SECRET_KEY, STRIPE_PRICE_VIDEO and STRIPE_WEBHOOK_SECRET server-side.
+   Keep `STRIPE_BILLING_ENABLED=0` until a complete checkout and webhook test
+   passes. Set it to `1` only with matching live credentials at launch.
 3. Register `https://api.adscanvideo.com/api/billing/webhook` for
    checkout.session.completed and checkout.session.async_payment_succeeded.
 4. Restart and test an actual test-mode checkout, successful payment, delayed

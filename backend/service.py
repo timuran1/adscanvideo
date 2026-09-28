@@ -82,7 +82,9 @@ def install(app, jobs, db_path, runner):
         return {'free_remaining': max(0, 1-used), 'paid_credits': max(0, paid-spent), 'reset_at': (int(time.time())//86400+1)*86400, 'billing_enabled': billing_enabled(), 'max_duration': 600}
 
     def billing_enabled():
-        return bool(os.getenv('STRIPE_SECRET_KEY') and os.getenv('STRIPE_WEBHOOK_SECRET') and os.getenv('STRIPE_PRICE_VIDEO'))
+        return os.getenv('STRIPE_BILLING_ENABLED') == '1' and bool(
+            os.getenv('STRIPE_SECRET_KEY') and os.getenv('STRIPE_WEBHOOK_SECRET') and os.getenv('STRIPE_PRICE_VIDEO')
+        )
 
     @app.before_request
     def access_control():

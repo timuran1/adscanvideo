@@ -141,11 +141,15 @@ class ServiceTests(unittest.TestCase):
         with patch.dict(os.environ,{'STRIPE_SECRET_KEY':'','STRIPE_WEBHOOK_SECRET':''}):
             self.assertEqual(self.client.post('/api/billing/checkout',headers=HEADERS).status_code,503)
 
+    def test_billing_requires_explicit_launch_flag(self):
+        with patch.dict(os.environ,{'STRIPE_BILLING_ENABLED':'0','STRIPE_SECRET_KEY':'sk_test_placeholder','STRIPE_WEBHOOK_SECRET':'whsec_placeholder','STRIPE_PRICE_VIDEO':'price_test'}):
+            self.assertEqual(self.client.post('/api/billing/checkout',headers=HEADERS).status_code,503)
+
     def test_checkout_uses_server_price_and_managed_payments(self):
         price='price_1UKfLtAuDBUbq28jU41dTSsU'
         mock_response=Mock()
         mock_response.json.return_value={'id':'cs_sandbox_test','url':'https://checkout.stripe.com/test'}
-        with patch.dict(os.environ,{'STRIPE_SECRET_KEY':'sk_test_placeholder','STRIPE_WEBHOOK_SECRET':'whsec_placeholder','STRIPE_PRICE_VIDEO':price}), \
+        with patch.dict(os.environ,{'STRIPE_BILLING_ENABLED':'1','STRIPE_SECRET_KEY':'sk_test_placeholder','STRIPE_WEBHOOK_SECRET':'whsec_placeholder','STRIPE_PRICE_VIDEO':price}), \
              patch('service.requests.post',return_value=mock_response) as stripe_post:
             response=self.client.post('/api/billing/checkout',json={'price':'price_attacker','quantity':99},headers=HEADERS)
         self.assertEqual(response.status_code,200)
