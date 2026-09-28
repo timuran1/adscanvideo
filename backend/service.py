@@ -360,8 +360,9 @@ def install(app, jobs, db_path, runner):
             return jsonify(error='Open the analyzer to initialize your browser session.'), 401
         # Only the server chooses price and credit quantity. No browser-supplied prices.
         try:
-            response = requests.post('https://api.stripe.com/v1/checkout/sessions', auth=(os.environ['STRIPE_SECRET_KEY'], ''), data={
+            response = requests.post('https://api.stripe.com/v1/checkout/sessions', auth=(os.environ['STRIPE_SECRET_KEY'], ''), headers={'Stripe-Version': '2025-03-31.basil'}, data={
                 'mode': 'payment', 'line_items[0][price]': os.environ['STRIPE_PRICE_VIDEO'], 'line_items[0][quantity]': '1',
+                'managed_payments[enabled]': 'true',
                 'client_reference_id': who, 'metadata[owner]': who,
                 'success_url': 'https://adscanvideo.com/?payment=success#input-zone',
                 'cancel_url': 'https://adscanvideo.com/?payment=cancelled#pricing',
@@ -398,7 +399,10 @@ def install(app, jobs, db_path, runner):
                     if not row:
                         # Retry if delivery races checkout persistence.
                         return jsonify(error='Unknown checkout session.'), 503
-                    if session.get('client_reference_id') != row[0] or session.get('amount_total') != SINGLE_CREDIT_CENTS or session.get('currency') != 'usd':
+                    # Stripe Managed Payments may add tax or convert the displayed currency.
+                    # This session was created server-side for exactly one configured Price;
+                    # the signed, paid session and stored owner are the fulfillment proof.
+                    if session.get('client_reference_id') != row[0]:
                         return jsonify(error='Checkout details do not match.'), 400
                     db.execute('INSERT OR IGNORE INTO payments VALUES(?,?,?,?)', (session['id'], row[0], 1, time.time()))
         return jsonify(received=True)

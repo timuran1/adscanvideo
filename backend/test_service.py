@@ -141,6 +141,22 @@ class ServiceTests(unittest.TestCase):
         with patch.dict(os.environ,{'STRIPE_SECRET_KEY':'','STRIPE_WEBHOOK_SECRET':''}):
             self.assertEqual(self.client.post('/api/billing/checkout',headers=HEADERS).status_code,503)
 
+    def test_checkout_uses_server_price_and_managed_payments(self):
+        price='price_1UKfLtAuDBUbq28jU41dTSsU'
+        mock_response=Mock()
+        mock_response.json.return_value={'id':'cs_sandbox_test','url':'https://checkout.stripe.com/test'}
+        with patch.dict(os.environ,{'STRIPE_SECRET_KEY':'sk_test_placeholder','STRIPE_WEBHOOK_SECRET':'whsec_placeholder','STRIPE_PRICE_VIDEO':price}), \
+             patch('service.requests.post',return_value=mock_response) as stripe_post:
+            response=self.client.post('/api/billing/checkout',json={'price':'price_attacker','quantity':99},headers=HEADERS)
+        self.assertEqual(response.status_code,200)
+        payload=stripe_post.call_args.kwargs['data']
+        self.assertEqual(payload['line_items[0][price]'],price)
+        self.assertEqual(payload['line_items[0][quantity]'],'1')
+        self.assertEqual(payload['managed_payments[enabled]'],'true')
+        self.assertEqual(stripe_post.call_args.kwargs['headers']['Stripe-Version'],'2025-03-31.basil')
+        with module._jobs_conn() as db:
+            self.assertIsNotNone(db.execute('SELECT owner FROM checkouts WHERE session=?',('cs_sandbox_test',)).fetchone())
+
     def test_webhook_signature_and_idempotency(self):
         who=hashlib.sha256(TOKEN.encode()).hexdigest()
         with module._jobs_conn() as db: db.execute('INSERT INTO checkouts VALUES(?,?,?)',('cs_test',who,time.time()))
@@ -164,6 +180,17 @@ class ServiceTests(unittest.TestCase):
         with patch.dict(os.environ,{'STRIPE_WEBHOOK_SECRET':'test'}):
             self.assertEqual(self.client.post('/api/billing/webhook',data=raw,headers={'Stripe-Signature':f't={stamp},v1={sig}'}).status_code,200)
         self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['paid_credits'],0)
+
+    def test_taxed_or_converted_paid_checkout_grants_one_credit(self):
+        who=hashlib.sha256(TOKEN.encode()).hexdigest()
+        with module._jobs_conn() as db: db.execute('INSERT INTO checkouts VALUES(?,?,?)',('cs_taxed',who,time.time()))
+        event={'type':'checkout.session.completed','data':{'object':{'id':'cs_taxed','payment_status':'paid','mode':'payment','client_reference_id':who,'amount_total':450,'currency':'eur'}}}
+        raw=json.dumps(event).encode(); stamp=str(int(time.time())); secret='whsec_test'
+        sig=hmac.new(secret.encode(),stamp.encode()+b'.'+raw,hashlib.sha256).hexdigest()
+        with patch.dict(os.environ,{'STRIPE_WEBHOOK_SECRET':secret}):
+            response=self.client.post('/api/billing/webhook',data=raw,headers={'Stripe-Signature':f't={stamp},v1={sig}'})
+        self.assertEqual(response.status_code,200)
+        self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['paid_credits'],1)
 
     def test_pipeline_systemexit_is_terminal_and_cleans(self):
         jid='c'*32; module.jobs[jid]={'status':'starting'}

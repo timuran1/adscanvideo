@@ -74,7 +74,7 @@ records with an old database. No SSH credentials belong in this repository.
 
 ## Payments
 
-Stripe is disabled until server-only test credentials and a USD $0.50 one-time
+Stripe is disabled until server-only sandbox credentials and a USD $3.99 one-time
 Price are configured. The $19/month plan is marked planned, not purchasable.
 Signature-verified, idempotent webhook fulfillment is implemented and tested
 with synthetic signed events; real Stripe Checkout still needs test-mode
