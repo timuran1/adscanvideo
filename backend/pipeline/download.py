@@ -29,6 +29,11 @@ def is_url(source: str) -> bool:
     return parsed.scheme in ("http", "https") and bool(parsed.netloc)
 
 
+def is_youtube_url(source: str) -> bool:
+    host = (urlparse(source).hostname or "").lower()
+    return host in ("youtube.com", "youtu.be", "youtube-nocookie.com") or host.endswith((".youtube.com", ".youtube-nocookie.com"))
+
+
 def resolve_local(path: str) -> dict:
     p = Path(path).expanduser().resolve()
     if not p.exists():
@@ -91,6 +96,26 @@ def _supports_impersonate() -> str | None:
     return _IMPERSONATE_TARGET
 
 
+def _failure_reason(output: str) -> tuple[str, str]:
+    """Return a safe user message and a short, non-identifying log category."""
+    text = output.lower()
+    if "does not pass filter" in text or "video is too long" in text:
+        return ("This link is for a video longer than 10 minutes or a live stream. "
+                "Upload a clip up to 10 minutes; your allowance was restored.", "duration_or_live")
+    if "http error 429" in text or "too many requests" in text:
+        return ("The video platform is temporarily limiting downloads. "
+                "Please upload the video file instead; your allowance was restored.", "rate_limited")
+    if any(term in text for term in ("private video", "video is unavailable", "sign in to confirm", "login required")):
+        return ("This video is private or unavailable to the analyzer. "
+                "Upload a file you have permission to use; your allowance was restored.", "unavailable")
+    if any(term in text for term in ("http error 403", "only images are available",
+                                     "requested format is not available", "n challenge solving failed")):
+        return ("The video platform did not provide a downloadable video. "
+                "Please upload the video file instead; your allowance was restored.", "blocked_format")
+    return ("This video link could not be downloaded. Please upload the video file "
+            "instead; your allowance was restored.", "unknown")
+
+
 def download_url(url: str, out_dir: Path) -> dict:
     if shutil.which("yt-dlp") is None:
         raise SystemExit("yt-dlp is not installed. Install with: brew install yt-dlp")
@@ -119,7 +144,10 @@ def download_url(url: str, out_dir: Path) -> dict:
         "--sub-format", "vtt",
         "--convert-subs", "vtt",
         "--no-playlist",
-
+        # yt-dlp needs its companion EJS scripts to solve YouTube's current
+        # JavaScript format challenges. The package is installed on production;
+        # this official fallback also works when a deployment lacks it.
+        "--remote-components", "ejs:github",
     ]
 
     # Impersonation is what keeps YouTube from 403-ing a datacenter IP.
@@ -137,24 +165,36 @@ def download_url(url: str, out_dir: Path) -> dict:
 
     # yt-dlp may exit non-zero if a subtitle variant fails (e.g. 429) even when
     # the video itself downloaded fine. Treat "video file present" as success.
-    result = subprocess.run(cmd, stdout=sys.stderr, stderr=sys.stderr, timeout=100)
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=100)
+    except subprocess.TimeoutExpired as exc:
+        raise ValueError("Downloading this video took too long. Please upload a short "
+                         "video file instead; your allowance was restored.") from exc
     video = _pick_video(out_dir)
 
     # Retry once on a different player client — YouTube rotates which clients
     # are blocked, so a fallback pass often succeeds where the default failed.
-    if video is None:
+    first_output = (result.stdout or "") + "\n" + (result.stderr or "")
+    _, first_reason = _failure_reason(first_output)
+    if video is None and is_youtube_url(url) and first_reason not in ("duration_or_live", "unavailable"):
         print("[watch] first pass produced no video; retrying via web_safari "
               "player client", file=sys.stderr)
         retry = cmd[:]
         idx = retry.index("--") if "--" in retry else len(retry)
         retry[idx:idx] = ["--extractor-args", "youtube:player_client=web_safari"]
-        subprocess.run(retry, stdout=sys.stderr, stderr=sys.stderr, timeout=60)
+        try:
+            second = subprocess.run(retry, capture_output=True, text=True, timeout=60)
+            retry_output = (second.stdout or "") + "\n" + (second.stderr or "")
+        except subprocess.TimeoutExpired:
+            retry_output = ""
         video = _pick_video(out_dir)
+    else:
+        retry_output = ""
 
     if video is None:
-        raise SystemExit(
-            f"yt-dlp did not produce a video file in {out_dir} (exit {result.returncode})"
-        )
+        message, reason = _failure_reason(retry_output + "\n" + first_output)
+        print(f"[watch] download failed: {reason}", file=sys.stderr)
+        raise ValueError(message)
 
     subtitle = _pick_subtitle(out_dir)
     info_path = out_dir / "video.info.json"

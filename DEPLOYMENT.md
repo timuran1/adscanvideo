@@ -40,6 +40,9 @@ The API is **Flask/Python**, not Node/Express.
 - Secrets: `/opt/adscanvideo-api/.env` (not in Git)
 - State: jobs.db and analytics.db in the API directory
 - Capacity: shared 2-core, 2 GB VPS; one analysis at a time
+- YouTube extraction: system yt-dlp 2026.08.19, Deno, curl_cffi, and the
+  matching yt-dlp-ejs solver package. Keep yt-dlp and yt-dlp-ejs compatible;
+  `yt-dlp --list-impersonate-targets` should show available browser targets.
 
 Gunicorn runs `-w 1 --threads 4 -b 127.0.0.1:5001 app:app --timeout 60`.
 Do not increase worker count without replacing startup recovery. Each analysis

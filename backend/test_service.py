@@ -14,6 +14,7 @@ from unittest.mock import patch, Mock
 TEMP = tempfile.TemporaryDirectory()
 os.environ.update(ADSCAN_TESTING='1', ADSCAN_DATA_DIR=TEMP.name, ADSCAN_QUOTA_SECRET='test-only-secret', ADSCAN_ADMIN_TOKEN='test-admin-token')
 import app as module
+import download as downloader
 from network_guard import validate_url, public_addresses
 
 TOKEN = 'a'*64
@@ -173,11 +174,36 @@ class ServiceTests(unittest.TestCase):
         self.assertNotIn('private stack',module.jobs[jid]['error'])
         self.assertFalse(Path(directory).exists())
 
+    def test_long_url_returns_specific_error_without_retry(self):
+        with tempfile.TemporaryDirectory() as directory, \
+             patch.dict(os.environ, {'ADSCAN_DOWNLOAD_PROXY':'http://127.0.0.1:8080'}), \
+             patch.object(downloader, '_supports_impersonate', return_value=None), \
+             patch.object(downloader.subprocess, 'run', return_value=Mock(
+                 stdout='does not pass filter (duration <=? 600 & !is_live)',
+                 stderr='', returncode=0)) as run:
+            with self.assertRaisesRegex(ValueError, 'longer than 10 minutes'):
+                downloader.download_url('https://www.youtube.com/watch?v=example', Path(directory))
+            run.assert_called_once()
+
+    def test_youtube_format_failure_retries_and_restores_clear_message(self):
+        output='WARNING: Only images are available for download. Requested format is not available.'
+        with tempfile.TemporaryDirectory() as directory, \
+             patch.dict(os.environ, {'ADSCAN_DOWNLOAD_PROXY':'http://127.0.0.1:8080'}), \
+             patch.object(downloader, '_supports_impersonate', return_value=None), \
+             patch.object(downloader.subprocess, 'run', return_value=Mock(
+                 stdout='', stderr=output, returncode=1)) as run:
+            with self.assertRaisesRegex(ValueError, 'upload the video file'):
+                downloader.download_url('https://youtu.be/example', Path(directory))
+            self.assertEqual(run.call_count, 2)
+            self.assertIn('ejs:github', run.call_args_list[0].args[0])
+            self.assertIn('youtube:player_client=web_safari', run.call_args_list[1].args[0])
+
     def test_duration_limit_before_ai(self):
         jid='c'*32; module.jobs[jid]={'status':'starting'}
         with patch.object(module,'download',return_value={'video_path':'test'}), patch.object(module,'get_metadata',return_value={'duration_seconds':601,'width':100}), patch.object(module.requests,'post') as paid:
-            module.run_analysis(jid,'test','')
+            module.run_analysis(jid,'test','',mode='shots')
         self.assertIn('10 minutes',module.jobs[jid]['error']); paid.assert_not_called()
+        self.assertEqual(module.jobs[jid]['mode'],'shots')
 
     def test_short_video_audio_transcribes_without_global_whisper(self):
         meta={'has_audio':True}

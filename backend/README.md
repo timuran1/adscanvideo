@@ -17,7 +17,10 @@ are used when available, and otherwise videos up to
 deadline.
 
 Dependencies: Flask, flask-cors, requests, Pillow, gunicorn; system ffmpeg,
-ffprobe and yt-dlp with impersonation support. No dependency on the Hermes skill
+ffprobe and yt-dlp with impersonation support, Deno, and yt-dlp-ejs (install
+the matching `yt-dlp[default]` dependency group). YouTube can require the EJS
+solver to expose downloadable formats; the downloader also enables yt-dlp's
+official `ejs:github` fallback if the package is missing. No dependency on the Hermes skill
 folder remains. Run:
 
 ```
