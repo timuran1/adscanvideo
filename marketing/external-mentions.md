@@ -227,3 +227,23 @@ Best,
 Timurbek
 
 Potential fit: the founder’s product-marketing LinkedIn network; established B2B product-marketing and video-production newsletters with resource-submission policies. Tailor the note to a specific publication after checking its editorial guidelines.
+
+## Outreach prepared September 30, 2026 — video ad CTA audit
+
+Drafts only; nothing was sent or posted. The guide is a free worksheet, not a performance claim: https://adscanvideo.com/blog/video-ad-cta-landing-page-audit/
+
+### Founder LinkedIn post for paid-social and creative teams
+
+The CTA in a video ad is a chain, not just the last frame. I now check five points before launch: the offer in the clip, spoken ask, on-screen ask, platform button, and first action on the landing page. If the clip says “try the builder,” but the button says “Learn more” and the click lands on generic pricing, the problem is visible before buying traffic.
+
+I put a timestamped worksheet and illustrative example here: https://adscanvideo.com/blog/video-ad-cta-landing-page-audit/
+
+I built AdScanVideo to help map the clip, but the checklist works by hand. What mismatch do you catch most often?
+
+### PPC Live: original expert contribution opportunity
+
+[PPC Live's article submission page](https://www.ppc.live/submit-an-article) seeks hands-on PPC advice and cases from practitioners. A founder with genuine ad-testing experience could pitch an **original** article about checking video CTA, button, and destination continuity before launch. Proposed angle: “A five-point preflight for paid-video CTA and landing-page mismatch.” Include a real, permission-cleared case and outcome if available; otherwise submit the worksheet as an editorial resource, not an invented case study. Do not republish this AdScanVideo guide verbatim or pitch a product placement. Founder must confirm the current guidelines and submit personally.
+
+**Personal pitch outline to adapt:** I work on video-analysis workflows and have a practical preflight checklist for paid-video campaigns. It maps the spoken promise, on-screen ask, platform button, final URL, and first landing-page action. I can write an original, evidence-based piece with a real example from a campaign I am authorized to discuss and distinguish creative observations from conversion data. Would this be useful to PPC Live readers?
+
+[PPC Hero's contributor page](https://ppchero.com/become-a-ppc-hero-author/) explicitly rejects AI-generated pitches, self-promotion, and republished articles. Do not send this draft there. It is a possible venue only if the founder later writes an original expert pitch that meets its stated requirements.
