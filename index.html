@@ -1041,7 +1041,7 @@ nav {
 .usecase-card,.info-item,.plan,.blog-card { border-radius:16px;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease }
 .usecase-card:hover,.info-item:hover { transform:translateY(-4px);border-color:var(--accent-border);box-shadow:0 18px 42px rgba(26,26,46,.08) }
 
-/* ── Waitlist Modal ────────────────────────────────── */
+/* ── Analysis credit modal ──────────────────────────── */
 .overlay {
   position:fixed; inset:0; z-index:9999;
   background:rgba(0,0,0,0.55); backdrop-filter:blur(4px);
@@ -1049,7 +1049,7 @@ nav {
   padding:20px;
 }
 .hidden { display:none !important; }
-.waitlist-modal {
+.credit-modal {
   background:#fff; border-radius:16px; padding:36px 32px 28px;
   max-width:400px; width:100%; text-align:center;
   box-shadow:0 24px 64px rgba(0,0,0,0.18);
@@ -1061,37 +1061,15 @@ nav {
   color:var(--ink-muted); line-height:1;
 }
 .modal-close:hover { color:var(--ink); }
-.waitlist-icon {
+.credit-icon {
   width:64px; height:64px; border-radius:50%;
   background:var(--accent-soft); display:flex;
   align-items:center; justify-content:center;
   margin:0 auto 16px; color:var(--accent);
 }
-.waitlist-modal h3 { font-size:1.15rem; font-weight:700; margin-bottom:8px; }
-.waitlist-modal > p { color:var(--ink-dim); font-size:0.88rem; margin-bottom:20px; }
-#waitlist-form { display:flex; flex-direction:column; gap:10px; }
-#waitlist-form input {
-  padding:11px 14px; border:1px solid var(--border-strong);
-  border-radius:var(--radius-sm); font-size:0.88rem; font-family:var(--font);
-  outline:none; transition:border-color 0.15s;
-}
-#waitlist-form input:focus { border-color:var(--accent); }
-.wl-divider {
-  display:flex; align-items:center; gap:12px;
-  color:var(--ink-muted); font-size:0.78rem;
-}
-.wl-divider::before,.wl-divider::after { content:''; flex:1; height:1px; background:var(--border-strong); }
-.wl-hint { color:var(--ink-muted); font-size:0.75rem; }
-#waitlist-form button { margin-top:4px; width:100%; justify-content:center; }
-.wl-thanks { padding:16px 0; }
-.wl-thanks h3 { color:var(--green); margin-bottom:4px; }
-.wl-thanks p { color:var(--ink-dim); font-size:0.88rem; }
-.wl-skip { margin-top:14px; font-size:0.82rem; }
-.wl-skip a { color:var(--ink-muted); text-decoration:none; }
-.wl-skip a:hover { color:var(--ink-dim); }
-.wl-submitted input, .wl-submitted button { display:none; }
-.wl-submitted .wl-divider { display:none; }
-.wl-submitted .wl-hint { display:none; }
+.credit-modal h3 { font-size:1.15rem; font-weight:700; margin-bottom:8px; }
+.credit-modal > p { color:var(--ink-dim); font-size:0.88rem; margin-bottom:20px; }
+.credit-modal .plan-cta { width:100%; justify-content:center; }
 
 .plan.featured { border-color:var(--accent);box-shadow:0 20px 50px rgba(var(--accent-rgb),.13) }
 .cta-section { background:var(--accent);color:white }.cta-section p{color:rgba(255,255,255,.8)}.cta-section .btn{background:white;color:var(--ink);box-shadow:none}
@@ -1436,6 +1414,7 @@ nav {
       <h3>Pay as you go</h3>
       <div class="price">$3.99<span>/video</span></div>
       <p style="font-size:.76rem;color:var(--ink-muted);margin:4px 0 0;">Tax is included where applicable. Local currency may vary at checkout.</p>
+      <p style="font-size:.76rem;color:var(--ink-muted);margin:4px 0 0;">No account needed. A purchased credit stays with this browser until you use it; avoid clearing site data first.</p>
       <ul>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Pay per video, no sub</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>One additional analysis</li>
@@ -1496,31 +1475,17 @@ nav {
   </div>
 </div>
 
-<!-- ── Waitlist Modal ───────────────────────────────── -->
-<div id="waitlist-overlay" class="overlay hidden" onclick="if(event.target===this)closeWaitlist()">
-  <div class="waitlist-modal" role="dialog" aria-modal="true" aria-label="Analysis credits">
-    <button class="modal-close" onclick="closeWaitlist()">&times;</button>
-    <div class="waitlist-icon">
+<!-- ── Analysis credit modal ─────────────────────────── -->
+<div id="credit-overlay" class="overlay hidden" onclick="if(event.target===this)closeCredits()">
+  <div class="credit-modal" role="dialog" aria-modal="true" aria-label="Analysis credits">
+    <button class="modal-close" onclick="closeCredits()" aria-label="Close">&times;</button>
+    <div class="credit-icon">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     </div>
     <h3>Continue analyzing</h3>
     <p id="billing-message" role="status">One analysis is free each day. Additional analyses require a $3.99 credit.</p>
     <button type="button" class="plan-cta primary" onclick="buyCredit()" data-checkout>Buy 1 analysis · $3.99</button>
-    <p>Join the waitlist — get early access, updates, and launch discounts straight to your inbox or Telegram.</p>
-    <form id="waitlist-form" onsubmit="return submitWaitlist(event)">
-      <input type="text" id="wl-name" placeholder="Your name" required autocomplete="name">
-      <input type="email" id="wl-email" placeholder="Email address" autocomplete="email">
-      <div class="wl-divider"><span>or</span></div>
-      <input type="text" id="wl-telegram" placeholder="@Telegram username">
-      <small class="wl-hint">We'll only reach out when we launch. No spam.</small>
-      <button type="submit" id="wl-btn" class="plan-cta primary">Join waitlist</button>
-    </form>
-    <div id="wl-thanks" class="wl-thanks hidden">
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-      <h3>You're on the list!</h3>
-      <p>We'll let you know when we launch. Share with friends in the meantime 🙌</p>
-    </div>
-    <p class="wl-skip"><a href="#" onclick="closeWaitlist();return false">No thanks, I'll wait</a></p>
+    <p style="margin:12px 0 0;">Your purchased credit stays with this browser until used.</p>
   </div>
 </div>
 
@@ -1645,9 +1610,9 @@ async function refreshUsage() {
 async function buyCredit() {
   const el = document.getElementById('billing-message');
   if (!billingEnabled) {
-    showWaitlist();
+    showCredits();
     track('pricing_interest', { offer: 'single_credit' });
-    el.textContent = 'Payments are coming soon. Return tomorrow for your next free analysis, or join the launch waitlist below.';
+    el.textContent = 'Checkout is temporarily unavailable. Your free analysis resets tomorrow.';
     return;
   }
   track('begin_checkout', { currency: 'USD', value: 3.99, items: [{ item_id: 'single_analysis', item_name: 'Single analysis credit', price: 3.99, quantity: 1 }] });
@@ -1870,7 +1835,7 @@ async function tryFree() {
     message(error.name === 'AbortError' ? 'The request timed out. Please check your connection and retry.' : error.message, 'error');
     if (error.code === 'payment_required') {
       track('quota_blocked', { analysis_mode: mode, input_method: isUpload ? 'upload' : 'url' });
-      showWaitlist();
+      showCredits();
     } else if (!jobId) {
       track('analysis_submission_failed', {
         analysis_mode: mode,
@@ -1918,43 +1883,18 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-/* ── Waitlist modal ────────────────────────────────── */
-const WAITLIST_URL = 'https://formspree.io/f/mrewnnov';
-
+/* ── Analysis credit modal ──────────────────────────── */
 let previousFocus = null;
-function showWaitlist() {
+function showCredits() {
   previousFocus = document.activeElement;
-  document.getElementById('waitlist-overlay').classList.remove('hidden');
+  document.getElementById('credit-overlay').classList.remove('hidden');
   document.querySelector('.modal-close').focus();
 }
-function closeWaitlist() {
-  document.getElementById('waitlist-overlay').classList.add('hidden');
+function closeCredits() {
+  document.getElementById('credit-overlay').classList.add('hidden');
   previousFocus?.focus();
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeWaitlist(); });
-async function submitWaitlist(e) {
-  e.preventDefault();
-  const name = document.getElementById('wl-name').value.trim();
-  const email = document.getElementById('wl-email').value.trim();
-  const telegram = document.getElementById('wl-telegram').value.trim();
-  if (!name || (!email && !telegram)) { document.getElementById('wl-btn').textContent = 'Add an email or Telegram username'; return false; }
-  const btn = document.getElementById('wl-btn');
-  btn.textContent = 'Sending...'; btn.disabled = true;
-  try {
-    const response = await fetch(WAITLIST_URL, {
-      method: 'POST', headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email: email || '—', telegram: telegram || '—', source: 'adscanvideo.com/waitlist' })
-    });
-    if (!response.ok) throw new Error('Could not join the waitlist.');
-  } catch(_) { btn.textContent = 'Please retry — message not sent'; btn.disabled = false; return false; }
-  document.getElementById('waitlist-form').classList.add('wl-submitted');
-  document.getElementById('wl-thanks').classList.remove('hidden');
-  btn.textContent = 'Joined ✓';
-  track('waitlist_joined', { method: email ? 'email' : 'telegram' });
-  // Store submission in localStorage so we don't show again
-  storage.set('adsv_waitlist', '1');
-  return false;
-}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCredits(); });
 /* ── Export functions ───────────────────────────────── */
 function escapeHTML(value) { return value.replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char])); }
 async function copyResult() {

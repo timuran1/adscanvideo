@@ -74,9 +74,11 @@ records with an old database. No SSH credentials belong in this repository.
 
 ## Payments
 
-Stripe is disabled until server-only sandbox credentials and a USD $3.99 one-time
-Price are configured. The $19/month plan is marked planned, not purchasable.
-Signature-verified, idempotent webhook fulfillment is implemented and tested
-with synthetic signed events; real Stripe Checkout still needs test-mode
-verification when credentials arrive. Add account recovery and refund/dispute
-handling before broadly promoting paid usage.
+The AdScanVideo Stripe account has live $3.99 one-time Checkout enabled. The
+$19/month plan is marked planned, not purchasable. The API creates Checkout
+Sessions server-side and issues a credit only after a signed, paid webhook.
+The live Checkout endpoint and hosted payment page were reachable on September
+29, 2026; this did not charge a card or prove a real paid webhook delivery.
+The frontend no longer offers a launch waitlist. Paid credits are tied to the
+browser's owner token, so clearing site data loses access to unused credits.
+Build a secure credit-recovery path before promoting high-volume paid use.
