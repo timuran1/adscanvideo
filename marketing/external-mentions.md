@@ -22,7 +22,7 @@ I built AdScanVideo because studying a short reference video still meant replayi
 
 The current modes cover shot breakdowns, ad intelligence, podcast notes, marketing copy, tutorial steps, and summaries. I have also published two real production outputs so people can judge the result before uploading anything: https://adscanvideo.com/samples/
 
-The product is in early access. One analysis is free each day, files are removed after processing, and the $3.99 paid credit is displayed but not available until Stripe is connected. I would especially value feedback on report usefulness and which workflow deserves deeper controls.
+The product is in early access. One analysis is free each day, temporary video files are deleted after processing, and an additional analysis costs $3.99. I would especially value feedback on report usefulness and which workflow deserves deeper controls.
 
 ## Founder post for LinkedIn or X
 
