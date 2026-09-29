@@ -366,7 +366,7 @@ def install(app, jobs, db_path, runner):
                 'mode': 'payment', 'line_items[0][price]': os.environ['STRIPE_PRICE_VIDEO'], 'line_items[0][quantity]': '1',
                 'managed_payments[enabled]': 'true',
                 'client_reference_id': who, 'metadata[owner]': who,
-                'success_url': 'https://adscanvideo.com/?payment=success#input-zone',
+                'success_url': 'https://adscanvideo.com/?payment=success&session_id={CHECKOUT_SESSION_ID}#input-zone',
                 'cancel_url': 'https://adscanvideo.com/?payment=cancelled#pricing',
             }, timeout=20)
             response.raise_for_status()
@@ -376,6 +376,18 @@ def install(app, jobs, db_path, runner):
             return jsonify(url=data['url'])
         except (requests.RequestException, KeyError):
             return jsonify(error='Checkout is temporarily unavailable. Please try again.'), 502
+
+    @app.get('/api/billing/checkout/<session_id>')
+    def checkout_status(session_id):
+        who, _ = owner(True)
+        if not who or not re.fullmatch(r'cs_(?:test|live)_[A-Za-z0-9]{1,200}', session_id):
+            return jsonify(error='Checkout not found.'), 404
+        with connect() as db:
+            row = db.execute('SELECT owner FROM checkouts WHERE session=?', (session_id,)).fetchone()
+            if not row or not hmac.compare_digest(row[0], who):
+                return jsonify(error='Checkout not found.'), 404
+            paid = db.execute('SELECT 1 FROM payments WHERE session=? AND owner=?', (session_id, who)).fetchone()
+        return jsonify(status='paid' if paid else 'pending')
 
     @app.post('/api/billing/webhook')
     def webhook():

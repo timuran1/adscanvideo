@@ -157,9 +157,24 @@ class ServiceTests(unittest.TestCase):
         self.assertEqual(payload['line_items[0][price]'],price)
         self.assertEqual(payload['line_items[0][quantity]'],'1')
         self.assertEqual(payload['managed_payments[enabled]'],'true')
+        self.assertIn('session_id={CHECKOUT_SESSION_ID}',payload['success_url'])
         self.assertEqual(stripe_post.call_args.kwargs['headers']['Stripe-Version'],'2025-03-31.basil')
         with module._jobs_conn() as db:
             self.assertIsNotNone(db.execute('SELECT owner FROM checkouts WHERE session=?',('cs_sandbox_test',)).fetchone())
+
+    def test_checkout_status_requires_owner_and_signed_webhook(self):
+        who=hashlib.sha256(TOKEN.encode()).hexdigest()
+        session='cs_test_12345'
+        with module._jobs_conn() as db:
+            db.execute('INSERT INTO checkouts VALUES(?,?,?)',(session,who,time.time()))
+        path='/api/billing/checkout/'+session
+        self.assertEqual(self.client.get(path).status_code,404)
+        self.assertEqual(self.client.get(path,headers={'Authorization':'Bearer '+'b'*64}).status_code,404)
+        self.assertEqual(self.client.get('/api/billing/checkout/cs_test_unknown',headers=HEADERS).status_code,404)
+        self.assertEqual(self.client.get(path,headers=HEADERS).json['status'],'pending')
+        with module._jobs_conn() as db:
+            db.execute('INSERT INTO payments VALUES(?,?,?,?)',(session,who,1,time.time()))
+        self.assertEqual(self.client.get(path,headers=HEADERS).json['status'],'paid')
 
     def test_webhook_signature_and_idempotency(self):
         who=hashlib.sha256(TOKEN.encode()).hexdigest()

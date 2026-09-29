@@ -19,7 +19,7 @@
 <meta name="twitter:image" content="https://adscanvideo.com/og-image.png">
 <meta name="adscan-api-base" content="https://api.adscanvideo.com/api">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://adscanvideo.com/#organization","name":"AdScanVideo","url":"https://adscanvideo.com/"},{"@type":"WebApplication","@id":"https://adscanvideo.com/#app","name":"AdScanVideo","url":"https://adscanvideo.com/","operatingSystem":"Any","applicationCategory":"BusinessApplication","description":"Analyze a video from a file or public link to get a timestamped report covering scenes, dialogue when available, prompts, advertising strategy, or production details.","featureList":["General video analysis","Video ad analysis","Video to prompt","Video to shot list","Transcript-aware reports","Word and PDF export"],"offers":[{"@type":"Offer","price":"0","priceCurrency":"USD","description":"One free analysis daily per network during early access"},{"@type":"Offer","price":"3.99","priceCurrency":"USD","description":"One additional video analysis when payments launch"}],"publisher":{"@id":"https://adscanvideo.com/#organization"}}]}
+{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://adscanvideo.com/#organization","name":"AdScanVideo","url":"https://adscanvideo.com/"},{"@type":"WebApplication","@id":"https://adscanvideo.com/#app","name":"AdScanVideo","url":"https://adscanvideo.com/","operatingSystem":"Any","applicationCategory":"BusinessApplication","description":"Analyze a video from a file or public link to get a timestamped report covering scenes, dialogue when available, prompts, advertising strategy, or production details.","featureList":["General video analysis","Video ad analysis","Video to prompt","Video to shot list","Transcript-aware reports","Word and PDF export"],"offers":[{"@type":"Offer","price":"0","priceCurrency":"USD","description":"One free analysis daily per network during early access"},{"@type":"Offer","price":"3.99","priceCurrency":"USD","description":"One additional video analysis for USD $3.99"}],"publisher":{"@id":"https://adscanvideo.com/#organization"}}]}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1418,7 +1418,7 @@ nav {
 <div class="pricing reveal" id="pricing">
   <div class="section-header">
     <h2>Simple pricing</h2>
-    <p>One free analysis daily per network. Additional analyses cost $3.99 once payments launch. Daily allowance resets at midnight UTC; failed jobs restore it.</p>
+    <p>One free analysis daily per network. Additional analyses cost $3.99 per video. Daily allowance resets at midnight UTC; failed jobs restore it.</p>
   </div>
   <div class="pricing-row">
     <div class="plan">
@@ -1442,7 +1442,7 @@ nav {
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Export to Word &amp; PDF</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>No subscription</li>
       </ul>
-      <button type="button" class="plan-cta primary" onclick="buyCredit()" data-checkout>Payments coming soon</button>
+      <button type="button" class="plan-cta primary" onclick="buyCredit()" data-checkout>Buy 1 analysis · $3.99</button>
     </div>
     <div class="plan">
       <h3>Heavy use</h3>
@@ -1504,8 +1504,8 @@ nav {
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     </div>
     <h3>Continue analyzing</h3>
-    <p id="billing-message" role="status">One analysis is free each day. Additional analyses require a paid credit. Payments are coming soon.</p>
-    <button type="button" class="plan-cta primary" onclick="buyCredit()" data-checkout>Payments coming soon</button>
+    <p id="billing-message" role="status">One analysis is free each day. Additional analyses require a $3.99 credit.</p>
+    <button type="button" class="plan-cta primary" onclick="buyCredit()" data-checkout>Buy 1 analysis · $3.99</button>
     <p>Join the waitlist — get early access, updates, and launch discounts straight to your inbox or Telegram.</p>
     <form id="waitlist-form" onsubmit="return submitWaitlist(event)">
       <input type="text" id="wl-name" placeholder="Your name" required autocomplete="name">
@@ -1643,9 +1643,9 @@ async function refreshUsage() {
   } catch { document.getElementById('free-count').textContent = 'Allowance checked when you analyze'; }
 }
 async function buyCredit() {
-  showWaitlist();
   const el = document.getElementById('billing-message');
   if (!billingEnabled) {
+    showWaitlist();
     track('pricing_interest', { offer: 'single_credit' });
     el.textContent = 'Payments are coming soon. Return tomorrow for your next free analysis, or join the launch waitlist below.';
     return;
@@ -1885,11 +1885,24 @@ refreshUsage().then(async () => {
   if (active && /^[a-f0-9]{32}$/.test(active)) { jobId = active; await pollJob(active); }
   if (new URLSearchParams(location.search).get('payment') === 'success') {
     track('checkout_returned', { offer: 'single_credit' });
-    message('Checkout returned successfully. Credits appear after payment confirmation.');
-    for (let i = 0; i < 8 && !paidCredits; i++) { await pause(2500); await refreshUsage(); }
-    if (paidCredits) {
-      track('payment_confirmed', { currency: 'USD', value: 3.99, offer: 'single_credit' });
-      message('Payment confirmed. Your analysis credit is ready.');
+    message('Checkout returned. Waiting for payment confirmation…');
+    const sessionId = new URLSearchParams(location.search).get('session_id');
+    if (sessionId && /^cs_(?:test|live)_[A-Za-z0-9]{1,200}$/.test(sessionId)) {
+      for (let i = 0; i < 8; i++) {
+        try {
+          const checkout = await api('/billing/checkout/' + encodeURIComponent(sessionId));
+          if (checkout.status === 'paid') {
+            await refreshUsage();
+            track('payment_confirmed', { currency: 'USD', value: 3.99, offer: 'single_credit' });
+            message('Payment confirmed. Your analysis credit is ready.');
+            break;
+          }
+        } catch { /* The webhook or network may still be catching up. */ }
+        if (i === 7) message('Payment is still processing. Refresh this page shortly; contact support if the credit does not appear.');
+        else await pause(2500);
+      }
+    } else {
+      message('Checkout returned. Refresh this page to see confirmed credits, or contact support if one does not appear.');
     }
   }
 });

@@ -48,6 +48,9 @@ account recovery is a follow-up before broadly promoting paid usage.
 - `POST /api/analyze-upload`: multipart file, mode, optional question.
 - `GET /api/status/ID` and `/api/result/ID`: require the owning token.
 - `POST /api/billing/checkout`: returns a Stripe-hosted checkout URL when configured.
+- `GET /api/billing/checkout/<session_id>`: returns `pending` or `paid` for a
+  Checkout Session owned by the caller, so the return page can confirm that the
+  signed webhook granted the credit. Unknown sessions return 404.
 - `POST /api/billing/webhook`: validates Stripe signatures and grants paid credits.
 - `/api/reap` and `/api/recover`: require ADSCAN_ADMIN_TOKEN as a bearer token.
 
