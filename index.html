@@ -1721,7 +1721,7 @@ function updateUI() {
   document.getElementById('try-btn').disabled = busy;
   document.querySelectorAll('.tab-btn,.mode-ch').forEach(el => { el.disabled = busy; });
   document.getElementById('file').disabled = busy;
-  document.querySelectorAll('[data-checkout]').forEach(el => { el.textContent = billingEnabled ? 'Buy 1 analysis · $3.99' : 'Payments coming soon'; });
+  document.querySelectorAll('[data-checkout]').forEach(el => { el.textContent = billingEnabled ? 'Buy 1 analysis · $3.99' : 'Checkout unavailable'; });
 }
 updateUI();
 const stepProgress = { submitting: 5, uploading: 5, starting: 8, downloading: 22, transcribing: 40, extracting: 60, dedup: 75, analyzing: 90, done: 100 };
