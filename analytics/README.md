@@ -23,3 +23,15 @@ service-account JSON file to this repository.
 
 The report flags channel or country rows with at least five sessions and an
 engagement rate below 15 percent. This is a review signal, not proof of bot traffic.
+# Operations dashboard traffic snapshot
+
+The public operations dashboard reads a reduced GA4 summary from
+`/opt/adscanvideo-api/analytics-output/adscanvideo-weekly.json`. The hourly
+`adscanvideo-ga4.timer` runs `dashboard_snapshot.py` on the VPS using the read-only service
+account at `/opt/adscanvideo-api/secrets/ga4-reader.json`. Keep the key and
+snapshot outside the public static site. If GA4 is unavailable, the dashboard
+still shows live job data and labels traffic data unavailable; the last valid
+snapshot remains on disk. GA4 country rows are aggregate visitor data and
+cannot be joined to historical video jobs. New jobs store only a two-letter
+country code from Cloudflare's `CF-IPCountry` header, with no raw IP address in
+the operations table.

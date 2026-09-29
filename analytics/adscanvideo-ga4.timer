@@ -1,0 +1,10 @@
+[Unit]
+Description=Refresh AdScanVideo GA4 dashboard each hour
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+Unit=adscanvideo-ga4.service
+
+[Install]
+WantedBy=timers.target

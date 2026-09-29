@@ -48,6 +48,11 @@ def install(app, jobs, db_path, runner):
         CREATE TABLE IF NOT EXISTS payments (session TEXT PRIMARY KEY, owner TEXT NOT NULL, credits INTEGER NOT NULL, created REAL NOT NULL);
         CREATE TABLE IF NOT EXISTS checkouts (session TEXT PRIMARY KEY, owner TEXT NOT NULL, created REAL NOT NULL);
         ''')
+        access_columns = {row[1] for row in db.execute('PRAGMA table_info(access)')}
+        if 'country' not in access_columns:
+            db.execute("ALTER TABLE access ADD COLUMN country TEXT NOT NULL DEFAULT ''")
+        if 'input_method' not in access_columns:
+            db.execute("ALTER TABLE access ADD COLUMN input_method TEXT NOT NULL DEFAULT ''")
 
     def owner(required=False):
         value = request.headers.get('Authorization', '').removeprefix('Bearer ')
@@ -132,17 +137,18 @@ def install(app, jobs, db_path, runner):
             db.row_factory = sqlite3.Row
             rows = db.execute(
                 "SELECT id,status,created,updated,mode,cost,frames_kept,"
-                "transcript_chars,duration FROM jobs ORDER BY created DESC"
+                "transcript_chars,duration,error FROM jobs ORDER BY created DESC"
             ).fetchall()
             access_rows = db.execute(
-                "SELECT a.job,a.tier FROM access a"
+                "SELECT a.job,a.tier,a.country,a.input_method FROM access a"
             ).fetchall()
             payment = db.execute(
                 "SELECT COALESCE(SUM(credits),0) AS credits, COUNT(*) AS payments FROM payments"
             ).fetchone()
             checkout_count = db.execute("SELECT COUNT(*) AS count FROM checkouts").fetchone()["count"]
 
-        tier_by_job = {row["job"]: row["tier"] for row in access_rows}
+        access_by_job = {row["job"]: row for row in access_rows}
+        tier_by_job = {job: row["tier"] for job, row in access_by_job.items()}
         terminal = {"done", "error"}
         total = len(rows)
         completed = sum(row["status"] == "done" for row in rows)
@@ -179,6 +185,32 @@ def install(app, jobs, db_path, runner):
             entry["completed"] += row["status"] == "done"
             entry["failed"] += row["status"] == "error"
 
+        input_counts = {}
+        country_counts = {}
+        for row in last_7d:
+            access = access_by_job.get(row["id"])
+            method = (access["input_method"] if access else "") or "unknown"
+            country = (access["country"] if access else "") or "unknown"
+            entry = input_counts.setdefault(method, {"input_method": method, "total": 0, "completed": 0, "failed": 0})
+            entry["total"] += 1
+            entry["completed"] += row["status"] == "done"
+            entry["failed"] += row["status"] == "error"
+            country_counts[country] = country_counts.get(country, 0) + 1
+
+        def failure_category(row):
+            if row["status"] != "error":
+                return ""
+            error = (row["error"] or "").lower()
+            if any(word in error for word in ("download", "private", "unavailable", "platform", "youtube", "link")):
+                return "Video link unavailable"
+            if any(word in error for word in ("too long", "10 minutes", "duration")):
+                return "Video too long"
+            if any(word in error for word in ("timeout", "took too long", "deadline")):
+                return "Processing timeout"
+            if any(word in error for word in ("readable video", "format", "decode", "corrupt")):
+                return "Unreadable video"
+            return "Processing error"
+
         recent = []
         for row in rows[:30]:
             created = row["created"] or 0
@@ -191,11 +223,29 @@ def install(app, jobs, db_path, runner):
                 "has_transcript": bool(row["transcript_chars"]),
                 "cost": round(row["cost"] or 0, 6),
                 "tier": tier_by_job.get(row["id"], "unknown"),
+                "country": (access_by_job[row["id"]]["country"] or "unknown") if row["id"] in access_by_job else "unknown",
+                "input_method": (access_by_job[row["id"]]["input_method"] or "unknown") if row["id"] in access_by_job else "unknown",
+                "failure_category": failure_category(row),
             })
 
         paid_jobs = sum(tier_by_job.get(row["id"]) == "paid" for row in rows)
         free_jobs = sum(tier_by_job.get(row["id"]) == "free" for row in rows)
         longest_active = max((now - (row["updated"] or row["created"] or now) for row in active_rows), default=0)
+        traffic = None
+        snapshot_path = ROOT / 'analytics-output' / 'adscanvideo-weekly.json'
+        try:
+            snapshot = json.loads(snapshot_path.read_text(encoding='utf-8'))
+            traffic = {
+                'generated_at': int(snapshot_path.stat().st_mtime),
+                'period': snapshot.get('period', ''),
+                'overview': snapshot.get('overview', {}),
+                'previous': snapshot.get('previousPeriod', {}),
+                'countries': snapshot.get('countries', [])[:10],
+                'sources': snapshot.get('sources', [])[:10],
+                'funnel': snapshot.get('funnelTotals', {}),
+            }
+        except (OSError, ValueError, TypeError):
+            pass
         return jsonify({
             "generated_at": int(now),
             "overview": {
@@ -226,10 +276,13 @@ def install(app, jobs, db_path, runner):
             },
             "daily": days,
             "modes": sorted(mode_counts.values(), key=lambda item: (-item["total"], item["mode"])),
+            "inputs": sorted(input_counts.values(), key=lambda item: (-item["total"], item["input_method"])),
+            "job_countries": sorted(({"country": key, "jobs": value} for key, value in country_counts.items()), key=lambda item: (-item["jobs"], item["country"])),
+            "traffic": traffic,
             "recent": recent,
         })
 
-    def reserve():
+    def reserve(input_method):
         who, token = owner()
         ip = ip_key()
         with connect() as db:
@@ -249,7 +302,11 @@ def install(app, jobs, db_path, runner):
                 who = hashlib.sha256(jid.encode()).hexdigest()
             now = time.time()
             db.execute('INSERT INTO jobs(id,status,created,updated) VALUES(?,?,?,?)', (jid, 'starting', now, now))
-            db.execute('INSERT INTO access VALUES(?,?,?,?,?,?)', (jid, who, ip, time.strftime('%Y-%m-%d', time.gmtime()), 'free' if data['free_remaining'] else 'paid', now))
+            country = request.headers.get('CF-IPCountry', '').strip().upper()
+            if not re.fullmatch(r'[A-Z]{2}', country) or country in ('XX', 'T1', 'A1'):
+                country = ''
+            db.execute('INSERT INTO access(job,owner,ip,day,tier,created,country,input_method) VALUES(?,?,?,?,?,?,?,?)',
+                       (jid, who, ip, time.strftime('%Y-%m-%d', time.gmtime()), 'free' if data['free_remaining'] else 'paid', now, country, input_method))
         return (jid, token), None
 
     def supervise(payload):
@@ -316,7 +373,7 @@ def install(app, jobs, db_path, runner):
             source = validate_url(data['url'].strip())
         except ValueError as e:
             return jsonify(error=str(e), code='invalid_input'), 400
-        reservation, error = reserve()
+        reservation, error = reserve('url')
         if error:
             return error
         directory = Path(tempfile.mkdtemp(prefix='adscan-job-'))
@@ -345,7 +402,7 @@ def install(app, jobs, db_path, runner):
                     out.write(chunk)
             if count == 0:
                 return jsonify(error='The uploaded file is empty.'), 400
-            reservation, error = reserve()
+            reservation, error = reserve('upload')
             if error:
                 return error
             return launch(reservation, str(path), question, mode, directory)

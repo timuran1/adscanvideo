@@ -94,16 +94,20 @@ class ServiceTests(unittest.TestCase):
         self.assertEqual(self.client.get('/admin').status_code,403)
 
     def test_admin_dashboard_returns_privacy_safe_metrics(self):
-        first=self.post(); self.finish(first)
+        first=self.post({**HEADERS,'CF-IPCountry':'US'}); self.finish(first)
         response=self.client.get('/api/admin/dashboard')
         self.assertEqual(response.status_code,200)
         data=response.json
         self.assertEqual(data['overview']['total'],1)
         self.assertEqual(data['overview']['completed'],1)
         self.assertEqual(data['revenue']['free_jobs'],1)
+        self.assertEqual(data['inputs'][0]['input_method'],'url')
+        self.assertEqual(data['recent'][0]['country'],'US')
+        self.assertEqual(data['recent'][0]['input_method'],'url')
         self.assertNotIn('title',data['recent'][0])
         self.assertNotIn('source',data['recent'][0])
         self.assertNotIn('result',data['recent'][0])
+        self.assertNotIn('error',data['recent'][0])
 
     def test_global_capacity(self):
         self.post()

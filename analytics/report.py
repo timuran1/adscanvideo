@@ -68,13 +68,13 @@ def quality_flags(rows, label_key):
 
 
 def build_report(reporter):
-    current = overview(reporter, "7daysAgo")
-    previous = overview(reporter, "14daysAgo", "8daysAgo")
-    channels = reporter.run(["sessionDefaultChannelGroup"], ["sessions", "engagedSessions", "engagementRate", "activeUsers"], "7daysAgo")
-    sources = reporter.run(["sessionSourceMedium"], ["sessions", "engagedSessions", "engagementRate", "activeUsers"], "7daysAgo")
-    countries = reporter.run(["country"], ["sessions", "engagedSessions", "engagementRate", "activeUsers"], "7daysAgo")
-    pages = reporter.run(["landingPagePlusQueryString"], ["sessions", "engagedSessions", "engagementRate", "activeUsers"], "7daysAgo")
-    event_rows = reporter.run(["eventName", "customEvent:analysis_mode", "customEvent:input_method"], ["eventCount", "activeUsers"], "7daysAgo", limit=500)
+    current = overview(reporter, "6daysAgo")
+    previous = overview(reporter, "13daysAgo", "7daysAgo")
+    channels = reporter.run(["sessionDefaultChannelGroup"], ["sessions", "engagedSessions", "engagementRate", "activeUsers"], "6daysAgo")
+    sources = reporter.run(["sessionSourceMedium"], ["sessions", "engagedSessions", "engagementRate", "activeUsers"], "6daysAgo")
+    countries = reporter.run(["country"], ["sessions", "engagedSessions", "engagementRate", "activeUsers"], "6daysAgo")
+    pages = reporter.run(["landingPagePlusQueryString"], ["sessions", "engagedSessions", "engagementRate", "activeUsers"], "6daysAgo")
+    event_rows = reporter.run(["eventName", "customEvent:analysis_mode", "customEvent:input_method"], ["eventCount", "activeUsers"], "6daysAgo", limit=500)
     funnel = [row for row in event_rows if row.get("eventName") in FUNNEL_EVENTS]
     totals = {}
     for row in funnel:
@@ -84,7 +84,7 @@ def build_report(reporter):
     failed = totals.get("analysis_failed", 0)
     return {
         "generated": date.today().isoformat(), "property": PROPERTY_ID,
-        "period": "last 7 days through today", "overview": current,
+        "period": "last 7 calendar days including today (GA4 may be delayed)", "overview": current,
         "previousPeriod": previous, "channels": channels, "sources": sources,
         "countries": countries, "landingPages": pages, "funnelRows": funnel,
         "funnelTotals": totals,
@@ -147,8 +147,12 @@ def main():
         raise SystemExit(f"Credential file not found: {args.credentials}")
     args.output.mkdir(parents=True, exist_ok=True)
     data = build_report(Reporter(args.credentials))
-    (args.output / "adscanvideo-weekly.json").write_text(json.dumps(data, indent=2), encoding="utf-8")
-    (args.output / "adscanvideo-weekly.md").write_text(markdown(data), encoding="utf-8")
+    for name, content in (("adscanvideo-weekly.json", json.dumps(data, indent=2)),
+                          ("adscanvideo-weekly.md", markdown(data))):
+        target = args.output / name
+        pending = args.output / (name + ".pending")
+        pending.write_text(content, encoding="utf-8")
+        pending.replace(target)
     print(args.output / "adscanvideo-weekly.md")
 
 

@@ -1,0 +1,10 @@
+[Unit]
+Description=Refresh AdScanVideo GA4 dashboard snapshot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/opt/adscanvideo-api
+ExecStart=/usr/bin/python3 /opt/adscanvideo-api/analytics/dashboard_snapshot.py --credentials /opt/adscanvideo-api/secrets/ga4-reader.json --output /opt/adscanvideo-api/analytics-output/adscanvideo-weekly.json
