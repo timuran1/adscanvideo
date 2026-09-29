@@ -35,7 +35,7 @@
   <aside class="sidebar">
     <a class="brand" href="/"><svg width="22" height="18" viewBox="0 0 24 20" fill="none" aria-hidden="true"><rect x="1" y="2" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2"/><path d="m17 7 6-3v12l-6-3" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>AdScan<span>Video</span></a>
     <nav class="nav" aria-label="Dashboard"><a href="#overview" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13h6V4H4zm10 7h6v-9h-6zM4 20h6v-3H4zm10-13h6V4h-6z"/></svg>Overview</a><a href="#jobs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Recent jobs</a><a href="https://analytics.google.com/" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 20V10m7 10V4m7 16v-7"/></svg>Google Analytics</a><a href="https://search.google.com/search-console" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>Search Console</a></nav>
-    <div class="sidebar-note">Private operations view<br><a href="/privacy/">Data handling policy</a></div>
+    <div class="sidebar-note">Privacy-safe metrics<br><a href="/privacy/">Data handling policy</a></div>
   </aside>
   <main class="main" id="overview">
     <header class="topbar"><div><h1>Operations overview</h1><p id="updated">Loading current metrics…</p></div><div class="actions"><button class="button" id="refresh">Refresh data</button></div></header>
@@ -94,7 +94,7 @@ function render(data){
   $('m-credits').textContent=rev.credits_issued;$('m-billing-note').textContent=ops.billing_enabled?'Stripe enabled':'Stripe not enabled';
   renderTrend(data.daily);renderModes(data.modes);renderJobs(data.recent);renderInputs(data.inputs||[]);renderTraffic(data.traffic);
   $('h-active').textContent=o.active;$('h-age').textContent=duration(ops.longest_active_seconds);$('h-failure').textContent=pct(o.failure_rate_7d);$('h-frames').textContent=o.frames_7d.toLocaleString();
-  const healthy=o.active===0||ops.longest_active_seconds<600;const hp=$('health-pill');hp.className=`pill ${healthy?'good':'bad'}`;hp.innerHTML=`<i class="pulse"></i>${healthy?'Healthy':'Needs attention'}`;
+  const stuck=o.active>0&&ops.longest_active_seconds>=600;const highFailure=Number(o.failure_rate_7d||0)>=.2;const hp=$('health-pill');hp.className=`pill ${stuck?'bad':highFailure?'warn':'good'}`;hp.innerHTML=`<i class="pulse"></i>${stuck?'Job may be stuck':highFailure?'High failure rate':'Healthy'}`;
   const bp=$('billing-pill');bp.className=`pill ${ops.billing_enabled?'good':'warn'}`;bp.textContent=ops.billing_enabled?'Stripe enabled':'Payments pending';
   $('r-price').textContent=`$${(ops.price_cents/100).toFixed(2)}`;$('r-checkouts').textContent=rev.checkouts_started;$('r-paid').textContent=rev.paid_jobs;$('r-free').textContent=rev.free_jobs;
 }

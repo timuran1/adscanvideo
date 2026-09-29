@@ -65,8 +65,9 @@ def build(key):
     metrics = ['activeUsers', 'sessions', 'engagedSessions', 'engagementRate']
     current = report(token, [], metrics, '6daysAgo', limit=1)
     previous = report(token, [], metrics, '13daysAgo', '7daysAgo', limit=1)
-    countries = report(token, ['country'], metrics, '6daysAgo', limit=20)
-    sources = report(token, ['sessionSourceMedium'], metrics, '6daysAgo', limit=20)
+    acquisition_metrics = ['sessions', 'activeUsers', 'engagedSessions', 'engagementRate']
+    countries = report(token, ['country'], acquisition_metrics, '6daysAgo', limit=20)
+    sources = report(token, ['sessionSourceMedium'], acquisition_metrics, '6daysAgo', limit=20)
     events = report(token, ['eventName'], ['eventCount'], '6daysAgo', limit=200)
     return {
         'property': PROPERTY,
