@@ -41,6 +41,7 @@ is planned but cannot be purchased yet.
 - [Video to shot list](https://adscanvideo.com/video-to-shot-list/)
 - [Video to prompt generator](https://adscanvideo.com/video-to-prompt/)
 - [All video-analysis guides](https://adscanvideo.com/blog/)
+- [Video link troubleshooting and file-upload fallback](https://adscanvideo.com/blog/video-link-not-working-upload-file/)
 - [Video ad CTA and landing-page audit](https://adscanvideo.com/blog/video-ad-cta-landing-page-audit/)
 - [Video caption quality checklist for ads and demos](https://adscanvideo.com/blog/video-caption-quality-checklist/)
 - [Product demo video audit checklist](https://adscanvideo.com/blog/product-demo-video-audit-checklist/)
@@ -61,5 +62,5 @@ is planned but cannot be purchased yet.
 - [Terms of service](https://adscanvideo.com/terms/)
 - [Support, billing and refunds](https://adscanvideo.com/support/)
 
-Last updated: 2026-09-30
+Last updated: 2026-10-01
 Contact: support@adscanvideo.com
