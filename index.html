@@ -992,6 +992,9 @@ nav {
   box-shadow: 0 22px 60px rgba(23,31,54,.09);
 }
 .input-zone::before { content:'01 / INPUT'; display:block; margin-bottom:22px; color:#66748d; font:600 .52rem/1 var(--mono); letter-spacing:.12em; }
+.input-guidance { display:flex; flex-direction:column; gap:4px; margin:0 0 18px; padding:14px 16px; border:1px solid #cfe0f8; border-left:4px solid var(--accent); border-radius:10px; background:#f4f8ff; line-height:1.45 }
+.input-guidance strong { color:var(--ink); font-size:.92rem }
+.input-guidance span { color:#4d607c; font-size:.8rem }
 .tabs { max-width: 360px; background:#edf1f7; }
 .tab-btn { color:#53617a; }.tab-btn.active { background:#fff;color:var(--ink);box-shadow:0 2px 7px rgba(23,31,54,.1) }
 #url-input input { background:#fbfcff;color:var(--ink);border-color:#cbd5e3 }.url-hint{color:#5c687c}
@@ -1146,6 +1149,10 @@ nav {
 
 <!-- ── Input zone ──────────────────────────────────── -->
 <div class="input-zone" id="input-zone">
+  <div class="input-guidance" role="note">
+    <strong>For the most reliable analysis, upload the video file.</strong>
+    <span>Hosting platforms can block video links even when they play in your browser. You can still try a public link; failed jobs restore your free try.</span>
+  </div>
   <div class="tabs">
     <button class="tab-btn" data-tab="upload">Upload a file</button>
     <button class="tab-btn" data-tab="url">Paste a link</button>
@@ -1153,7 +1160,7 @@ nav {
 
   <div id="url-input">
     <input type="url" id="url" placeholder="https://youtube.com/watch?v=...">
-    <p class="url-hint">Public clips up to 10 minutes. If a platform blocks the download, upload a clip instead. Failed jobs restore your free try. <a href="/blog/video-link-not-working-upload-file/">Link not working?</a></p>
+    <p class="url-hint">Public clips up to 10 minutes. Links depend on the hosting platform allowing a download. <a href="/blog/video-link-not-working-upload-file/">What if my link fails?</a></p>
   </div>
   <div id="upload-input">
     <div class="upload-area" id="drop-zone" onclick="document.getElementById('file').click()">
@@ -1189,7 +1196,7 @@ nav {
   </div>
   <p id="analysis-message" class="input-feedback" role="status" aria-live="polite"></p>
   <div class="recovery-actions" id="recovery-actions" hidden>
-    <button type="button" id="upload-fallback" hidden onclick="track('analysis_recovery_clicked',{action:'upload'}); switchTab('upload'); document.getElementById('input-zone').scrollIntoView({behavior:'smooth',block:'center'}); document.getElementById('file').click()">Upload a file instead</button>
+    <button type="button" id="upload-fallback" hidden onclick="track('analysis_recovery_clicked',{action:'upload'}); switchTab('upload'); document.getElementById('input-zone').scrollIntoView({behavior:'smooth',block:'center'}); document.getElementById('file').click()">Upload the video file (recommended)</button>
     <button type="button" id="retry-link" hidden onclick="track('analysis_recovery_clicked',{action:'retry_link'}); tryFree()">Try this link again</button>
     <button type="button" id="new-link" hidden onclick="track('analysis_recovery_clicked',{action:'new_link'}); switchTab('url'); document.getElementById('url').focus()">Paste a shorter link</button>
   </div>
