@@ -1048,7 +1048,7 @@ nav {
 .short-demo-play::after { content:'▶'; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:64px; height:64px; display:grid; place-items:center; padding-left:4px; border-radius:50%; background:rgba(19,32,59,.88); color:#fff; font-size:25px; box-shadow:0 8px 25px rgba(0,0,0,.25) }
 .short-demo-play:hover::after,.short-demo-play:focus-visible::after { background:#4f8cf7 }
 .short-demo-play:focus-visible { outline:3px solid #4f8cf7; outline-offset:-3px }
-.short-demo-media iframe { width:100%; height:100%; border:0 }
+.short-demo-media video { display:block; width:100%; height:100%; object-fit:contain; background:#111a31 }
 .short-demo-card h3 { margin:0 0 6px; font-size:1rem; line-height:1.3 }
 .short-demo-card p { color:var(--ink-dim); font-size:.82rem; line-height:1.45; margin:0 0 10px }
 .short-demo-card > a { color:#2865c2; font-size:.82rem; font-weight:700; text-decoration:none }
@@ -1254,19 +1254,19 @@ nav {
   <p>Short demos of a file upload, choosing a report, and reviewing the result.</p>
   <div class="short-demo-grid">
     <article class="short-demo-card">
-      <div class="short-demo-media"><button type="button" class="short-demo-play" data-short-id="miJJLBoVdPE" data-short-topic="report" aria-label="Play the video-to-report demo"><img src="/shorts/report-demo.jpg" alt="Preview of the video-to-report demo" loading="lazy" width="1080" height="1920"></button></div>
+      <div class="short-demo-media"><button type="button" class="short-demo-play" data-video-file="report-demo.mp4" data-short-topic="report" aria-label="Play the video-to-report demo"><img src="/shorts/report-demo.jpg" alt="Preview of the video-to-report demo" loading="lazy" width="1080" height="1920"></button></div>
       <h3>From video to report</h3><p>See a sample clip become a structured analysis.</p><a href="https://www.youtube.com/shorts/miJJLBoVdPE" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
     </article>
     <article class="short-demo-card">
-      <div class="short-demo-media"><button type="button" class="short-demo-play" data-short-id="vC6mQlfO2E0" data-short-topic="upload" aria-label="Play the file-upload demo"><img src="/shorts/upload-demo.jpg" alt="Preview showing the AdScanVideo file upload" loading="lazy" width="1080" height="1920"></button></div>
+      <div class="short-demo-media"><button type="button" class="short-demo-play" data-video-file="upload-demo.mp4" data-short-topic="upload" aria-label="Play the file-upload demo"><img src="/shorts/upload-demo.jpg" alt="Preview showing the AdScanVideo file upload" loading="lazy" width="1080" height="1920"></button></div>
       <h3>Upload the file</h3><p>See why a direct upload is the most reliable start.</p><a href="https://www.youtube.com/shorts/vC6mQlfO2E0" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
     </article>
     <article class="short-demo-card">
-      <div class="short-demo-media"><button type="button" class="short-demo-play" data-short-id="v6wOxmJedjw" data-short-topic="modes" aria-label="Play the analysis-modes demo"><img src="/shorts/modes-demo.jpg" alt="Preview showing the available analysis modes" loading="lazy" width="1080" height="1920"></button></div>
+      <div class="short-demo-media"><button type="button" class="short-demo-play" data-video-file="modes-demo.mp4" data-short-topic="modes" aria-label="Play the analysis-modes demo"><img src="/shorts/modes-demo.jpg" alt="Preview showing the available analysis modes" loading="lazy" width="1080" height="1920"></button></div>
       <h3>Choose your outcome</h3><p>Pick a focused workflow for the video you have.</p><a href="https://www.youtube.com/shorts/v6wOxmJedjw" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
     </article>
   </div>
-  <p class="short-demos-note">YouTube loads only when you press Play. <a href="https://www.youtube.com/@AdScanVideo" target="_blank" rel="noopener noreferrer">See all Shorts ↗</a></p>
+  <p class="short-demos-note">Videos load only when you press Play. <a href="https://www.youtube.com/@AdScanVideo" target="_blank" rel="noopener noreferrer">See all Shorts on YouTube ↗</a></p>
 </section>
 
 <section class="workflow-links reveal" aria-labelledby="workflow-title">
@@ -1575,14 +1575,16 @@ function track(eventName, parameters = {}) {
 }
 document.querySelectorAll('.short-demo-play').forEach(button => {
   button.addEventListener('click', () => {
-    const id = button.dataset.shortId;
-    if (!['miJJLBoVdPE', 'vC6mQlfO2E0', 'v6wOxmJedjw'].includes(id)) return;
-    const frame = document.createElement('iframe');
-    frame.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1`;
-    frame.title = button.getAttribute('aria-label').replace(/^Play /, '');
-    frame.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share';
-    frame.allowFullscreen = true;
-    button.replaceWith(frame);
+    const filename = button.dataset.videoFile;
+    if (!['report-demo.mp4', 'upload-demo.mp4', 'modes-demo.mp4'].includes(filename)) return;
+    const video = document.createElement('video');
+    video.src = `/shorts/${filename}`;
+    video.setAttribute('aria-label', button.getAttribute('aria-label').replace(/^Play /, ''));
+    video.setAttribute('playsinline', '');
+    video.controls = true;
+    video.preload = 'metadata';
+    button.replaceWith(video);
+    video.play().catch(() => {});
     track('short_demo_played', { video_topic: button.dataset.shortTopic });
   });
 });
