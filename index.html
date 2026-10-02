@@ -1037,6 +1037,23 @@ nav {
 .proof-card strong { display:block; margin:5px 0; font-size:.89rem; line-height:1.25 }
 .proof-card q { display:block; color:#34445e; font-size:.78rem; line-height:1.42 }
 .proof-card em { display:block; margin-top:8px; color:#2865c2; font-size:.75rem; font-style:normal; font-weight:700 }
+.short-demos { max-width:960px; margin:0 auto 62px; padding:0 4px }
+.short-demos h2 { font-size:clamp(1.45rem,3vw,2rem); letter-spacing:-.04em; margin:0 0 6px }
+.short-demos > p { color:var(--ink-dim); font-size:.9rem; margin:0 0 18px }
+.short-demo-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px }
+.short-demo-card { min-width:0; padding:17px; border:1px solid #dce3ee; border-radius:16px; background:#fff }
+.short-demo-media { position:relative; width:min(100%,240px); aspect-ratio:9/16; margin:0 auto 16px; overflow:hidden; border-radius:12px; background:#111a31 }
+.short-demo-play { display:block; position:relative; width:100%; height:100%; padding:0; border:0; cursor:pointer; background:#111a31 }
+.short-demo-play img { display:block; width:100%; height:100%; object-fit:cover }
+.short-demo-play::after { content:'▶'; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:64px; height:64px; display:grid; place-items:center; padding-left:4px; border-radius:50%; background:rgba(19,32,59,.88); color:#fff; font-size:25px; box-shadow:0 8px 25px rgba(0,0,0,.25) }
+.short-demo-play:hover::after,.short-demo-play:focus-visible::after { background:#4f8cf7 }
+.short-demo-play:focus-visible { outline:3px solid #4f8cf7; outline-offset:-3px }
+.short-demo-media iframe { width:100%; height:100%; border:0 }
+.short-demo-card h3 { margin:0 0 6px; font-size:1rem; line-height:1.3 }
+.short-demo-card p { color:var(--ink-dim); font-size:.82rem; line-height:1.45; margin:0 0 10px }
+.short-demo-card > a { color:#2865c2; font-size:.82rem; font-weight:700; text-decoration:none }
+.short-demo-card > a:hover { text-decoration:underline }
+.short-demos .short-demos-note { font-size:.75rem; margin:13px 0 0 }
 .trust-strip { max-width:960px;margin-bottom:65px }
 .section-header h2 { font-size:clamp(2rem,4vw,3.4rem);letter-spacing:-.055em;line-height:1.03 }
 .section-header p{max-width:610px;margin-left:auto;margin-right:auto}
@@ -1087,6 +1104,7 @@ nav {
   .hero-visual{min-height:420px}.scan-card{transform:none}.scan-frame{height:250px}.visual-orbit{width:390px;height:280px}.floating-insight{top:25px;right:0}.floating-score{left:3px;bottom:8px}
   .input-zone{margin:14px 14px 45px;padding:22px}.trust-strip{padding:0 20px}
   .proof-near-analyzer{margin:-25px 14px 45px}.proof-grid{grid-template-columns:1fr}
+  .short-demos{margin:0 14px 48px;padding:0}.short-demo-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px}.short-demo-card{flex:0 0 min(74vw,300px);scroll-snap-align:start}
   .progress-stages{grid-template-columns:repeat(2,1fr)}
   .analyzer-outcomes{display:grid;grid-template-columns:1fr}.workflow-links{margin-bottom:58px;padding:0 17px}.workflow-link-list{justify-content:flex-start}.workflow-link-list a{text-align:left}
 }
@@ -1229,6 +1247,26 @@ nav {
       <span><small>Podcast notes · 00:23 video</small><strong>Dialogue with speaker cues</strong><q>00:00 — Speaker 1: So this is a semiconductor, and it's the basis of all technology, all computers.</q><em>Read the full report →</em></span>
     </a>
   </div>
+</section>
+
+<section class="short-demos" aria-labelledby="short-demos-title">
+  <h2 id="short-demos-title">Watch AdScanVideo in action</h2>
+  <p>Short demos of a file upload, choosing a report, and reviewing the result.</p>
+  <div class="short-demo-grid">
+    <article class="short-demo-card">
+      <div class="short-demo-media"><button type="button" class="short-demo-play" data-short-id="miJJLBoVdPE" data-short-topic="report" aria-label="Play the video-to-report demo"><img src="/shorts/report-demo.jpg" alt="Preview of the video-to-report demo" loading="lazy" width="1080" height="1920"></button></div>
+      <h3>From video to report</h3><p>See a sample clip become a structured analysis.</p><a href="https://www.youtube.com/shorts/miJJLBoVdPE" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
+    </article>
+    <article class="short-demo-card">
+      <div class="short-demo-media"><button type="button" class="short-demo-play" data-short-id="vC6mQlfO2E0" data-short-topic="upload" aria-label="Play the file-upload demo"><img src="/shorts/upload-demo.jpg" alt="Preview showing the AdScanVideo file upload" loading="lazy" width="1080" height="1920"></button></div>
+      <h3>Upload the file</h3><p>See why a direct upload is the most reliable start.</p><a href="https://www.youtube.com/shorts/vC6mQlfO2E0" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
+    </article>
+    <article class="short-demo-card">
+      <div class="short-demo-media"><button type="button" class="short-demo-play" data-short-id="v6wOxmJedjw" data-short-topic="modes" aria-label="Play the analysis-modes demo"><img src="/shorts/modes-demo.jpg" alt="Preview showing the available analysis modes" loading="lazy" width="1080" height="1920"></button></div>
+      <h3>Choose your outcome</h3><p>Pick a focused workflow for the video you have.</p><a href="https://www.youtube.com/shorts/v6wOxmJedjw" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
+    </article>
+  </div>
+  <p class="short-demos-note">YouTube loads only when you press Play. <a href="https://www.youtube.com/@AdScanVideo" target="_blank" rel="noopener noreferrer">See all Shorts ↗</a></p>
 </section>
 
 <section class="workflow-links reveal" aria-labelledby="workflow-title">
@@ -1535,6 +1573,19 @@ function track(eventName, parameters = {}) {
   if (typeof gtag !== 'function') return;
   gtag('event', eventName, { transport_type: 'beacon', ...parameters });
 }
+document.querySelectorAll('.short-demo-play').forEach(button => {
+  button.addEventListener('click', () => {
+    const id = button.dataset.shortId;
+    if (!['miJJLBoVdPE', 'vC6mQlfO2E0', 'v6wOxmJedjw'].includes(id)) return;
+    const frame = document.createElement('iframe');
+    frame.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1`;
+    frame.title = button.getAttribute('aria-label').replace(/^Play /, '');
+    frame.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share';
+    frame.allowFullscreen = true;
+    button.replaceWith(frame);
+    track('short_demo_played', { video_topic: button.dataset.shortTopic });
+  });
+});
 function trackOnce(eventName, parameters = {}) {
   const key = 'adsv_ga_once_' + eventName;
   if (storage.get(key)) return;
