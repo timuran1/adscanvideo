@@ -52,6 +52,15 @@ account recovery is a follow-up before broadly promoting paid usage.
   Checkout Session owned by the caller, so the return page can confirm that the
   signed webhook granted the credit. Unknown sessions return 404.
 - `POST /api/billing/webhook`: validates Stripe signatures and grants paid credits.
+- `POST /api/billing/subscription/checkout`: creates a $39.99/month Checkout Session
+  only when STRIPE_SUBSCRIPTION_ENABLED=1 and the matching recurring Price and
+  customer portal login URL are configured. The browser must save its private
+  access key before redirecting to Stripe.
+- `GET /api/billing/subscription/checkout/<session_id>`: confirms fulfillment
+  after a signed paid-invoice webhook, never merely from the success redirect.
+- `GET /api/usage` also returns monthly_remaining and monthly_ends_at. Each paid
+  invoice grants 20 analyses only during its billing period; unused analyses
+  expire. A failed analysis restores that period's allowance.
 - `/api/reap` and `/api/recover`: require ADSCAN_ADMIN_TOKEN as a bearer token.
 
 Admission returns 202 with job_id, 402 when payment is required, 503 with
@@ -100,12 +109,39 @@ ADSCAN_JOB_WORKER=1 does not perform production recovery.
 6. Set matching live credentials only after those checks. Update llms.txt when
    payments launch. Never use the success redirect as proof of payment.
 
-The proposed $39.99/month capped plan is not purchasable. No subscription or unlimited
-entitlement is implemented. Checkout always selects the configured price on the
-server; fulfillment requires a signed webhook for a known checkout, matching owner,
-paid status and payment mode. Stripe may add tax or convert the displayed currency,
-so fulfillment does not require the final total to be exactly USD $3.99. The checkout session ID is unique
-in the credits ledger, so webhook replay cannot grant duplicate credits.
+The one-time checkout always selects its configured price on the server;
+fulfillment requires a signed webhook for a known checkout, matching owner,
+paid status and payment mode. Stripe may add tax or convert the displayed
+currency, so fulfillment does not require the final total to be exactly USD
+$3.99. The checkout session ID is unique in the credits ledger, so webhook
+replay cannot grant duplicate credits. Monthly checkout remains behind a
+separate disabled flag until its launch gate below is complete.
+
+## Monthly subscription launch gate
+
+The recurring implementation is staged but remains disabled in production until
+all of these have been verified in the AdScanVideo Stripe account (not Connect Limo):
+
+1. Create a recurring USD $39.99/month Price for a 20-analysis plan, check its
+   product category/tax treatment, and set `STRIPE_PRICE_MONTHLY` server-side.
+2. Enable Stripe's customer portal login link for the same account. Customers
+   must be able to cancel and update payment methods using their email. Set its
+   `https://billing.stripe.com/p/login/...` URL as `STRIPE_PORTAL_LOGIN_URL`.
+3. Add `invoice.payment_succeeded`, `invoice.payment_failed`, and
+   `customer.subscription.deleted` to the existing signed webhook destination,
+   alongside the current Checkout events. Verify its signing secret still matches.
+4. Test checkout, initial invoice, duplicate and out-of-order webhooks, renewal,
+   failed payment, cancellation, access-key restore in another browser, and
+   allowance expiry in Stripe test mode. The key must have Checkout Sessions
+   write permission for recurring Checkout Sessions.
+5. Back up the production SQLite databases, deploy backend code, then set
+   `STRIPE_SUBSCRIPTION_ENABLED=1` only after the live recurring Price and portal
+   are confirmed. Verify the live site advertises the plan and an actual paid
+   invoice grants 20 analyses. Do not use an unpaid success redirect as proof.
+
+The monthly allowance is attached to a private browser access key because the
+product has no customer accounts. Customers must save it to restore access on
+another browser; Stripe's portal manages billing, not analysis access.
 
 ## Deployment safety
 

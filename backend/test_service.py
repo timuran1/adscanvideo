@@ -24,7 +24,7 @@ class ServiceTests(unittest.TestCase):
     def setUp(self):
         self.client = module.app.test_client()
         with module._jobs_conn() as db:
-            for table in ('jobs','access','payments','checkouts'):
+            for table in ('jobs','access','payments','checkouts','subscription_periods','subscriptions','subscription_checkouts'):
                 db.execute('DELETE FROM '+table)
         self.thread = patch('service.start_worker').start()
         self.validation = patch('service.validate_url', side_effect=lambda url: url).start()
@@ -43,6 +43,12 @@ class ServiceTests(unittest.TestCase):
 
     def finish(self, response, status='done'):
         module.jobs[response.json['job_id']].update(status=status)
+
+    def signed_event(self, event, secret='whsec_test'):
+        raw=json.dumps(event).encode(); stamp=str(int(time.time()))
+        sig=hmac.new(secret.encode(),stamp.encode()+b'.'+raw,hashlib.sha256).hexdigest()
+        with patch.dict(os.environ,{'STRIPE_WEBHOOK_SECRET':secret}):
+            return self.client.post('/api/billing/webhook',data=raw,headers={'Stripe-Signature':f't={stamp},v1={sig}'})
 
     def test_usage_starts_at_one(self):
         self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['free_remaining'],1)
@@ -214,6 +220,61 @@ class ServiceTests(unittest.TestCase):
             response=self.client.post('/api/billing/webhook',data=raw,headers={'Stripe-Signature':f't={stamp},v1={sig}'})
         self.assertEqual(response.status_code,200)
         self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['paid_credits'],1)
+
+    def test_monthly_checkout_is_gated_and_uses_server_price(self):
+        self.assertEqual(self.client.post('/api/billing/subscription/checkout',headers=HEADERS).status_code,503)
+        price='price_monthlytest'
+        portal='https://billing.stripe.com/p/login/testportal'
+        mock_response=Mock(); mock_response.json.return_value={'id':'cs_test_monthly','url':'https://checkout.stripe.com/test-monthly'}
+        env={'STRIPE_BILLING_ENABLED':'1','STRIPE_SUBSCRIPTION_ENABLED':'1','STRIPE_SECRET_KEY':'sk_test_placeholder',
+             'STRIPE_WEBHOOK_SECRET':'whsec_placeholder','STRIPE_PRICE_VIDEO':'price_single',
+             'STRIPE_PRICE_MONTHLY':price,'STRIPE_PORTAL_LOGIN_URL':portal}
+        with patch.dict(os.environ,env), patch('service.requests.post',return_value=mock_response) as stripe_post:
+            response=self.client.post('/api/billing/subscription/checkout',json={'price':'price_attacker','quantity':999},headers=HEADERS)
+            self.assertEqual(response.status_code,200)
+            self.assertEqual(self.client.post('/api/billing/subscription/checkout',headers=HEADERS).json['url'],response.json['url'])
+            self.assertEqual(stripe_post.call_count,1)
+            self.assertTrue(self.client.get('/api/usage',headers=HEADERS).json['subscription_enabled'])
+        payload=stripe_post.call_args.kwargs['data']
+        self.assertEqual(payload['mode'],'subscription')
+        self.assertEqual(payload['line_items[0][price]'],price)
+        self.assertEqual(payload['line_items[0][quantity]'],'1')
+        self.assertEqual(payload['managed_payments[enabled]'],'true')
+        self.assertEqual(self.client.get('/api/billing/subscription/checkout/cs_test_monthly',headers=HEADERS).json['status'],'pending')
+        self.assertEqual(self.client.get('/api/billing/subscription/checkout/cs_test_monthly',headers={'Authorization':'Bearer '+'b'*64}).status_code,404)
+
+    def test_monthly_grant_expires_and_failed_job_restores_it(self):
+        who=hashlib.sha256(TOKEN.encode()).hexdigest()
+        now=int(time.time()); subscription='sub_test_monthly'; customer='cus_test_monthly'
+        with module._jobs_conn() as db:
+            db.execute('INSERT INTO subscription_checkouts(session,owner,created) VALUES(?,?,?)',('cs_test_monthly',who,now))
+        invoice={'id':'in_test_monthly','subscription':subscription,'customer':customer,'status':'paid','amount_paid':3999,
+                 'lines':{'data':[{'price':{'id':'price_monthlytest'},'period':{'start':now-60,'end':now+30*86400}}]}}
+        with patch.dict(os.environ,{'STRIPE_PRICE_MONTHLY':'price_monthlytest'}):
+            # Stripe can deliver the invoice before Checkout; the retry must not grant an orphaned allowance.
+            self.assertEqual(self.signed_event({'type':'invoice.payment_succeeded','data':{'object':invoice}}).status_code,503)
+            checkout={'id':'cs_test_monthly','mode':'subscription','subscription':subscription,'customer':customer,'client_reference_id':who}
+            self.assertEqual(self.signed_event({'type':'checkout.session.completed','data':{'object':checkout}}).status_code,200)
+            for _ in range(2):
+                self.assertEqual(self.signed_event({'type':'invoice.payment_succeeded','data':{'object':invoice}}).status_code,200)
+            wrong_price={**invoice,'id':'in_wrong_price','lines':{'data':[{'price':{'id':'price_other'},'period':{'start':now-60,'end':now+30*86400}}]}}
+            self.assertEqual(self.signed_event({'type':'invoice.payment_succeeded','data':{'object':wrong_price}}).status_code,200)
+        self.assertEqual(self.client.get('/api/billing/subscription/checkout/cs_test_monthly',headers=HEADERS).json['status'],'paid')
+        self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['monthly_remaining'],20)
+        first=self.post(); self.finish(first)
+        second=self.post(); self.finish(second,'error')
+        self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['monthly_remaining'],20)
+        third=self.post(); self.finish(third)
+        self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['monthly_remaining'],19)
+        with module._jobs_conn() as db:
+            self.assertEqual(db.execute('SELECT COUNT(*) FROM subscription_periods').fetchone()[0],1)
+            db.execute('UPDATE subscription_periods SET ends=?', (now-1,))
+        self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['monthly_remaining'],0)
+        self.assertEqual(self.post().status_code,402)
+        renewal={**invoice,'id':'in_test_renewal','lines':{'data':[{'price':{'id':'price_monthlytest'},'period':{'start':now-1,'end':now+30*86400}}]}}
+        with patch.dict(os.environ,{'STRIPE_PRICE_MONTHLY':'price_monthlytest'}):
+            self.assertEqual(self.signed_event({'type':'invoice.payment_succeeded','data':{'object':renewal}}).status_code,200)
+        self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['monthly_remaining'],20)
 
     def test_pipeline_systemexit_is_terminal_and_cleans(self):
         jid='c'*32; module.jobs[jid]={'status':'starting'}

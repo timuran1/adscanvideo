@@ -22,6 +22,7 @@ from network_guard import validate_url
 
 
 SINGLE_CREDIT_CENTS = 399
+MONTHLY_ANALYSES = 20
 
 ROOT = Path(__file__).parent
 TERMINAL = ('done', 'error')
@@ -47,12 +48,23 @@ def install(app, jobs, db_path, runner):
         CREATE INDEX IF NOT EXISTS access_quota ON access(day,ip,owner);
         CREATE TABLE IF NOT EXISTS payments (session TEXT PRIMARY KEY, owner TEXT NOT NULL, credits INTEGER NOT NULL, created REAL NOT NULL);
         CREATE TABLE IF NOT EXISTS checkouts (session TEXT PRIMARY KEY, owner TEXT NOT NULL, created REAL NOT NULL);
+        CREATE TABLE IF NOT EXISTS subscription_checkouts (session TEXT PRIMARY KEY, owner TEXT NOT NULL, created REAL NOT NULL, subscription TEXT NOT NULL DEFAULT '', url TEXT NOT NULL DEFAULT '');
+        CREATE TABLE IF NOT EXISTS subscriptions (id TEXT PRIMARY KEY, owner TEXT NOT NULL, customer TEXT NOT NULL, status TEXT NOT NULL);
+        CREATE TABLE IF NOT EXISTS subscription_periods (invoice TEXT PRIMARY KEY, subscription TEXT NOT NULL, owner TEXT NOT NULL, starts REAL NOT NULL, ends REAL NOT NULL, credits INTEGER NOT NULL, created REAL NOT NULL);
+        CREATE INDEX IF NOT EXISTS subscription_periods_owner ON subscription_periods(owner,starts,ends);
         ''')
         access_columns = {row[1] for row in db.execute('PRAGMA table_info(access)')}
         if 'country' not in access_columns:
             db.execute("ALTER TABLE access ADD COLUMN country TEXT NOT NULL DEFAULT ''")
         if 'input_method' not in access_columns:
             db.execute("ALTER TABLE access ADD COLUMN input_method TEXT NOT NULL DEFAULT ''")
+        if 'subscription_invoice' not in access_columns:
+            db.execute("ALTER TABLE access ADD COLUMN subscription_invoice TEXT NOT NULL DEFAULT ''")
+        subscription_checkout_columns = {row[1] for row in db.execute('PRAGMA table_info(subscription_checkouts)')}
+        if 'subscription' not in subscription_checkout_columns:
+            db.execute("ALTER TABLE subscription_checkouts ADD COLUMN subscription TEXT NOT NULL DEFAULT ''")
+        if 'url' not in subscription_checkout_columns:
+            db.execute("ALTER TABLE subscription_checkouts ADD COLUMN url TEXT NOT NULL DEFAULT ''")
 
     def owner(required=False):
         value = request.headers.get('Authorization', '').removeprefix('Bearer ')
@@ -84,12 +96,35 @@ def install(app, jobs, db_path, runner):
         used = db.execute("SELECT COUNT(*) FROM access a JOIN jobs j ON j.id=a.job WHERE a.day=? AND (a.ip=? OR a.owner=?) AND a.tier='free' AND j.status!='error'", (day, ip, who)).fetchone()[0]
         paid = db.execute('SELECT COALESCE(SUM(credits),0) FROM payments WHERE owner=?', (who,)).fetchone()[0]
         spent = db.execute("SELECT COUNT(*) FROM access a JOIN jobs j ON j.id=a.job WHERE a.owner=? AND a.tier='paid' AND j.status!='error'", (who,)).fetchone()[0]
-        return {'free_remaining': max(0, 1-used), 'paid_credits': max(0, paid-spent), 'reset_at': (int(time.time())//86400+1)*86400, 'billing_enabled': billing_enabled(), 'max_duration': 600}
+        periods = active_periods(db, who)
+        has_subscription = db.execute("SELECT 1 FROM subscriptions WHERE owner=? AND status!='canceled'", (who,)).fetchone()
+        return {'free_remaining': max(0, 1-used), 'paid_credits': max(0, paid-spent),
+                'monthly_remaining': sum(row[2] for row in periods),
+                'monthly_ends_at': min((row[1] for row in periods), default=None),
+                'subscription_enabled': subscription_enabled(),
+                'manage_billing_url': os.getenv('STRIPE_PORTAL_LOGIN_URL', '') if has_subscription else '',
+                'reset_at': (int(time.time())//86400+1)*86400,
+                'billing_enabled': billing_enabled(), 'max_duration': 600}
+
+    def active_periods(db, who):
+        now = time.time()
+        rows = db.execute('''SELECT p.invoice,p.ends,p.credits,
+            (SELECT COUNT(*) FROM access a JOIN jobs j ON j.id=a.job
+             WHERE a.subscription_invoice=p.invoice AND a.tier='monthly' AND j.status!='error')
+            FROM subscription_periods p WHERE p.owner=? AND p.starts<=? AND p.ends>?
+            ORDER BY p.ends,p.invoice''', (who, now, now)).fetchall()
+        return [(invoice, ends, max(0, credits-spent)) for invoice, ends, credits, spent in rows]
 
     def billing_enabled():
         return os.getenv('STRIPE_BILLING_ENABLED') == '1' and bool(
             os.getenv('STRIPE_SECRET_KEY') and os.getenv('STRIPE_WEBHOOK_SECRET') and os.getenv('STRIPE_PRICE_VIDEO')
         )
+
+    def subscription_enabled():
+        portal = os.getenv('STRIPE_PORTAL_LOGIN_URL', '')
+        return (billing_enabled() and os.getenv('STRIPE_SUBSCRIPTION_ENABLED') == '1'
+                and bool(re.fullmatch(r'price_[A-Za-z0-9]+', os.getenv('STRIPE_PRICE_MONTHLY', '')))
+                and portal.startswith('https://billing.stripe.com/p/login/'))
 
     @app.before_request
     def access_control():
@@ -228,7 +263,7 @@ def install(app, jobs, db_path, runner):
                 "failure_category": failure_category(row),
             })
 
-        paid_jobs = sum(tier_by_job.get(row["id"]) == "paid" for row in rows)
+        paid_jobs = sum(tier_by_job.get(row["id"]) in ("paid", "monthly") for row in rows)
         free_jobs = sum(tier_by_job.get(row["id"]) == "free" for row in rows)
         longest_active = max((now - (row["updated"] or row["created"] or now) for row in active_rows), default=0)
         traffic = None
@@ -288,10 +323,10 @@ def install(app, jobs, db_path, runner):
         with connect() as db:
             db.execute('BEGIN IMMEDIATE')
             data = allowance(db, who, ip)
-            if not data['free_remaining'] and not data['paid_credits']:
+            if not data['free_remaining'] and not data['monthly_remaining'] and not data['paid_credits']:
                 return None, (jsonify(error='Your free analysis for today is used. Buy a credit to analyze another video, or return after the daily reset.', code='payment_required', **data), 402)
             recent = db.execute('SELECT COUNT(*) FROM access WHERE (ip=? OR owner=?) AND created>?', (ip, who, time.time()-86400)).fetchone()[0]
-            if recent >= 20:
+            if recent >= (40 if data['monthly_remaining'] or data['paid_credits'] else 20):
                 return None, (jsonify(error='Too many attempts. Please try again tomorrow.', code='rate_limited'), 429)
             active = db.execute("SELECT COUNT(*) FROM jobs WHERE status NOT IN ('done','error')").fetchone()[0]
             if active >= 1:
@@ -305,8 +340,10 @@ def install(app, jobs, db_path, runner):
             country = request.headers.get('CF-IPCountry', '').strip().upper()
             if not re.fullmatch(r'[A-Z]{2}', country) or country in ('XX', 'T1', 'A1'):
                 country = ''
-            db.execute('INSERT INTO access(job,owner,ip,day,tier,created,country,input_method) VALUES(?,?,?,?,?,?,?,?)',
-                       (jid, who, ip, time.strftime('%Y-%m-%d', time.gmtime()), 'free' if data['free_remaining'] else 'paid', now, country, input_method))
+            monthly_invoice = next((invoice for invoice, _, remaining in active_periods(db, who) if remaining), '') if not data['free_remaining'] else ''
+            tier = 'free' if data['free_remaining'] else 'monthly' if monthly_invoice else 'paid'
+            db.execute('INSERT INTO access(job,owner,ip,day,tier,created,country,input_method,subscription_invoice) VALUES(?,?,?,?,?,?,?,?,?)',
+                       (jid, who, ip, time.strftime('%Y-%m-%d', time.gmtime()), tier, now, country, input_method, monthly_invoice))
         return (jid, token), None
 
     def supervise(payload):
@@ -446,6 +483,50 @@ def install(app, jobs, db_path, runner):
             paid = db.execute('SELECT 1 FROM payments WHERE session=? AND owner=?', (session_id, who)).fetchone()
         return jsonify(status='paid' if paid else 'pending')
 
+    @app.post('/api/billing/subscription/checkout')
+    def subscription_checkout():
+        if not subscription_enabled():
+            return jsonify(error='Monthly checkout is not available yet.', code='subscription_unavailable'), 503
+        who, _ = owner(True)
+        if not who:
+            return jsonify(error='Open the analyzer to initialize your browser session.'), 401
+        with connect() as db:
+            existing = db.execute("SELECT 1 FROM subscriptions WHERE owner=? AND status!='canceled'", (who,)).fetchone()
+            pending = db.execute("SELECT url FROM subscription_checkouts WHERE owner=? AND subscription='' AND created>? ORDER BY created DESC LIMIT 1",
+                                 (who, time.time()-23*3600)).fetchone()
+        if existing:
+            return jsonify(error='A subscription is already linked to this browser. Use Manage billing to update it.', code='subscription_exists'), 409
+        if pending and pending[0].startswith('https://checkout.stripe.com/'):
+            return jsonify(url=pending[0])
+        try:
+            response = requests.post('https://api.stripe.com/v1/checkout/sessions', auth=(os.environ['STRIPE_SECRET_KEY'], ''),
+                                     headers={'Stripe-Version': '2025-03-31.basil'}, data={
+                'mode': 'subscription', 'line_items[0][price]': os.environ['STRIPE_PRICE_MONTHLY'],
+                'line_items[0][quantity]': '1', 'managed_payments[enabled]': 'true',
+                'client_reference_id': who, 'metadata[owner]': who,
+                'success_url': 'https://adscanvideo.com/?payment=monthly_success&session_id={CHECKOUT_SESSION_ID}#input-zone',
+                'cancel_url': 'https://adscanvideo.com/?payment=cancelled#pricing',
+            }, timeout=20)
+            response.raise_for_status()
+            data = response.json()
+            with connect() as db:
+                db.execute('INSERT INTO subscription_checkouts(session,owner,created,url) VALUES(?,?,?,?)', (data['id'], who, time.time(), data['url']))
+            return jsonify(url=data['url'])
+        except (requests.RequestException, KeyError, sqlite3.IntegrityError):
+            return jsonify(error='Monthly checkout is temporarily unavailable. Please try again.'), 502
+
+    @app.get('/api/billing/subscription/checkout/<session_id>')
+    def subscription_checkout_status(session_id):
+        who, _ = owner(True)
+        if not who or not re.fullmatch(r'cs_(?:test|live)_[A-Za-z0-9]{1,200}', session_id):
+            return jsonify(error='Checkout not found.'), 404
+        with connect() as db:
+            row = db.execute('SELECT owner,subscription FROM subscription_checkouts WHERE session=?', (session_id,)).fetchone()
+            if not row or not hmac.compare_digest(row[0], who):
+                return jsonify(error='Checkout not found.'), 404
+            paid = db.execute('SELECT 1 FROM subscription_periods WHERE subscription=? AND owner=?', (row[1], who)).fetchone() if row[1] else None
+        return jsonify(status='paid' if paid else 'pending')
+
     @app.post('/api/billing/webhook')
     def webhook():
         secret = os.getenv('STRIPE_WEBHOOK_SECRET')
@@ -476,6 +557,57 @@ def install(app, jobs, db_path, runner):
                     if session.get('client_reference_id') != row[0]:
                         return jsonify(error='Checkout details do not match.'), 400
                     db.execute('INSERT OR IGNORE INTO payments VALUES(?,?,?,?)', (session['id'], row[0], 1, time.time()))
+            elif session.get('mode') == 'subscription' and session.get('subscription') and session.get('customer'):
+                with connect() as db:
+                    row = db.execute('SELECT owner,subscription FROM subscription_checkouts WHERE session=?', (session.get('id'),)).fetchone()
+                    if not row:
+                        return jsonify(error='Unknown subscription checkout.'), 503
+                    if session.get('client_reference_id') != row[0]:
+                        return jsonify(error='Checkout details do not match.'), 400
+                    if row[1] and row[1] != session['subscription']:
+                        return jsonify(error='Subscription details do not match.'), 400
+                    existing = db.execute('SELECT owner,customer FROM subscriptions WHERE id=?', (session['subscription'],)).fetchone()
+                    if existing and existing != (row[0], session['customer']):
+                        return jsonify(error='Subscription details do not match.'), 400
+                    db.execute('UPDATE subscription_checkouts SET subscription=? WHERE session=?', (session['subscription'], session['id']))
+                    db.execute('INSERT OR IGNORE INTO subscriptions VALUES(?,?,?,?)',
+                               (session['subscription'], row[0], session['customer'], 'active'))
+        elif event.get('type') == 'invoice.payment_succeeded':
+            invoice = event.get('data', {}).get('object', {})
+            subscription = invoice.get('subscription') or (invoice.get('parent') or {}).get('subscription_details', {}).get('subscription')
+            if subscription and invoice.get('status') == 'paid' and invoice.get('amount_paid', 0) > 0:
+                with connect() as db:
+                    row = db.execute('SELECT owner,customer FROM subscriptions WHERE id=?', (subscription,)).fetchone()
+                    if not row:
+                        # Checkout and invoice events are not guaranteed to arrive in order.
+                        return jsonify(error='Subscription checkout has not arrived yet.'), 503
+                    if invoice.get('customer') != row[1]:
+                        return jsonify(error='Invoice customer does not match.'), 400
+                    lines = (invoice.get('lines') or {}).get('data') or []
+                    price = os.getenv('STRIPE_PRICE_MONTHLY', '')
+                    matches = [line for line in lines if
+                               ((line.get('price') or {}).get('id') if isinstance(line.get('price'), dict) else line.get('price')) == price
+                               or ((line.get('pricing') or {}).get('price_details') or {}).get('price') == price]
+                    if not matches:
+                        return jsonify(received=True)
+                    period = matches[0].get('period') or {}
+                    starts, ends = period.get('start'), period.get('end')
+                    if not (isinstance(starts, int) and isinstance(ends, int) and 0 < ends-starts <= 35*86400):
+                        return jsonify(error='Invalid billing period.'), 503
+                    db.execute('INSERT OR IGNORE INTO subscription_periods VALUES(?,?,?,?,?,?,?)',
+                               (invoice['id'], subscription, row[0], starts, ends, MONTHLY_ANALYSES, time.time()))
+                    db.execute("UPDATE subscriptions SET status='active' WHERE id=?", (subscription,))
+        elif event.get('type') == 'invoice.payment_failed':
+            invoice = event.get('data', {}).get('object', {})
+            subscription = invoice.get('subscription') or (invoice.get('parent') or {}).get('subscription_details', {}).get('subscription')
+            if subscription:
+                with connect() as db:
+                    db.execute("UPDATE subscriptions SET status='past_due' WHERE id=? AND status!='canceled'", (subscription,))
+        elif event.get('type') == 'customer.subscription.deleted':
+            subscription = event.get('data', {}).get('object', {}).get('id')
+            if subscription:
+                with connect() as db:
+                    db.execute("UPDATE subscriptions SET status='canceled' WHERE id=?", (subscription,))
         return jsonify(received=True)
 
     # Hooks used by isolated regression tests; never exposed over HTTP.

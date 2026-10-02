@@ -693,6 +693,14 @@ nav {
 .plan .plan-cta.primary:hover { background: var(--accent-hover); }
 .plan .plan-cta.secondary { background: var(--surface2); color: var(--ink); }
 .plan .plan-cta.secondary:hover { background: var(--border-strong); }
+.monthly-access-step,.access-recovery { border:1px solid var(--border-strong);background:var(--surface2);border-radius:10px;padding:15px;margin-top:14px;font-size:.8rem;line-height:1.5 }
+.monthly-access-step p,.access-recovery p { color:var(--ink-dim);margin:0 0 10px }
+.monthly-access-step code { display:block;overflow-wrap:anywhere;padding:8px;background:var(--surface);border-radius:5px;font-size:.7rem }
+.monthly-access-step label { display:block;margin:10px 0 }
+.monthly-access-step button,.access-recovery button { border:0;border-radius:6px;background:var(--ink);color:#fff;padding:8px 11px;margin-top:8px;cursor:pointer;font:600 .78rem var(--font) }
+.access-recovery { max-width:650px;margin:24px auto 0 }.access-recovery summary { cursor:pointer;font-weight:700 }.access-recovery p { margin:10px 0 }.access-recovery input { width:min(100%,360px);padding:9px;border:1px solid var(--border-strong);border-radius:6px }
+html [hidden] { display:none!important }
+
 
 /* ── Blog preview ─────────────────────────────────── */
 .blog-preview {
@@ -1491,16 +1499,25 @@ nav {
       </ul>
       <button type="button" class="plan-cta primary" onclick="buyCredit()" data-checkout>Buy 1 analysis · $3.99</button>
     </div>
-    <div class="plan">
-      <h3>Monthly · in development</h3>
-      <div class="price">$39.99<span>/month · proposed</span></div>
+    <div class="plan" id="monthly-plan">
+      <h3 id="monthly-title">Monthly · in development</h3>
+      <div class="price">$39.99<span id="monthly-price-label">/month · proposed</span></div>
       <ul>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Proposed: 20 additional analyses per month</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>20 additional analyses per paid billing month</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Export to Word &amp; PDF</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Not unlimited; terms to be confirmed</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Not available to purchase yet</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Unused monthly analyses expire at renewal; not unlimited</li>
+        <li id="monthly-unavailable"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Not available to purchase yet</li>
       </ul>
-      <a href="mailto:support@adscanvideo.com?subject=Monthly%20plan%20interest" class="plan-cta secondary">Ask about monthly access</a>
+      <a id="monthly-interest" href="mailto:support@adscanvideo.com?subject=Monthly%20plan%20interest" class="plan-cta secondary">Ask about monthly access</a>
+      <button id="monthly-checkout" type="button" class="plan-cta primary" onclick="prepareMonthlyCheckout()" hidden>Subscribe · $39.99/month</button>
+      <div id="monthly-access-step" class="monthly-access-step" hidden>
+        <p>Save this private access key before subscribing. You need it to restore your monthly analyses in another browser. Treat it like a password.</p>
+        <code id="monthly-access-key"></code>
+        <button type="button" onclick="copyMonthlyKey()">Copy access key</button>
+        <label><input id="monthly-key-saved" type="checkbox"> I saved my access key</label>
+        <button type="button" onclick="startMonthlyCheckout()">Continue to Stripe</button>
+      </div>
+      <a id="monthly-manage" class="plan-cta secondary" href="https://billing.stripe.com/" target="_blank" rel="noopener noreferrer" hidden>Manage or cancel subscription ↗</a>
     </div>
     <div class="plan">
       <h3>Agency pilot</h3>
@@ -1514,6 +1531,7 @@ nav {
       <a href="mailto:support@adscanvideo.com?subject=Agency%20pilot%20inquiry" class="plan-cta secondary">Discuss an agency pilot</a>
     </div>
   </div>
+  <details class="access-recovery"><summary>Restore paid access in another browser</summary><p>Your private access key is saved in the browser where you bought credits or subscribed. Enter it here only on a device you trust.</p><input id="restore-access-key" type="password" autocomplete="off" placeholder="64-character access key" aria-label="Private access key"><button type="button" onclick="restorePaidAccess()">Restore access</button><p id="restore-access-message" role="status"></p></details>
 </div>
 
 <!-- ── Latest from blog ────────────────────────────── -->
@@ -1595,7 +1613,7 @@ nav {
 <script>
 const API = document.querySelector('meta[name="adscan-api-base"]')?.content.replace(/\/$/, '') || '/api';
 let mode = 'shots', tab = 'upload', file = null, jobId = null;
-let freeCount = 1, paidCredits = 0, billingEnabled = false, busy = false;
+let freeCount = 1, paidCredits = 0, monthlyRemaining = 0, monthlyEnabled = false, manageBillingUrl = '', billingEnabled = false, busy = false;
 const storage = {
   get(key) { try { return localStorage.getItem(key); } catch { return null; } },
   set(key, value) { try { localStorage.setItem(key, value); } catch {} },
@@ -1697,7 +1715,9 @@ async function api(path, options = {}) {
 async function refreshUsage() {
   try {
     const data = await api('/usage');
-    freeCount = data.free_remaining; paidCredits = data.paid_credits; billingEnabled = data.billing_enabled;
+    freeCount = data.free_remaining; paidCredits = data.paid_credits; monthlyRemaining = data.monthly_remaining || 0;
+    monthlyEnabled = Boolean(data.subscription_enabled); manageBillingUrl = data.manage_billing_url || '';
+    billingEnabled = data.billing_enabled;
     updateUI();
   } catch { document.getElementById('free-count').textContent = 'Allowance checked when you analyze'; }
 }
@@ -1721,6 +1741,54 @@ async function buyCredit() {
     track('checkout_failed', { failure_type: requestFailureType(error) });
     el.textContent = error.message;
   }
+}
+function prepareMonthlyCheckout() {
+  if (!monthlyEnabled) return;
+  document.getElementById('monthly-access-key').textContent = ownerToken;
+  document.getElementById('monthly-access-step').hidden = false;
+  document.getElementById('monthly-checkout').hidden = true;
+}
+async function copyMonthlyKey() {
+  try {
+    await navigator.clipboard.writeText(ownerToken);
+    document.getElementById('billing-message').textContent = 'Access key copied. Store it privately before you continue.';
+  } catch {
+    document.getElementById('billing-message').textContent = 'Copy the access key shown in the monthly plan and store it privately.';
+  }
+}
+async function startMonthlyCheckout() {
+  if (!monthlyEnabled || !document.getElementById('monthly-key-saved').checked) {
+    document.getElementById('billing-message').textContent = 'Save your private access key and check the box before subscribing.';
+    return;
+  }
+  track('begin_checkout', { currency: 'USD', value: 39.99, items: [{ item_id: 'monthly_20', item_name: '20 analyses per billing month', price: 39.99, quantity: 1 }] });
+  document.getElementById('billing-message').textContent = 'Opening monthly checkout…';
+  try {
+    const data = await api('/billing/subscription/checkout', { method: 'POST' });
+    const target = new URL(data.url);
+    if (target.protocol !== 'https:' || target.hostname !== 'checkout.stripe.com') throw new Error('Checkout is unavailable.');
+    track('checkout_redirected', { offer: 'monthly_20' });
+    location.assign(target.href);
+  } catch (error) {
+    track('checkout_failed', { offer: 'monthly_20', failure_type: requestFailureType(error) });
+    document.getElementById('billing-message').textContent = error.message;
+  }
+}
+async function restorePaidAccess() {
+  const input = document.getElementById('restore-access-key');
+  const notice = document.getElementById('restore-access-message');
+  const key = input.value.trim();
+  if (!/^[a-f0-9]{64}$/i.test(key)) { notice.textContent = 'Enter a valid 64-character access key.'; return; }
+  try {
+    const response = await fetch(API + '/usage', { headers: { Authorization: 'Bearer ' + key }, cache: 'no-store' });
+    if (!response.ok) throw new Error('Could not check the key right now.');
+    const data = await response.json();
+    if (!data.paid_credits && !data.monthly_remaining) { notice.textContent = 'No unused paid or monthly analyses were found for that key.'; return; }
+    if (paidCredits + monthlyRemaining && !confirm('This browser already has paid access. Replace its access key?')) return;
+    storage.set('adsv_owner', key.toLowerCase());
+    input.value = '';
+    location.reload();
+  } catch { notice.textContent = 'Could not check the key right now. Please retry.'; }
 }
 
 document.getElementById('upload-input').style.display = 'block';
@@ -1814,11 +1882,20 @@ function q() {
 }
 
 function updateUI() {
-  document.getElementById('free-count').textContent = freeCount + ' free today' + (paidCredits ? ' · ' + paidCredits + ' paid credits' : '');
+  document.getElementById('free-count').textContent = freeCount + ' free today' + (monthlyRemaining ? ' · ' + monthlyRemaining + ' monthly left' : '') + (paidCredits ? ' · ' + paidCredits + ' paid credits' : '');
   document.getElementById('try-btn').disabled = busy;
   document.querySelectorAll('.tab-btn,.mode-ch').forEach(el => { el.disabled = busy; });
   document.getElementById('file').disabled = busy;
   document.querySelectorAll('[data-checkout]').forEach(el => { el.textContent = billingEnabled ? 'Buy 1 analysis · $3.99' : 'Checkout unavailable'; });
+  document.getElementById('monthly-title').textContent = monthlyEnabled ? 'Monthly' : 'Monthly · in development';
+  document.getElementById('monthly-price-label').textContent = monthlyEnabled ? '/month' : '/month · proposed';
+  document.getElementById('monthly-unavailable').hidden = monthlyEnabled;
+  document.getElementById('monthly-interest').hidden = monthlyEnabled;
+  document.getElementById('monthly-checkout').hidden = !monthlyEnabled || Boolean(manageBillingUrl) || !document.getElementById('monthly-access-step').hidden;
+  const manage = document.getElementById('monthly-manage');
+  manage.hidden = !manageBillingUrl;
+  if (manageBillingUrl && manageBillingUrl.startsWith('https://billing.stripe.com/p/login/')) manage.href = manageBillingUrl;
+  else manage.hidden = true;
 }
 updateUI();
 const stepProgress = { submitting: 5, uploading: 5, starting: 8, downloading: 22, transcribing: 40, extracting: 60, dedup: 75, analyzing: 90, done: 100 };
@@ -1945,6 +2022,26 @@ async function tryFree() {
 refreshUsage().then(async () => {
   const active = storage.get('adsv_active_job');
   if (active && /^[a-f0-9]{32}$/.test(active)) { jobId = active; await pollJob(active); }
+  if (new URLSearchParams(location.search).get('payment') === 'monthly_success') {
+    track('checkout_returned', { offer: 'monthly_20' });
+    message('Monthly checkout returned. Waiting for the first paid invoice…');
+    const sessionId = new URLSearchParams(location.search).get('session_id');
+    if (sessionId && /^cs_(?:test|live)_[A-Za-z0-9]{1,200}$/.test(sessionId)) {
+      for (let i = 0; i < 8; i++) {
+        try {
+          const checkout = await api('/billing/subscription/checkout/' + encodeURIComponent(sessionId));
+          if (checkout.status === 'paid') {
+            await refreshUsage();
+            track('payment_confirmed', { currency: 'USD', value: 39.99, offer: 'monthly_20' });
+            message('Monthly payment confirmed. Your 20 analyses are available for this billing period.');
+            break;
+          }
+        } catch { /* The signed invoice webhook may still be processing. */ }
+        if (i === 7) message('Your first invoice is still processing. Refresh shortly; contact support if the monthly allowance does not appear.');
+        else await pause(2500);
+      }
+    }
+  }
   if (new URLSearchParams(location.search).get('payment') === 'success') {
     track('checkout_returned', { offer: 'single_credit' });
     message('Checkout returned. Waiting for payment confirmation…');
