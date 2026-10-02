@@ -100,7 +100,7 @@ ADSCAN_JOB_WORKER=1 does not perform production recovery.
 6. Set matching live credentials only after those checks. Update llms.txt when
    payments launch. Never use the success redirect as proof of payment.
 
-The $19/month plan is explicitly marked as planned. No subscription or unlimited
+The proposed $39.99/month capped plan is not purchasable. No subscription or unlimited
 entitlement is implemented. Checkout always selects the configured price on the
 server; fulfillment requires a signed webhook for a known checkout, matching owner,
 paid status and payment mode. Stripe may add tax or convert the displayed currency,

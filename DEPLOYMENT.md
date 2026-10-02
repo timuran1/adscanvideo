@@ -75,7 +75,8 @@ records with an old database. No SSH credentials belong in this repository.
 ## Payments
 
 The AdScanVideo Stripe account has live $3.99 one-time Checkout enabled. The
-$19/month plan is marked planned, not purchasable. The API creates Checkout
+$39.99/month capped plan is proposed but not purchasable; the agency pilot is
+inquiry-only. The API creates Checkout
 Sessions server-side and issues a credit only after a signed, paid webhook.
 The live Checkout endpoint and hosted payment page were reachable on September
 29, 2026; this did not charge a card or prove a real paid webhook delivery.
