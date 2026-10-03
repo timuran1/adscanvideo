@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Video Prompts: How to Recreate Any Shot — AdScanVideo Blog</title>
+<title>Video-to-Prompt Workflow: Turn a Reference Shot into an AI Video Prompt | AdScanVideo</title>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZS2C1B7429"></script>
 <script>
@@ -20,63 +20,67 @@ footer{border-top:1px solid var(--border);padding:24px;max-width:760px;margin:0 
 <link rel="canonical" href="https://adscanvideo.com/blog/ai-video-prompts-recreate-any-shot/">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <meta property="og:type" content="Article">
-<meta property="og:title" content="AI Video Prompts: How to Recreate Any Shot — AdScanVideo Blog">
-<meta property="og:description" content="Extract cinematic AI video prompts from any reference video. Generate Seedance, Kling, and Sora-ready prompts from real footage.">
+<meta property="og:title" content="Turn a Reference Shot into an AI Video Prompt">
+<meta property="og:description" content="A verified shot-breakdown example, copyable prompt worksheet, and practical edits for video generators.">
 <meta property="og:url" content="https://adscanvideo.com/blog/ai-video-prompts-recreate-any-shot/">
 <meta property="og:site_name" content="AdScanVideo">
+<meta property="og:image" content="https://adscanvideo.com/samples/assets/cat-opening.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="AI Video Prompts: How to Recreate Any Shot — AdScanVideo Blog">
-<meta name="twitter:description" content="Extract cinematic AI video prompts from any reference video. Generate Seedance, Kling, and Sora-ready prompts from real footage.">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://adscanvideo.com/#organization","name":"AdScanVideo","url":"https://adscanvideo.com","description":"AI video analysis for ads, podcasts, tutorials and shot breakdowns."},{"@type":"Article","headline":"AI Video Prompts: How to Recreate Any Shot \u2014 AdScanVideo Blog","description":"Extract cinematic AI video prompts from any reference video. Generate Seedance, Kling, and Sora-ready prompts from real footage.","url":"https://adscanvideo.com/blog/ai-video-prompts-recreate-any-shot/","inLanguage":"en","publisher":{"@id":"https://adscanvideo.com/#organization"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://adscanvideo.com/blog/ai-video-prompts-recreate-any-shot/"}}]}</script>
-<meta name="description" content="Extract cinematic AI video prompts from any reference video. Generate Seedance, Kling, and Sora-ready prompts from real footage.">
+<meta name="twitter:title" content="Turn a Reference Shot into an AI Video Prompt">
+<meta name="twitter:description" content="A verified shot-breakdown example and copyable video-to-prompt worksheet.">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://adscanvideo.com/#organization","name":"AdScanVideo","url":"https://adscanvideo.com/"},{"@type":"Article","headline":"Video-to-Prompt Workflow: Turn a Reference Shot into an AI Video Prompt","description":"A practical workflow with a real shot-breakdown example, an adaptable prompt worksheet, and model-specific edits.","datePublished":"2026-07-10","dateModified":"2026-10-03","image":"https://adscanvideo.com/samples/assets/cat-opening.jpg","url":"https://adscanvideo.com/blog/ai-video-prompts-recreate-any-shot/","inLanguage":"en","publisher":{"@id":"https://adscanvideo.com/#organization"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://adscanvideo.com/blog/ai-video-prompts-recreate-any-shot/"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can AI turn a video into a prompt?","acceptedAnswer":{"@type":"Answer","text":"A video analyzer can draft descriptions of selected visual moments. Review the source, then rewrite each description as a prompt for the generator and creative goal you choose."}},{"@type":"Question","name":"Does a video-to-prompt report capture every frame?","acceptedAnswer":{"@type":"Answer","text":"No. AdScanVideo samples and retains selected frames, so brief actions and exact camera moves may be missed. Check the original clip before using the prompt."}}]}]}</script>
+<meta name="description" content="Turn a reference shot into an AI video prompt. Use a real shot-breakdown example, an evidence-first worksheet, and practical Veo or Runway adaptations.">
 </head>
 <body>
 <nav><div class="logo"><a href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>AdScan<span>Video</span></a></div><div class="nav-links"><a href="/">Home</a><a href="/blog/">Blog</a></div></nav>
 <div class="container">
-<h1>AI Video Prompts: How to Recreate Any Shot from a Reference</h1>
-<div class="meta">AI Video · July 2026 · 4 min read</div>
+<h1>Turn a reference shot into an AI video prompt</h1>
+<div class="meta">AI Video · Updated October 3, 2026 · 7 min read</div>
 
-<p>Writing good AI video prompts from scratch is hard. Describing a shot in a way that Seedance, Kling, Sora, or Veo understands takes practice — and even then, results are unpredictable.</p>
+<p>Start with what the reference actually shows. Then make the creative choices for your new shot. A video analyzer can draft the first part; it cannot decide your story, guarantee an exact recreation, or see every frame.</p>
+<div class="highlight"><p><strong>Quick workflow:</strong> Pick one short moment → record the visible subject, action, frame, light, and motion → mark uncertain details → write a new prompt → generate, compare, and revise.</p></div>
 
-<p>But there's a shortcut: let a real video write the prompts for you.</p>
+<h2>Separate observation from invention</h2>
+<p>“Two characters in a field” identifies subjects. A production prompt also says what moves, how the camera behaves, where the action ends, and which details matter. A shot report gives you a first pass at those observations, but you should check the original around each timestamp.</p>
+<p>Do not guess a precise lens focal length from a sampled frame. When a camera appears to move, describe the visible effect, such as “a subtle push in,” rather than claiming the original used a dolly or a digital zoom. Brief actions can fall between sampled frames.</p>
 
-<h2>What Makes a Good AI Video Prompt?</h2>
-<p>AI video models need specific information to produce consistent results. A strong prompt includes:</p>
+<h2>A real sample, followed by a new creative prompt</h2>
+<p>Our <a href="/samples/animated-cat-shot-breakdown/">published eight-second sample</a> opens with an animated orange cat and a small duck in a grassy field beneath a blue sky. The report describes a slight zoom around 00:00–00:01. That is a reported observation from processed footage, not a generated video prompt.</p>
+<figure><img src="/samples/assets/cat-opening.jpg" alt="Animated orange cat and small duck in a grassy field" loading="lazy" width="420" style="max-width:100%;height:auto;border-radius:10px"><figcaption style="color:var(--ink-muted);font-size:.82rem">Representative source frame. The full report explains its limitations.</figcaption></figure>
+<p>Now retain the useful direction—a readable two-subject composition and restrained camera push—but choose original characters and setting:</p>
+<div class="highlight"><p><strong>Human-written adaptation, not analyzer output:</strong> “Vertical animated medium shot. Two original paper-cutout characters stand together in a sunlit rooftop garden. Begin with both figures clearly visible. The camera pushes in gently while leaves move in a light breeze. Bright sky, simple silhouettes, playful colors. Hold both figures in frame at the end.”</p></div>
+<p>The first description reports the reference. The second is a brief for a different scene. Keep those artifacts separate when the reference includes someone else’s characters, artwork, brand, or product claim.</p>
+
+<h2>Copyable video-to-prompt worksheet</h2>
 <ul>
-  <li><strong>Subject</strong> — what or who is in frame</li>
-  <li><strong>Action</strong> — what's happening (movement, expression, interaction)</li>
-  <li><strong>Environment</strong> — setting, lighting, time of day</li>
-  <li><strong>Camera</strong> — angle, movement, lens (wide, close-up, tracking)</li>
-  <li><strong>Mood</strong> — tone, color palette, atmosphere</li>
-  <li><strong>Aspect ratio</strong> — 16:9, 9:16, 1:1</li>
+  <li><strong>Subject:</strong> Who or what is visible? Avoid guessing identity from one frame.</li>
+  <li><strong>Action:</strong> What single, continuous action should happen?</li>
+  <li><strong>Frame:</strong> What shot size, viewpoint, placement, and aspect ratio do you want?</li>
+  <li><strong>Motion:</strong> How do the subject, camera, and background move?</li>
+  <li><strong>Look:</strong> Which lighting, palette, and setting details are genuinely visible?</li>
+  <li><strong>End state:</strong> Where should the subject be when the shot finishes?</li>
 </ul>
+<div class="highlight"><p><strong>Template:</strong> [format and shot size] + [subject and setting] + [one action] + [camera behavior] + [lighting and style] + [end state].</p></div>
+<p>Begin with the essential physical action and add detail only when it helps. <a href="https://ai.google.dev/gemini-api/docs/veo">Google’s Veo guide</a> recommends clear subject, action, style, camera, composition, and ambiance; <a href="https://help.runwayml.com/hc/en-us/articles/39789879462419-Gen-4-Video-Prompting-Guide">Runway recommends</a> simple starting prompts and iteration.</p>
 
-<h2>Real Example: From Reference to Prompt</h2>
+<h2>Adapt the same observation to your generator</h2>
+<h3>Text-to-video</h3><p>Describe the whole new scene: subject, setting, one action, camera behavior, and look. Set 9:16 or 16:9 in the generator controls where available. Test a clear motion before adding dialogue, on-screen text, or several scene changes.</p>
+<h3>Image-to-video</h3><p>The starting image already supplies much of the appearance and composition. Concentrate the text on motion, camera behavior, and what changes over time. This follows <a href="https://help.runwayml.com/hc/en-us/articles/48324313115155-Image-to-Video-Prompting-Guide">Runway’s image-to-video guidance</a>. A video analysis does not create or license a starting image for you.</p>
+<h3>Several shots</h3><p>Write one prompt per intentional beat, then assemble the clips in an editor. Track character appearance, wardrobe, props, travel direction, lighting, and aspect ratio across generations. Do not force a long montage into one short generation prompt.</p>
 
-<h3>Reference shot (from a car ad):</h3>
-<p><em>Aerial drone shot, luxury sedan driving along a coastal highway at golden hour. Sun reflects off the ocean. Smooth, cinematic. 5 seconds.</em></p>
+<h2>How to use AdScanVideo for this workflow</h2>
+<ol><li>Choose an original or authorized clip up to <strong>10 minutes and 200 MB</strong>. File uploads are generally more reliable than links, which depend on the video platform allowing retrieval.</li><li>Select <strong>Shot breakdown</strong>. The analyzer samples and retains up to 20 frames; it cannot guarantee every edit or motion is captured.</li><li>Check the original around each timestamp. Correct missed actions, on-screen text, camera interpretations, and dialogue.</li><li>Rewrite one selected shot for your own subject and chosen generator. Generate a short test, then adjust one prompt element at a time.</li></ol>
+<p>For production planning, see the <a href="/blog/turn-video-into-production-shot-list/">shot-list guide</a>. For another prompt example, see <a href="/video-to-prompt/">the video-to-prompt workflow</a>. If a link fails, use the <a href="/blog/video-link-not-working-upload-file/">file-upload troubleshooting guide</a>.</p>
 
-<h3>AI prompt (Seedance format):</h3>
-<div class="highlight">
-<p>Aerial drone shot tracking a black luxury sedan driving along a coastal highway at golden hour, warm sunlight reflecting off the ocean surface, smooth camera movement, cinematic composition, shallow depth of field, 16:9, warm color palette, premium atmosphere, slow pace.</p>
-</div>
+<h2>Common questions</h2>
+<h3>Can AI turn a video into a prompt?</h3><p>It can draft descriptions from selected visual moments. Review the footage, then translate the description into an instruction for your new creative goal and generator.</p>
+<h3>Will it capture every shot?</h3><p>No. AdScanVideo samples frames and may miss fast edits or actions. Short, focused clips make better starting points than long montages.</p>
+<h3>Can I use one prompt for Veo and Runway?</h3><p>Reuse the observed shot and core idea, but adapt the inputs. Image-to-video workflows often need a starting image and motion-focused wording, while text-to-video needs the scene described in the prompt.</p>
 
-<h2>How AdScanVideo Generates Prompts</h2>
-<p>When you analyze a video with <strong>"Shot breakdown"</strong> mode, AdScanVideo:</p>
-<ol>
-  <li>Extracts every distinct shot with timestamps</li>
-  <li>Analyzes visual composition, lighting, camera movement</li>
-  <li>Generates a Seedance/Kling-ready prompt for each shot</li>
-  <li>You copy-paste into your AI video tool of choice</li>
-</ol>
-
-<div class="cta-box">
-<h3>Extract prompts from any video</h3>
-<p>Upload a reference or paste a URL. Get ready-to-use AI video prompts for every shot.</p>
-<a href="https://adscanvideo.com">Try it free →</a>
-</div>
+<h2>Sources and example</h2><ul><li><a href="/samples/animated-cat-shot-breakdown/">AdScanVideo: real shot-breakdown sample</a></li><li><a href="https://ai.google.dev/gemini-api/docs/veo">Google AI for Developers: Veo prompt guide</a></li><li><a href="https://help.runwayml.com/hc/en-us/articles/39789879462419-Gen-4-Video-Prompting-Guide">Runway: Gen-4 video prompting guide</a></li><li><a href="https://help.runwayml.com/hc/en-us/articles/48324313115155-Image-to-Video-Prompting-Guide">Runway: image-to-video prompting guide</a></li></ul>
+<div class="cta-box"><h3>Start with a real reference clip</h3><p>Upload an authorized video, choose Shot breakdown, and turn verified observations into your next original prompt. One free analysis per day during early access.</p><a href="/?mode=shots#input-zone">Analyze a video free →</a></div>
 
 </div>
-<footer><div><a href="/">AdScanVideo</a> · <a href="/blog/">Blog</a></div><div>hello@adscanvideo.com</div></footer>
+<footer><div><a href="/">AdScanVideo</a> · <a href="/blog/">Blog</a> · <a href="/privacy/">Privacy</a></div><div>Early access · $3.99/video</div></footer>
 </body>
 </html>

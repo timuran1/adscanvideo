@@ -57,7 +57,7 @@ is planned but cannot be purchased yet.
 - [Extract dialogue and transcripts](https://adscanvideo.com/blog/extract-transcript-dialogue-from-video/)
 - [Analyze competitor video ads](https://adscanvideo.com/blog/analyze-competitor-video-ads-fast/)
 - [Build a production shot list](https://adscanvideo.com/blog/turn-video-into-production-shot-list/)
-- [Turn reference footage into AI video prompts](https://adscanvideo.com/blog/ai-video-prompts-recreate-any-shot/)
+- [Video-to-prompt workflow: verified reference shot, original prompt, and generator-specific edits](https://adscanvideo.com/blog/ai-video-prompts-recreate-any-shot/)
 - [Privacy](https://adscanvideo.com/privacy/)
 - [Terms of service](https://adscanvideo.com/terms/)
 - [Support, billing and refunds](https://adscanvideo.com/support/)
