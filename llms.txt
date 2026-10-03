@@ -34,6 +34,8 @@ is planned but cannot be purchased yet.
 
 ## Official pages
 
+- [AI video analysis vs frame-by-frame review](https://adscanvideo.com/blog/ai-video-analysis-frame-by-frame-accuracy/): Sampling limits, timestamp verification, and a copyable worksheet with a real sample.
+
 - [Analyzer and pricing](https://adscanvideo.com/)
 - [What AdScanVideo is](https://adscanvideo.com/what-is-adscanvideo/)
 - [AI video analyzer](https://adscanvideo.com/ai-video-analyzer/)

@@ -247,3 +247,19 @@ I built AdScanVideo to help map the clip, but the checklist works by hand. What 
 **Personal pitch outline to adapt:** I work on video-analysis workflows and have a practical preflight checklist for paid-video campaigns. It maps the spoken promise, on-screen ask, platform button, final URL, and first landing-page action. I can write an original, evidence-based piece with a real example from a campaign I am authorized to discuss and distinguish creative observations from conversion data. Would this be useful to PPC Live readers?
 
 [PPC Hero's contributor page](https://ppchero.com/become-a-ppc-hero-author/) explicitly rejects AI-generated pitches, self-promotion, and republished articles. Do not send this draft there. It is a possible venue only if the founder later writes an original expert pitch that meets its stated requirements.
+
+## October 4, 2026 — sampled video reports versus exact frame review
+
+Drafts only. No outreach sent. Resource: https://adscanvideo.com/blog/ai-video-analysis-frame-by-frame-accuracy/
+
+### StudioBinder editorial resource suggestion
+
+Relevant existing article: https://www.studiobinder.com/blog/how-to-make-a-shot-list/ . Potential fit: a supplemental reference-review worksheet for readers turning existing footage into a new shot plan. Editorial acceptance and a backlink are not established; use the site's official contact channel after reviewing its current submission rules.
+
+Draft: “Your shot-list guide distinguishes the planning details a crew needs. I built AdScanVideo and published a complementary worksheet for checking AI-generated reference-video notes before turning them into a production brief. It uses a public eight-second sample to show why report rows are not unique cuts, how to preserve excerpt offsets, and which camera claims remain uncertain. The worksheet works without our tool. Would it be useful as an optional resource for your readers? [guide URL]”
+
+### ProVideo Coalition editorial pitch
+
+Publication context: https://www.provideocoalition.com/about-us/ . Its production and post-production readership is a potential fit for an original practical comparison of sampled descriptions and edit-point detection. Check current editorial contact and contribution requirements first; no acceptance or backlink promised.
+
+Draft: “I would like to suggest a practical post-production topic: how to verify timestamped AI video notes before using them as an editing map. Our public example has nine report entries from 11 retained frames; neither count establishes nine cuts. I can share the source-cleared example and a worksheet covering rounded times, excerpt offsets, quote checks and visible-versus-inferred camera details. I am the founder of AdScanVideo and would disclose that connection. Is this a topic your editorial team would consider? [guide URL]”
