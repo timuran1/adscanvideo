@@ -309,6 +309,40 @@ class ServiceTests(unittest.TestCase):
             self.assertIn('ejs:github', run.call_args_list[0].args[0])
             self.assertIn('youtube:player_client=web_safari', run.call_args_list[1].args[0])
 
+    def test_moment_mode_admitted_and_preserves_question(self):
+        response = self.client.post('/api/analyze', headers=HEADERS,
+            json={'url':'https://example.com/video.mp4', 'mode':'moments',
+                  'question':'Find the red cup with the line this one.'})
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(module.resolve_mode('moments'), 'moments')
+        self.assertEqual(self.thread.call_args.args[1]['mode'], 'moments')
+        self.assertIn('red cup', self.thread.call_args.args[1]['question'])
+
+    def test_transcript_intervals_keep_subsecond_precision(self):
+        from transcribe import format_transcript
+        text = format_transcript([{'start':1.125,'end':2.875,'text':'This one'},
+                                  {'start':3.250,'end':4.500,'text':'This one'}])
+        self.assertEqual(text, '[00:01.125-00:02.875] This one\n[00:03.250-00:04.500] This one')
+
+    def test_moments_send_every_sample_time_and_missing_audio_constraint(self):
+        jid='d'*32; module.jobs[jid]={'status':'starting'}
+        with tempfile.TemporaryDirectory() as directory:
+            image = Path(directory)/'sample.jpg'
+            image.write_bytes(b'fake-image-for-mocked-provider')
+            frames = [{'path':str(image),'timestamp_seconds':t} for t in [0.125,1.5,3.875]]
+            with patch.object(module,'download',return_value={'video_path':'test'}), \
+                 patch.object(module,'get_metadata',return_value={'duration_seconds':5,'width':100,'has_audio':False}), \
+                 patch.object(module,'extract',return_value=frames), \
+                 patch.object(module,'deduplicate_frames',return_value=frames), \
+                 patch.object(module.requests,'post',return_value=Mock(status_code=200, json=lambda:{'choices':[{'message':{'content':'Candidate at 00:01.500; visual-only.'}}]})) as paid:
+                module.run_analysis(jid,'test','Find the red cup', mode='moments',work_dir=directory)
+                messages=paid.call_args.kwargs['json']['messages']
+                markers=[c['text'] for c in messages[1]['content'] if c['type']=='text' and c['text'].startswith('[t=')]
+                self.assertEqual(markers,['[t=00:00.125]','[t=00:01.500]','[t=00:03.875]'])
+                self.assertIn('No audio transcript is available',messages[0]['content'])
+                self.assertIn('possible overlap',messages[0]['content'])
+                self.assertEqual(module.jobs[jid]['status'],'done')
+
     def test_duration_limit_before_ai(self):
         jid='c'*32; module.jobs[jid]={'status':'starting'}
         with patch.object(module,'download',return_value={'video_path':'test'}), patch.object(module,'get_metadata',return_value={'duration_seconds':601,'width':100}), patch.object(module.requests,'post') as paid:

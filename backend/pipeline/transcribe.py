@@ -83,8 +83,8 @@ def filter_range(
 def format_transcript(segments: list[dict]) -> str:
     lines = []
     for seg in segments:
-        start = int(seg["start"])
-        stamp = f"[{start // 60:02d}:{start % 60:02d}]"
+        start, end = float(seg["start"]), float(seg["end"])
+        stamp = f"[{int(start // 60):02d}:{start % 60:06.3f}-{int(end // 60):02d}:{end % 60:06.3f}]"
         lines.append(f"{stamp} {seg['text']}")
     return "\n".join(lines)
 

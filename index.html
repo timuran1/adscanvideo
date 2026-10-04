@@ -1034,6 +1034,14 @@ nav {
 #result { max-width:960px;border-radius:18px }
 #result-feedback { margin:10px 0; color:#43678f; font-size:.84rem }
 #result-feedback:empty { display:none }
+#moment-criteria { margin:16px 0; }
+#moment-criteria label, #verification-player label { display:block; margin:12px 0 6px; font-size:.9rem; }
+#moment-criteria input { width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; font:inherit; }
+#moment-criteria p, #verification-player p { font-size:.85rem; color:#52627b; margin:12px 0; }
+#original-video { width:100%; max-height:360px; background:#101827; border-radius:10px; }
+#verification-player { margin-bottom:18px; }
+.report-timestamp { border:0; padding:0; background:transparent; font:inherit; color:#245ac2; text-decoration:underline; cursor:pointer; }
+.report-timestamp:focus-visible { outline:2px solid #245ac2; outline-offset:3px; }
 .proof-near-analyzer { max-width:960px; margin:-30px auto 52px; padding:0 4px }
 .proof-near-analyzer h2 { font-size:1.12rem; letter-spacing:-.025em; margin:0 0 5px }
 .proof-near-analyzer > p { color:var(--ink-dim); font-size:.85rem; margin:0 0 14px }
@@ -1209,12 +1217,21 @@ nav {
   </div>
 
   <div class="modes">
+    <button class="mode-ch" data-mode="moments">Find moments · beta</button>
     <button class="mode-ch active" data-mode="shots"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="12" cy="12" r="4"/></svg>Shot breakdown</button>
     <button class="mode-ch" data-mode="ad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-3"/></svg>Ad intelligence</button>
     <button class="mode-ch" data-mode="podcast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>Podcast notes</button>
     <button class="mode-ch" data-mode="marketing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Marketing copy</button>
     <button class="mode-ch" data-mode="tutorial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Tutorial steps</button>
     <button class="mode-ch" data-mode="summary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Summary</button>
+  </div>
+
+  <div id="moment-criteria" hidden>
+    <label for="moment-visual">What action or visual are you looking for?</label>
+    <input id="moment-visual" maxlength="700" placeholder="Example: someone picks up the red cup">
+    <label for="moment-dialogue">Spoken words to match (optional)</label>
+    <input id="moment-dialogue" maxlength="700" placeholder="Example: this is the one I wanted">
+    <p>Get a shortlist of candidates to verify. Samples can miss brief actions. Dialogue matching needs an available transcript; some videos receive visual-only analysis.</p>
   </div>
 
   <div class="analyzer-outcomes" aria-label="Analysis output details">
@@ -1339,6 +1356,12 @@ nav {
     <h2 id="result-title">Analysis</h2>
   </div>
   <p id="result-feedback" role="status" aria-live="polite"></p>
+  <div id="verification-player" hidden>
+    <p>Check candidate moments in your original video. Click a timestamp below to seek; press Play to review. The player uses the file on your device.</p>
+    <video id="original-video" controls preload="metadata" playsinline></video>
+    <label for="verification-file">After reloading, choose the same original file to check timestamps:</label>
+    <input id="verification-file" type="file" accept="video/*">
+  </div>
   <div class="result-card" id="result-content"></div>
   <div class="result-actions">
     <button class="btn-ghost" onclick="copyResult()">
@@ -1401,7 +1424,7 @@ nav {
 <!-- ── Features ────────────────────────────────────── -->
 <div class="features reveal" id="how">
   <div class="section-header">
-    <h2>Six modes. One tool.</h2>
+    <h2>Find moments. Six report modes.</h2>
     <p>Whatever video you throw at it, AdScanVideo gives you back something useful.</p>
   </div>
   <div class="info-grid">
@@ -1455,7 +1478,7 @@ nav {
       <div class="step-num">2</div>
       <div class="step-body">
         <h3>Pick a mode</h3>
-        <p>Choose what you need: shot breakdown, ad intelligence, podcast notes, marketing copy, tutorial steps, or a full summary.</p>
+        <p>Choose what you need: moment finding, shot breakdown, ad intelligence, podcast notes, marketing copy, tutorial steps, or a full summary.</p>
       </div>
     </div>
     <div class="step">
@@ -1613,6 +1636,51 @@ nav {
 <script>
 const API = document.querySelector('meta[name="adscan-api-base"]')?.content.replace(/\/$/, '') || '/api';
 let mode = 'shots', tab = 'upload', file = null, jobId = null;
+let reportFile = null, verificationURL = null;
+function clearVerificationFile() {
+  const player = document.getElementById('original-video');
+  player.pause(); player.removeAttribute('src'); player.load();
+  if (verificationURL) URL.revokeObjectURL(verificationURL);
+  verificationURL = null;
+}
+function setVerificationFile(selected) {
+  if (!selected) return;
+  clearVerificationFile();
+  verificationURL = URL.createObjectURL(selected);
+  document.getElementById('original-video').src = verificationURL;
+}
+document.getElementById('verification-file').addEventListener('change', event => {
+  setVerificationFile(event.target.files[0]);
+});
+window.addEventListener('pagehide', clearVerificationFile);
+function renderReport(text) {
+  const target = document.getElementById('result-content');
+  target.replaceChildren();
+  // Text nodes keep model output inert and Word/PDF/copy exports unchanged.
+  const stamps = /(?<![\d:])\b(?:(\d{1,2}):)?(\d{1,3}):([0-5]\d(?:\.\d{1,3})?)(?![\d:]|\.\d)/g;
+  let cursor = 0;
+  for (const match of text.matchAll(stamps)) {
+    target.append(document.createTextNode(text.slice(cursor, match.index)));
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'report-timestamp';
+    button.textContent = match[0];
+    button.setAttribute('aria-label', 'Check original video at ' + match[0]);
+    button.addEventListener('click', () => {
+      const player = document.getElementById('original-video');
+      if (!verificationURL) {
+        message('Choose the same original video file above to verify this timestamp.');
+        document.getElementById('verification-file').focus(); return;
+      }
+      const seconds = Number(match[1] || 0) * 3600 + Number(match[2]) * 60 + Number(match[3]);
+      if (!Number.isFinite(player.duration)) { message('Wait for the video to load, then click the timestamp again.'); return; }
+      if (seconds > player.duration) { message('This timestamp is outside the selected video. Check that you chose the correct file.'); return; }
+      player.currentTime = seconds;
+      player.scrollIntoView({behavior: 'smooth', block: 'center'});
+    });
+    target.append(button); cursor = match.index + match[0].length;
+  }
+  target.append(document.createTextNode(text.slice(cursor)));
+}
 let freeCount = 1, paidCredits = 0, monthlyRemaining = 0, monthlyEnabled = false, manageBillingUrl = '', billingEnabled = false, busy = false;
 const storage = {
   get(key) { try { return localStorage.getItem(key); } catch { return null; } },
@@ -1664,7 +1732,7 @@ function clearJobContext(id) { storage.remove('adsv_job_context_' + id); }
 function durationBucket(value) {
   const match = /^(\d+):(\d{2})$/.exec(value || '');
   if (!match) return 'unknown';
-  const seconds = Number(match[1]) * 60 + Number(match[2]);
+  const seconds = Number(match[1] || 0) * 3600 + Number(match[2]) * 60 + Number(match[3]);
   if (seconds <= 30) return '0_30s';
   if (seconds <= 60) return '31_60s';
   if (seconds <= 180) return '1_3m';
@@ -1798,6 +1866,7 @@ document.querySelectorAll('.mode-ch').forEach(b => {
   b.addEventListener('click', () => {
     document.querySelectorAll('.mode-ch').forEach(x => x.classList.remove('active'));
     b.classList.add('active'); mode = b.dataset.mode;
+    document.getElementById('moment-criteria').hidden = mode !== 'moments';
     track('analysis_mode_selected', { analysis_mode: mode });
   });
 });
@@ -1871,6 +1940,13 @@ dz.addEventListener('drop', ev => {
 });
 
 function q() {
+  if (mode === 'moments') {
+    const visual = document.getElementById('moment-visual').value.trim();
+    const dialogue = document.getElementById('moment-dialogue').value.trim();
+    return 'Find candidate moments for these criteria. Visual action: ' + visual +
+      '\nDialogue criterion: ' + (dialogue || 'None; visual action only.') +
+      '\nGroup continuous repeats. Distinguish separate occurrences. Report visual and transcript evidence separately, and label unverified overlaps as candidates.';
+  }
   return {
     shots: 'Break this video down shot-by-shot. For each shot: timestamp range, visual description (subject, composition, lighting, camera movement), spoken dialogue during that shot when a transcript is available, and a cinematic AI video prompt (Seedance format) for recreating that exact shot. Quote supplied dialogue accurately and never invent words.',
     ad: 'Analyze this advertisement. Identify the product, target audience, hook (first 3 seconds), structure, pacing, music, text overlays, call to action. What makes it effective? What could be improved?',
@@ -1945,7 +2021,9 @@ async function pollJob(id) {
         const result = await api('/result/' + id);
         if (!result.result) throw new Error('The result is not available yet. Reload to reconnect.');
         document.getElementById('result-title').textContent = data.title || 'Analysis';
-        document.getElementById('result-content').textContent = result.result;
+        renderReport(result.result);
+        document.getElementById('verification-player').hidden = false;
+        if (reportFile) setVerificationFile(reportFile);
         document.getElementById('result').style.display = 'block';
         document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
         const context = jobContext(id);
@@ -1986,6 +2064,12 @@ async function tryFree() {
   if (isUpload && (file.size > 200 * 1024 * 1024 || !/\.(mp4|mov|webm|mkv)$/i.test(file.name))) { track('analysis_validation_failed', { failure_type: 'invalid_file', input_method: 'upload' }); message('Choose an MP4, MOV, WebM or MKV video up to 200 MB.', 'error'); return; }
   const url = document.getElementById('url').value.trim();
   if (!isUpload && !/^https?:\/\//i.test(url)) { track('analysis_validation_failed', { failure_type: 'invalid_url', input_method: 'url' }); message('Enter a complete video link starting with https://', 'error'); return; }
+  if (mode === 'moments' && !document.getElementById('moment-visual').value.trim()) {
+    message('Describe the visual action you want to find.', 'error');
+    document.getElementById('moment-visual').focus(); return;
+  }
+  reportFile = isUpload ? file : null;
+  clearVerificationFile();
   busy = true; updateUI(); message(''); showProgress(isUpload ? 'uploading' : 'submitting');
   document.getElementById('result').style.display = 'none';
   try {

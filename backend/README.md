@@ -151,3 +151,27 @@ restarting. Verify the public frontend, not only GitHub Pages: the domain may be
 bound to the separate Cloudflare Pages project. Deploy only static assets there,
 not backend/, .git/, .env or deployment configuration. Retain the backup for
 rollback; do not replace the live database during a code rollback.
+
+## Find moments (beta)
+
+`mode=moments` uses the existing question field for visual and optional dialogue
+criteria. Candidates are grouped by continuous action, with separate visual
+sample times and transcript intervals. Every sampled frame now includes a
+millisecond timestamp. Transcript intervals preserve both start and end times.
+Possible overlap is a candidate for manual verification, never a confirmed match.
+This remains a sparse-sample workflow (at most 20 selected frames). Short events
+can be missed; silence, missing transcription, or transcription errors can prevent
+dialogue matching. Longer uploaded videos currently lack automatic transcription
+by default; this mode does not change the audio budget.
+
+The frontend's result timestamps seek within a local original-file player. The
+player does not upload the reselected verification file. Report text remains
+unchanged for Copy, Word and PDF. After a reload, select the same original file.
+
+Before launch: deploy matching app.py, service.py and pipeline/transcribe.py to
+the API, then deploy index.html. Do not expose the new mode before API validation
+accepts it. Run `python -m unittest -q test_service` and
+`node scripts/test-moment-review.cjs` from the repo root for the frontend test.
+Finally test a non-private clip containing two similar actions with dialogue at
+only one occurrence, plus a silent clip. Check original footage manually; mocked
+API tests verify timestamps and request wiring, not model accuracy.
