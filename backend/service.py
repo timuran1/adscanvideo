@@ -104,7 +104,7 @@ def install(app, jobs, db_path, runner):
                 'subscription_enabled': subscription_enabled(),
                 'manage_billing_url': os.getenv('STRIPE_PORTAL_LOGIN_URL', '') if has_subscription else '',
                 'reset_at': (int(time.time())//86400+1)*86400,
-                'billing_enabled': billing_enabled(), 'max_duration': 600}
+                'billing_enabled': billing_enabled(), 'max_duration': int(os.getenv('ADSCAN_MAX_DURATION', '600'))}
 
     def active_periods(db, who):
         now = time.time()
@@ -402,6 +402,8 @@ def install(app, jobs, db_path, runner):
 
     @app.post('/api/analyze')
     def analyze():
+        if os.getenv("ADSCAN_UPLOAD_ONLY") == "1":
+            return jsonify(error="Please upload a video file. Video-link analysis is no longer available.", code="upload_required"), 400
         data = request.get_json(silent=True)
         try:
             if not isinstance(data, dict) or not isinstance(data.get('url'), str):

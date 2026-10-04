@@ -439,8 +439,9 @@ def run_analysis(job_id: str, url: str, question: str, start_sec=None, end_sec=N
         duration = meta["duration_seconds"]
         if not meta.get("width") or duration <= 0:
             raise ValueError("This file does not contain a readable video. Please upload an MP4, MOV, WebM or MKV.")
-        if duration > 600:
-            raise ValueError("Videos must be 10 minutes or shorter. Please trim your video and try again.")
+        limit = int(os.getenv("ADSCAN_MAX_DURATION", "600"))
+        if duration > limit:
+            raise ValueError(f"Videos must be {limit // 60} minutes or shorter. Please trim your video and try again.")
         if os.getenv("ADSCAN_VIDEO_PROVIDER") == "gemini":
             from native_video import analyze as native_analyze
             if start_sec is not None or end_sec is not None:

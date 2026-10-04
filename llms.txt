@@ -4,7 +4,7 @@
 
 AdScanVideo is a browser-based AI video analyzer for creators, editors, marketers,
 agencies, researchers, and legal teams. It accepts MP4, MOV, WebM, and MKV uploads
-or public HTTP(S) video links. No account is required.
+only. No account is required.
 
 ## What it can produce
 
@@ -17,11 +17,11 @@ or public HTTP(S) video links. No account is required.
 
 ## Limits and accuracy
 
-- Maximum video duration: 10 minutes
+- Maximum video duration: 45 minutes
 - Maximum uploaded file size: 200 MB
-- Up to 20 selected frames are analyzed across the video
-- Dialogue is included when captions or a usable audio transcript are available
-- Some video platforms block server downloads; uploading the file is the reliable alternative
+- Video and available audio are analyzed; brief actions and details can be missed
+- Audible dialogue can be included; verify quotes against the original recording
+- Upload the original video file; video links are not accepted
 - Results are AI-generated and should be checked before legal, editorial, or production use
 - Video and temporary audio, caption, and frame files are deleted after a job finishes, fails, or times out; analysis text and limited job and usage metadata are retained
 

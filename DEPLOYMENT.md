@@ -111,3 +111,7 @@ Production uses `ADSCAN_VIDEO_PROVIDER=gemini` with `gemini-3.8-flash` through t
 Customer result/status responses omit internal inference cost. Reports request plain text. Dashcam timeline provides observations and uncertainty without determining fault or legal responsibility. The existing dashboard retains estimated internal costs; a missing separate transcript is labelled as unmeasured for native jobs. Privacy describes native video/audio processing.
 
 Native processing does not extract a separate transcript or count locally sampled frames. Those dashboard measures therefore do not measure native audio/video coverage. The underlying production service.py is patched only for the dashcam mode allowlist; staged monthly billing code from the working repository is not installed by this release.
+
+## Upload-only 45-minute release — October 4, 2026
+
+`ADSCAN_UPLOAD_ONLY=1` rejects URL admissions before quota reservation. `ADSCAN_MAX_DURATION=2700` is shared by validation and usage metadata. The public analyzer accepts files only, up to 45 minutes / 200 MB. `ADSCAN_NATIVE_REQUEST_CAP_USD=0.75` allows native long-video preflight; `ADSCAN_JOB_TIMEOUT=720` and `ADSCAN_STUCK_SECONDS=900` bound longer processing. Existing prices and daily allowances remain.

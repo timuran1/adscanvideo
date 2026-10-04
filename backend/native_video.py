@@ -54,7 +54,7 @@ def analyze(path, mode, question, progress=lambda stage: None):
         config={'temperature':0.1,'maxOutputTokens':4096,'mediaResolution':'MEDIA_RESOLUTION_LOW','thinkingConfig':{'thinkingLevel':'LOW'}}
         count=call('POST',base+':countTokens',json={'generateContentRequest':{'model':'models/'+MODEL,'contents':contents,'systemInstruction':system,'generationConfig':config}}).json()['totalTokens']
         ceiling=count*1.5/1e6+4096*7.5/1e6
-        if ceiling>float(os.getenv('ADSCAN_NATIVE_REQUEST_CAP_USD','0.25')): raise NativeUnavailable('This video requires too much processing. Try a shorter clip; your allowance was restored.')
+        if ceiling>float(os.getenv('ADSCAN_NATIVE_REQUEST_CAP_USD','0.75')): raise NativeUnavailable('This video requires too much processing. Try a shorter clip; your allowance was restored.')
         progress('analyzing'); start=time.monotonic()
         data=call('POST',base+':generateContent',json={'contents':contents,'systemInstruction':system,'generationConfig':config}).json()
         text='\n'.join(p.get('text','') for c in data.get('candidates',[]) for p in c.get('content',{}).get('parts',[]) if not p.get('thought'))

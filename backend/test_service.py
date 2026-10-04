@@ -344,6 +344,23 @@ class ServiceTests(unittest.TestCase):
                 self.assertIn('possible overlap',messages[0]['content'])
                 self.assertEqual(module.jobs[jid]['status'],'done')
 
+    def test_upload_only_links_preserve_allowance(self):
+        with patch.dict(os.environ, {'ADSCAN_UPLOAD_ONLY':'1','ADSCAN_MAX_DURATION':'2700'}):
+            self.assertEqual(self.post().json['code'],'upload_required')
+            usage=self.client.get('/api/usage',headers=HEADERS).json
+            self.assertEqual(usage['free_remaining'],1)
+            self.assertEqual(usage['max_duration'],2700)
+
+    def test_native_45_minute_boundary(self):
+        import native_video
+        with patch.dict(os.environ, {'ADSCAN_MAX_DURATION':'2700','ADSCAN_VIDEO_PROVIDER':'gemini'}), patch.object(module,'download',return_value={'video_path':'test'}), patch.object(native_video,'analyze',return_value={'text':'Plain report','cost':0.01}) as paid:
+            for duration, expected in [(2700,'done'),(2701,'error')]:
+                jid=str(duration)*8;module.jobs[jid]={'status':'starting'}
+                with patch.object(module,'get_metadata',return_value={'duration_seconds':duration,'width':100}):
+                    module.run_analysis(jid,'test','',mode='summary')
+                self.assertEqual(module.jobs[jid]['status'],expected)
+            self.assertEqual(paid.call_count,1)
+
     def test_duration_limit_before_ai(self):
         jid='c'*32; module.jobs[jid]={'status':'starting'}
         with patch.object(module,'download',return_value={'video_path':'test'}), patch.object(module,'get_metadata',return_value={'duration_seconds':601,'width':100}), patch.object(module.requests,'post') as paid:
