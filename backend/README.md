@@ -159,7 +159,7 @@ criteria. Candidates are grouped by continuous action, with separate visual
 sample times and transcript intervals. Every sampled frame now includes a
 millisecond timestamp. Transcript intervals preserve both start and end times.
 Possible overlap is a candidate for manual verification, never a confirmed match.
-This remains a sparse-sample workflow (at most 20 selected frames). Short events
+Moment finding retains temporal samples rather than discarding similar frames, because small local actions can vanish under a whole-frame similarity score. This remains a sparse-sample workflow (at most 20 selected frames). Short events
 can be missed; silence, missing transcription, or transcription errors can prevent
 dialogue matching. Longer uploaded videos currently lack automatic transcription
 by default; this mode does not change the audio budget.

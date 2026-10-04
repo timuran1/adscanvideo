@@ -333,12 +333,13 @@ class ServiceTests(unittest.TestCase):
             with patch.object(module,'download',return_value={'video_path':'test'}), \
                  patch.object(module,'get_metadata',return_value={'duration_seconds':5,'width':100,'has_audio':False}), \
                  patch.object(module,'extract',return_value=frames), \
-                 patch.object(module,'deduplicate_frames',return_value=frames), \
+                 patch.object(module,'deduplicate_frames',return_value=frames) as dedup, \
                  patch.object(module.requests,'post',return_value=Mock(status_code=200, json=lambda:{'choices':[{'message':{'content':'Candidate at 00:01.500; visual-only.'}}]})) as paid:
                 module.run_analysis(jid,'test','Find the red cup', mode='moments',work_dir=directory)
                 messages=paid.call_args.kwargs['json']['messages']
                 markers=[c['text'] for c in messages[1]['content'] if c['type']=='text' and c['text'].startswith('[t=')]
                 self.assertEqual(markers,['[t=00:00.125]','[t=00:01.500]','[t=00:03.875]'])
+                dedup.assert_not_called()
                 self.assertIn('No audio transcript is available',messages[0]['content'])
                 self.assertIn('possible overlap',messages[0]['content'])
                 self.assertEqual(module.jobs[jid]['status'],'done')

@@ -486,7 +486,9 @@ def run_analysis(job_id: str, url: str, question: str, start_sec=None, end_sec=N
         jobs[job_id]["frames_raw"] = len(frames)
 
         jobs[job_id]["status"] = "dedup"
-        kept = deduplicate_frames(frames, threshold=8.0)
+        # Small local actions can disappear under a whole-frame similarity score.
+        # Moment finding keeps temporal coverage; the model groups repeated samples.
+        kept = frames if active_mode == "moments" else deduplicate_frames(frames, threshold=8.0)
         if not kept:
             raise ValueError("No readable video frames were found. Please try another file.")
         if len(kept) > 20:

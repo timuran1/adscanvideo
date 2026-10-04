@@ -85,3 +85,21 @@ The frontend no longer offers a launch waitlist. Paid credits are tied to the
 browser's owner token. The staged frontend adds an access-key copy and restore
 flow; verify it before enabling monthly billing and remind customers to keep
 the key private.
+
+## October 4, 2026: candidate moment review
+
+`moments` admission, fractional per-frame markers, transcript intervals and the
+original-file verification player are live. Moment mode preserves temporal samples
+before the 20-frame cap instead of applying global image deduplication. Production
+service.py received only the mode whitelist change; subscription work remains
+undeployed. Staged production tests: 38 passed. Local full source: 40 passed.
+Live synthetic API test: completed; another owner received 404; second admission
+received 402. Revised temporal-sample QA found both controlled movements and the
+speech-linked occurrence. Exact action boundaries remain approximate.
+
+Latest backend backup: `/opt/adscanvideo-api/backups/moments-20261004-102222/`.
+Native Gemini tests use a separate private local project key. No provider switch
+or duration-limit increase was made in production. The controlled 11-minute native
+probe found real events plus false candidates; separate short-window verification
+rejected the five false candidates. Real-world accuracy and latency require broader
+validation. Demo QA records are not evidence of new customer activity.
