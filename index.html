@@ -1235,7 +1235,7 @@ nav {
   <div class="actions">
     <button class="btn" id="try-btn" onclick="tryFree()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      Analyze free
+      <span id="analyze-button-label">Analyze free</span>
     </button>
     <span class="free-badge" id="free-count"></span>
   </div>
@@ -1515,7 +1515,7 @@ nav {
       <div class="price">$39.99<span id="monthly-price-label">/month</span></div>
       <ul>
         <li>Videos up to 45 minutes · premium</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>20 additional analyses per paid billing month</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>20 analyses per paid billing month</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Export to Word &amp; PDF</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Unused monthly analyses expire at the end of the paid period; not unlimited</li>
         <li id="monthly-unavailable"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Monthly checkout is temporarily unavailable</li>
@@ -1925,6 +1925,7 @@ function q() {
 function updateUI() {
   document.getElementById('free-count').textContent = freeCount + ' free today' + (monthlyRemaining ? ' · ' + monthlyRemaining + ' monthly left' : '') + (paidCredits ? ' · ' + paidCredits + ' paid credits' : '');
   document.getElementById('try-btn').disabled = busy;
+  document.getElementById('analyze-button-label').textContent = busy ? 'Analyzing…' : monthlyRemaining ? 'Analyze · use 1 monthly analysis' : freeCount ? 'Analyze free' : paidCredits ? 'Analyze · use 1 paid credit' : 'Analyze video';
   document.querySelectorAll('.tab-btn,.mode-ch').forEach(el => { el.disabled = busy; });
   document.getElementById('file').disabled = busy;
   document.querySelectorAll('[data-checkout]').forEach(el => { el.textContent = billingEnabled ? 'Buy 1 analysis · $3.99' : 'Checkout unavailable'; });
