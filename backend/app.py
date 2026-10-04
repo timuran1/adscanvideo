@@ -420,7 +420,7 @@ def _transcribe_with_deadline(audio_path, timeout_seconds):
         return []
 
 
-def run_analysis(job_id: str, url: str, question: str, start_sec=None, end_sec=None, mode: str = "", work_dir=None):
+def run_analysis(job_id: str, url: str, question: str, start_sec=None, end_sec=None, mode: str = "", work_dir=None, max_duration=None):
     work_dir = Path(work_dir) if work_dir else Path(tempfile.mkdtemp(prefix="va-"))
     try:
         # Record the requested mode before downloading so failed links are not
@@ -439,7 +439,7 @@ def run_analysis(job_id: str, url: str, question: str, start_sec=None, end_sec=N
         duration = meta["duration_seconds"]
         if not meta.get("width") or duration <= 0:
             raise ValueError("This file does not contain a readable video. Please upload an MP4, MOV, WebM or MKV.")
-        limit = int(os.getenv("ADSCAN_MAX_DURATION", "600"))
+        limit = min(int(max_duration or 600), int(os.getenv("ADSCAN_MAX_DURATION", "600")))
         if duration > limit:
             raise ValueError(f"Videos must be {limit // 60} minutes or shorter. Please trim your video and try again.")
         if os.getenv("ADSCAN_VIDEO_PROVIDER") == "gemini":

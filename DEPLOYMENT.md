@@ -115,3 +115,7 @@ Native processing does not extract a separate transcript or count locally sample
 ## Upload-only 45-minute release — October 4, 2026
 
 `ADSCAN_UPLOAD_ONLY=1` rejects URL admissions before quota reservation. `ADSCAN_MAX_DURATION=2700` is shared by validation and usage metadata. The public analyzer accepts files only, up to 45 minutes / 200 MB. `ADSCAN_NATIVE_REQUEST_CAP_USD=0.75` allows native long-video preflight; `ADSCAN_JOB_TIMEOUT=720` and `ADSCAN_STUCK_SECONDS=900` bound longer processing. Existing prices and daily allowances remain.
+
+## Premium duration gate — October 4, 2026
+
+The server derives each worker's duration limit from its reserved entitlement: free and single-credit jobs receive 600 seconds, monthly jobs receive 2700. User request bodies cannot override that limit. Production still has no active monthly checkout; 45-minute access is reserved for the planned $39.99 monthly plan. Usage metadata returns 600 for the currently available tiers. The repository's future monthly reservation logic uses monthly credits before daily free credits, preserving premium job limits.

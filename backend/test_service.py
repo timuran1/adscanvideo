@@ -263,13 +263,14 @@ class ServiceTests(unittest.TestCase):
         self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['monthly_remaining'],20)
         first=self.post(); self.finish(first)
         second=self.post(); self.finish(second,'error')
-        self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['monthly_remaining'],20)
-        third=self.post(); self.finish(third)
         self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['monthly_remaining'],19)
+        third=self.post(); self.assertEqual(self.thread.call_args[0][1]['max_duration'],2700); self.finish(third)
+        self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['monthly_remaining'],18)
         with module._jobs_conn() as db:
             self.assertEqual(db.execute('SELECT COUNT(*) FROM subscription_periods').fetchone()[0],1)
             db.execute('UPDATE subscription_periods SET ends=?', (now-1,))
         self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['monthly_remaining'],0)
+        daily=self.post(); self.assertEqual(self.thread.call_args[0][1]['max_duration'],600); self.finish(daily)
         self.assertEqual(self.post().status_code,402)
         renewal={**invoice,'id':'in_test_renewal','lines':{'data':[{'price':{'id':'price_monthlytest'},'period':{'start':now-1,'end':now+30*86400}}]}}
         with patch.dict(os.environ,{'STRIPE_PRICE_MONTHLY':'price_monthlytest'}):
@@ -349,7 +350,19 @@ class ServiceTests(unittest.TestCase):
             self.assertEqual(self.post().json['code'],'upload_required')
             usage=self.client.get('/api/usage',headers=HEADERS).json
             self.assertEqual(usage['free_remaining'],1)
-            self.assertEqual(usage['max_duration'],2700)
+            self.assertEqual(usage['max_duration'],600)
+
+    def test_standard_purchase_does_not_unlock_premium_duration(self):
+        response=self.post()
+        self.assertEqual(response.status_code,202)
+        self.assertEqual(self.thread.call_args[0][1]['max_duration'],600)
+        self.finish(response)
+        who=hashlib.sha256(TOKEN.encode()).hexdigest()
+        with module._jobs_conn() as db:
+            db.execute('INSERT INTO payments(session,owner,credits,created) VALUES(?,?,?,?)', ('limit-test',who,1,time.time()))
+        response=self.post()
+        self.assertEqual(response.status_code,202)
+        self.assertEqual(self.thread.call_args[0][1]['max_duration'],600)
 
     def test_native_45_minute_boundary(self):
         import native_video
@@ -357,7 +370,7 @@ class ServiceTests(unittest.TestCase):
             for duration, expected in [(2700,'done'),(2701,'error')]:
                 jid=str(duration)*8;module.jobs[jid]={'status':'starting'}
                 with patch.object(module,'get_metadata',return_value={'duration_seconds':duration,'width':100}):
-                    module.run_analysis(jid,'test','',mode='summary')
+                    module.run_analysis(jid,'test','',mode='summary',max_duration=2700)
                 self.assertEqual(module.jobs[jid]['status'],expected)
             self.assertEqual(paid.call_count,1)
 

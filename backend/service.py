@@ -104,7 +104,7 @@ def install(app, jobs, db_path, runner):
                 'subscription_enabled': subscription_enabled(),
                 'manage_billing_url': os.getenv('STRIPE_PORTAL_LOGIN_URL', '') if has_subscription else '',
                 'reset_at': (int(time.time())//86400+1)*86400,
-                'billing_enabled': billing_enabled(), 'max_duration': int(os.getenv('ADSCAN_MAX_DURATION', '600'))}
+                'billing_enabled': billing_enabled(), 'max_duration': 2700 if any(row[2] for row in periods) else 600}
 
     def active_periods(db, who):
         now = time.time()
@@ -340,8 +340,8 @@ def install(app, jobs, db_path, runner):
             country = request.headers.get('CF-IPCountry', '').strip().upper()
             if not re.fullmatch(r'[A-Z]{2}', country) or country in ('XX', 'T1', 'A1'):
                 country = ''
-            monthly_invoice = next((invoice for invoice, _, remaining in active_periods(db, who) if remaining), '') if not data['free_remaining'] else ''
-            tier = 'free' if data['free_remaining'] else 'monthly' if monthly_invoice else 'paid'
+            monthly_invoice = next((invoice for invoice, _, remaining in active_periods(db, who) if remaining), '')
+            tier = 'monthly' if monthly_invoice else 'free' if data['free_remaining'] else 'paid'
             db.execute('INSERT INTO access(job,owner,ip,day,tier,created,country,input_method,subscription_invoice) VALUES(?,?,?,?,?,?,?,?,?)',
                        (jid, who, ip, time.strftime('%Y-%m-%d', time.gmtime()), tier, now, country, input_method, monthly_invoice))
         return (jid, token), None
@@ -387,7 +387,10 @@ def install(app, jobs, db_path, runner):
     def launch(reservation, source, question, mode, directory):
         jid, token = reservation
         try:
-            start_worker(supervise, {'job_id': jid, 'url': source, 'question': question, 'mode': mode, 'work_dir': str(directory)})
+            with connect() as db:
+                tier = db.execute('SELECT tier FROM access WHERE job=?', (jid,)).fetchone()[0]
+            limit = 2700 if tier == 'monthly' else 600
+            start_worker(supervise, {'job_id': jid, 'url': source, 'question': question, 'mode': mode, 'work_dir': str(directory), 'max_duration': limit})
         except Exception:
             jobs[jid].update(status='error', error='Could not start analysis. Please try again.')
             shutil.rmtree(directory, ignore_errors=True)

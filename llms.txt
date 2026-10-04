@@ -17,7 +17,8 @@ only. No account is required.
 
 ## Limits and accuracy
 
-- Maximum video duration: 45 minutes
+- Free and $3.99 single-credit video duration: 10 minutes
+- Planned $39.99 monthly premium video duration: 45 minutes; monthly billing is not available yet
 - Maximum uploaded file size: 200 MB
 - Video and available audio are analyzed; brief actions and details can be missed
 - Audible dialogue can be included; verify quotes against the original recording
