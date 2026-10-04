@@ -29,7 +29,7 @@ only. No account is required.
 ## Pricing status
 
 One analysis is free each day per network and resets at midnight UTC. Failed
-analyses restore the allowance. One additional analysis costs USD $3.99 per
+analyses restore the allowance. One credit costs USD $3.99 per
 video with no subscription; tax is included where applicable. Monthly Premium costs USD $39.99 per month for 20 analyses, up to 45 minutes each.
 Unused monthly analyses expire at the end of the paid period. Cancel using the
 Stripe billing portal. Save the private access key to restore analysis access.
@@ -70,3 +70,6 @@ Stripe billing portal. Save the private access key to restore analysis access.
 
 Last updated: 2026-10-02
 Contact: support@adscanvideo.com
+
+## Credit bundles and exports
+One-time credits: $3.99 for 1, $9.99 for 3, $14.99 for 5. A credit runs one analysis up to 10 minutes with Copy, Word and PDF included, or unlocks these actions for an existing free report without rerunning AI. New free reports are readable on screen; built-in exports need one credit. Earlier reports keep their export access. Save the private access key to restore unused credits. Monthly Premium remains $39.99 for 20 analyses per paid billing month, up to 45 minutes per upload and 200 MB. Unused monthly analyses expire; one-time bundles do not renew.

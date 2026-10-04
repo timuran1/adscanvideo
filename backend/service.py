@@ -53,6 +53,10 @@ def install(app, jobs, db_path, runner):
         CREATE TABLE IF NOT EXISTS subscription_periods (invoice TEXT PRIMARY KEY, subscription TEXT NOT NULL, owner TEXT NOT NULL, starts REAL NOT NULL, ends REAL NOT NULL, credits INTEGER NOT NULL, created REAL NOT NULL);
         CREATE INDEX IF NOT EXISTS subscription_periods_owner ON subscription_periods(owner,starts,ends);
         ''')
+        db.execute('CREATE TABLE IF NOT EXISTS export_unlocks (job TEXT PRIMARY KEY, owner TEXT NOT NULL, tier TEXT NOT NULL, subscription_invoice TEXT NOT NULL DEFAULT \'\', created REAL NOT NULL)')
+        checkout_columns = {row[1] for row in db.execute('PRAGMA table_info(checkouts)')}
+        if 'credits' not in checkout_columns:
+            db.execute('ALTER TABLE checkouts ADD COLUMN credits INTEGER NOT NULL DEFAULT 1')
         access_columns = {row[1] for row in db.execute('PRAGMA table_info(access)')}
         if 'country' not in access_columns:
             db.execute("ALTER TABLE access ADD COLUMN country TEXT NOT NULL DEFAULT ''")
@@ -96,12 +100,14 @@ def install(app, jobs, db_path, runner):
         used = db.execute("SELECT COUNT(*) FROM access a JOIN jobs j ON j.id=a.job WHERE a.day=? AND (a.ip=? OR a.owner=?) AND a.tier='free' AND j.status!='error'", (day, ip, who)).fetchone()[0]
         paid = db.execute('SELECT COALESCE(SUM(credits),0) FROM payments WHERE owner=?', (who,)).fetchone()[0]
         spent = db.execute("SELECT COUNT(*) FROM access a JOIN jobs j ON j.id=a.job WHERE a.owner=? AND a.tier='paid' AND j.status!='error'", (who,)).fetchone()[0]
+        spent += db.execute("SELECT COUNT(*) FROM export_unlocks WHERE owner=? AND tier='paid'", (who,)).fetchone()[0]
         periods = active_periods(db, who)
         has_subscription = db.execute("SELECT 1 FROM subscriptions WHERE owner=? AND status!='canceled'", (who,)).fetchone()
         return {'free_remaining': max(0, 1-used), 'paid_credits': max(0, paid-spent),
                 'monthly_remaining': sum(row[2] for row in periods),
                 'monthly_ends_at': min((row[1] for row in periods), default=None),
                 'subscription_enabled': subscription_enabled(),
+                'bundle_offers': [name for name, env in [('pack3','STRIPE_PRICE_PACK3'),('pack5','STRIPE_PRICE_PACK5')] if billing_enabled() and os.getenv(env)],
                 'manage_billing_url': os.getenv('STRIPE_PORTAL_LOGIN_URL', '') if has_subscription else '',
                 'reset_at': (int(time.time())//86400+1)*86400,
                 'billing_enabled': billing_enabled(), 'max_duration': 2700 if any(row[2] for row in periods) else 600}
@@ -113,7 +119,7 @@ def install(app, jobs, db_path, runner):
              WHERE a.subscription_invoice=p.invoice AND a.tier='monthly' AND j.status!='error')
             FROM subscription_periods p WHERE p.owner=? AND p.starts<=? AND p.ends>?
             ORDER BY p.ends,p.invoice''', (who, now, now)).fetchall()
-        return [(invoice, ends, max(0, credits-spent)) for invoice, ends, credits, spent in rows]
+        return [(invoice, ends, max(0, credits-spent-db.execute('SELECT COUNT(*) FROM export_unlocks WHERE subscription_invoice=?', (invoice,)).fetchone()[0])) for invoice, ends, credits, spent in rows]
 
     def billing_enabled():
         return os.getenv('STRIPE_BILLING_ENABLED') == '1' and bool(
@@ -460,9 +466,21 @@ def install(app, jobs, db_path, runner):
         if not who:
             return jsonify(error='Open the analyzer to initialize your browser session.'), 401
         # Only the server chooses price and credit quantity. No browser-supplied prices.
+        body = request.get_json(silent=True) or {}
+        if not isinstance(body, dict):
+            return jsonify(error='Invalid credit offer.'), 400
+        offer = body.get('offer', 'single')
+        if not isinstance(offer, str):
+            return jsonify(error='Invalid credit offer.'), 400
+        offers = {'single': ('STRIPE_PRICE_VIDEO', 1), 'pack3': ('STRIPE_PRICE_PACK3', 3), 'pack5': ('STRIPE_PRICE_PACK5', 5)}
+        if offer not in offers:
+            return jsonify(error='Unknown credit offer.'), 400
+        price_env, credits = offers[offer]
+        if not os.getenv(price_env):
+            return jsonify(error='This bundle is temporarily unavailable.'), 503
         try:
             response = requests.post('https://api.stripe.com/v1/checkout/sessions', auth=(os.environ['STRIPE_SECRET_KEY'], ''), headers={'Stripe-Version': '2025-03-31.basil'}, data={
-                'mode': 'payment', 'line_items[0][price]': os.environ['STRIPE_PRICE_VIDEO'], 'line_items[0][quantity]': '1',
+                'mode': 'payment', 'line_items[0][price]': os.environ[price_env], 'line_items[0][quantity]': '1',
                 'managed_payments[enabled]': 'true',
                 'client_reference_id': who, 'metadata[owner]': who,
                 'success_url': 'https://adscanvideo.com/?payment=success&session_id={CHECKOUT_SESSION_ID}#input-zone',
@@ -471,7 +489,7 @@ def install(app, jobs, db_path, runner):
             response.raise_for_status()
             data = response.json()
             with connect() as db:
-                db.execute('INSERT INTO checkouts VALUES(?,?,?)', (data['id'], who, time.time()))
+                db.execute('INSERT INTO checkouts(session,owner,created,credits) VALUES(?,?,?,?)', (data['id'], who, time.time(), credits))
             return jsonify(url=data['url'])
         except (requests.RequestException, KeyError):
             return jsonify(error='Checkout is temporarily unavailable. Please try again.'), 502
@@ -487,6 +505,47 @@ def install(app, jobs, db_path, runner):
                 return jsonify(error='Checkout not found.'), 404
             paid = db.execute('SELECT 1 FROM payments WHERE session=? AND owner=?', (session_id, who)).fetchone()
         return jsonify(status='paid' if paid else 'pending')
+
+    def export_access(db, jid, who):
+        row = db.execute('SELECT a.owner,a.tier,a.created,j.status FROM access a JOIN jobs j ON j.id=a.job WHERE a.job=?', (jid,)).fetchone()
+        if not row or not who or not hmac.compare_digest(row[0], who):
+            return None
+        grandfathered = row[2] < float(os.getenv('ADSCAN_EXPORT_PAYWALL_FROM', '0'))
+        unlocked = row[1] in ('paid','monthly') or grandfathered or os.getenv('ADSCAN_EXPORT_PAYWALL') != '1' or bool(db.execute('SELECT 1 FROM export_unlocks WHERE job=? AND owner=?', (jid,who)).fetchone())
+        return unlocked, row[3]
+
+    @app.get('/api/billing/export/<jid>')
+    def export_status(jid):
+        who, _ = owner(True)
+        with connect() as db:
+            state = export_access(db,jid,who)
+        if state is None:
+            return jsonify(error='Report not found.'), 404
+        return jsonify(unlocked=state[0], ready=state[1]=='done')
+
+    @app.post('/api/billing/export/<jid>/unlock')
+    def export_unlock(jid):
+        who, _ = owner(True)
+        with connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            state = export_access(db,jid,who)
+            if state is None:
+                return jsonify(error='Report not found.'), 404
+            if state[1] != 'done':
+                return jsonify(error='Wait until the report is ready.'), 409
+            if state[0]:
+                return jsonify(unlocked=True)
+            data = allowance(db,who,ip_key())
+            # A purchased credit unlocks this report permanently; no AI rerun.
+            if data['paid_credits']:
+                tier, invoice = 'paid', ''
+            else:
+                invoice = next((i for i,_,left in active_periods(db,who) if left), '')
+                if not invoice:
+                    return jsonify(error='Use one credit to unlock Copy, Word and PDF for this report.', code='payment_required'), 402
+                tier = 'monthly'
+            db.execute('INSERT INTO export_unlocks VALUES(?,?,?,?,?)', (jid,who,tier,invoice,time.time()))
+        return jsonify(unlocked=True)
 
     @app.post('/api/billing/subscription/checkout')
     def subscription_checkout():
@@ -552,7 +611,7 @@ def install(app, jobs, db_path, runner):
             session = event.get('data', {}).get('object', {})
             if session.get('payment_status') == 'paid' and session.get('mode') == 'payment':
                 with connect() as db:
-                    row = db.execute('SELECT owner FROM checkouts WHERE session=?', (session.get('id'),)).fetchone()
+                    row = db.execute('SELECT owner,credits FROM checkouts WHERE session=?', (session.get('id'),)).fetchone()
                     if not row:
                         # Retry if delivery races checkout persistence.
                         return jsonify(error='Unknown checkout session.'), 503
@@ -561,7 +620,7 @@ def install(app, jobs, db_path, runner):
                     # the signed, paid session and stored owner are the fulfillment proof.
                     if session.get('client_reference_id') != row[0]:
                         return jsonify(error='Checkout details do not match.'), 400
-                    db.execute('INSERT OR IGNORE INTO payments VALUES(?,?,?,?)', (session['id'], row[0], 1, time.time()))
+                    db.execute('INSERT OR IGNORE INTO payments VALUES(?,?,?,?)', (session['id'], row[0], row[1], time.time()))
             elif session.get('mode') == 'subscription' and session.get('subscription') and session.get('customer'):
                 with connect() as db:
                     row = db.execute('SELECT owner,subscription FROM subscription_checkouts WHERE session=?', (session.get('id'),)).fetchone()

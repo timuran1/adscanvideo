@@ -18,9 +18,7 @@
 <meta name="twitter:description" content="Drop a video link or file. Get a shot-by-shot breakdown, cinematic AI prompts, and creative intelligence in seconds.">
 <meta name="twitter:image" content="https://adscanvideo.com/og-image.png">
 <meta name="adscan-api-base" content="https://api.adscanvideo.com/api">
-<script type="application/ld+json">
-{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://adscanvideo.com/#organization","name":"AdScanVideo","url":"https://adscanvideo.com/"},{"@type":"WebApplication","@id":"https://adscanvideo.com/#app","name":"AdScanVideo","url":"https://adscanvideo.com/","operatingSystem":"Any","applicationCategory":"BusinessApplication","description":"Analyze a video from a file or public link to get a timestamped report covering scenes, dialogue when available, prompts, advertising strategy, or production details.","featureList":["General video analysis","Video ad analysis","Video to prompt","Video to shot list","Transcript-aware reports","Word and PDF export"],"offers":[{"@type":"Offer","price":"0","priceCurrency":"USD","description":"One free analysis daily per network during early access"},{"@type":"Offer","price":"3.99","priceCurrency":"USD","description":"One additional video analysis for USD $3.99"}],"publisher":{"@id":"https://adscanvideo.com/#organization"}}]}
-</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://adscanvideo.com/#organization","name":"AdScanVideo","url":"https://adscanvideo.com/"},{"@type":"WebApplication","@id":"https://adscanvideo.com/#app","name":"AdScanVideo","url":"https://adscanvideo.com/","operatingSystem":"Any","applicationCategory":"BusinessApplication","description":"Upload a video file for a timestamped report covering visible scenes, available dialogue, prompts, advertising strategy or production details.","featureList":["General video analysis","Video ad analysis","Video to prompt","Video to shot list","Transcript-aware reports","Word and PDF export"],"offers":[{"@type":"Offer","price":"0","priceCurrency":"USD","description":"One free on-screen report daily per network, up to 10 minutes; built-in Copy, Word and PDF unlock costs one credit."},{"@type":"Offer","price":"3.99","priceCurrency":"USD","description":"One credit: one analysis with exports, or export unlock for one existing free report."},{"@type":"Offer","price":"9.99","priceCurrency":"USD","description":"Three non-subscription credits; analysis limit 10 minutes and 200 MB."},{"@type":"Offer","price":"14.99","priceCurrency":"USD","description":"Five non-subscription credits; analysis limit 10 minutes and 200 MB."},{"@type":"Offer","price":"39.99","priceCurrency":"USD","description":"Monthly Premium: 20 analyses per paid billing month, up to 45 minutes and 200 MB per upload."}],"publisher":{"@id":"https://adscanvideo.com/#organization"}}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -643,7 +641,7 @@ nav {
   position: relative;
 }
 .plan.featured::before {
-  content: 'Early access · $3.99/video';
+  content: 'Credits from $3.99';
   position: absolute;
   top: -11px;
   left: 50%;
@@ -1096,7 +1094,7 @@ nav {
 .hidden { display:none !important; }
 .credit-modal {
   background:#fff; border-radius:16px; padding:36px 32px 28px;
-  max-width:400px; width:100%; text-align:center;
+  max-width:460px; width:100%; text-align:center; max-height:calc(100dvh - 40px); overflow-y:auto;
   box-shadow:0 24px 64px rgba(0,0,0,0.18);
   position:relative;
 }
@@ -1229,7 +1227,7 @@ nav {
   <div class="analyzer-outcomes" aria-label="Analysis output details">
     <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Timestamps and visual detail</span>
     <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Dialogue when audio is available</span>
-    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Copy, Word, and PDF export</span>
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Paid exports: Copy, Word and PDF; free report unlock costs 1 credit</span>
   </div>
 
   <div class="actions">
@@ -1350,6 +1348,10 @@ nav {
     <input id="verification-file" type="file" accept="video/*">
   </div>
   <div class="result-card" id="result-content"></div>
+  <div id="export-access" style="margin-top:16px;padding:16px;border:1px solid var(--line);border-radius:12px" role="status">
+    <p id="export-access-label">Checking export access…</p>
+    <button id="export-unlock" class="btn-ghost" onclick="unlockReportExports()" hidden>Unlock this report · use 1 credit</button>
+  </div>
   <div class="result-actions">
     <button class="btn-ghost" onclick="copyResult()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -1472,7 +1474,7 @@ nav {
       <div class="step-num">3</div>
       <div class="step-body">
         <h3>Get your analysis</h3>
-        <p>AI analyzes your video and available audio to build your report. Follow the progress, review the output, and copy or export it.</p>
+        <p>AI analyzes your video and available audio to build your report. Follow the progress and review the report on screen. Paid analyses include Copy, Word and PDF; unlock these actions for a free report with one credit.</p>
       </div>
     </div>
   </div>
@@ -1482,7 +1484,7 @@ nav {
 <div class="pricing reveal" id="pricing">
   <div class="section-header">
     <h2>Simple pricing</h2>
-    <p>One free analysis daily per network. Additional analyses cost $3.99 per video. Daily allowance resets at midnight UTC; failed jobs restore it.</p>
+    <p>One free on-screen report daily per network. Buy individual credits or save with a bundle. Each credit runs an analysis with exports, or unlocks exports for an existing free report. Daily allowance resets at midnight UTC; failed jobs restore it.</p>
   </div>
   <div class="pricing-row">
     <div class="plan">
@@ -1491,24 +1493,30 @@ nav {
       <ul>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>1 free daily</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Videos up to 10 min</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>All modes</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>No signup</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>All modes · report on screen</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Copy, Word and PDF: unlock for 1 credit</li>
+        <li>No signup</li>
       </ul>
       <a href="#input-zone" class="plan-cta secondary">Start free</a>
     </div>
     <div class="plan featured">
       <h3>Pay as you go</h3>
-      <div class="price">$3.99<span>/video</span></div>
+      <div class="price">$3.99<span>/credit</span></div>
       <p style="font-size:.76rem;color:var(--ink-muted);margin:4px 0 0;">Tax is included where applicable. Local currency may vary at checkout.</p>
-      <p style="font-size:.76rem;color:var(--ink-muted);margin:4px 0 0;">No account needed. A purchased credit stays with this browser until you use it; avoid clearing site data first.</p>
+      <p style="font-size:.76rem;color:var(--ink-muted);margin:4px 0 0;">No account needed. Save your private access key at checkout to restore unused credits in another browser. Keep it private.</p>
       <ul>
         <li>Videos up to 10 minutes</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Pay per video, no sub</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>One additional analysis</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>One analysis, or one free-report export unlock</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Export to Word &amp; PDF</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>No subscription</li>
       </ul>
-      <button type="button" class="plan-cta primary" onclick="buyCredit()" data-checkout>Buy 1 analysis · $3.99</button>
+      <button type="button" class="plan-cta primary" onclick="buyCredit()" data-checkout>Buy 1 credit · $3.99</button>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <button class="plan-cta secondary" style="flex:1" onclick="buyCredit('pack3')" data-checkout data-offer="pack3">3 credits · $9.99</button>
+        <button class="plan-cta secondary" style="flex:1" onclick="buyCredit('pack5')" data-checkout data-offer="pack5">5 credits · $14.99</button>
+      </div>
+      <p style="font-size:.76rem;color:var(--ink-muted);margin-top:10px">Save $1.98 with 3 credits or $4.96 with 5 compared with single credits. No subscription. Bundle analyses remain limited to 10 minutes and 200 MB.</p>
     </div>
     <div class="plan" id="monthly-plan">
       <h3 id="monthly-title">Monthly Premium</h3>
@@ -1592,10 +1600,22 @@ nav {
     <div class="credit-icon">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     </div>
-    <h3>Continue analyzing</h3>
+    <h3>Analysis and export credits</h3>
     <p id="billing-message" role="status">One analysis is free each day. Additional analyses require a $3.99 credit.</p>
-    <button type="button" class="plan-cta primary" onclick="buyCredit()" data-checkout>Buy 1 analysis · $3.99</button>
-    <p style="margin:12px 0 0;">Your purchased credit stays with this browser until used.</p>
+    <button type="button" class="plan-cta primary" onclick="buyCredit()" data-checkout>Buy 1 credit · $3.99</button>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <button class="plan-cta secondary" style="flex:1" onclick="buyCredit('pack3')" data-checkout data-offer="pack3">3 credits · $9.99</button>
+        <button class="plan-cta secondary" style="flex:1" onclick="buyCredit('pack5')" data-checkout data-offer="pack5">5 credits · $14.99</button>
+      </div>
+      <p style="font-size:.76rem;color:var(--ink-muted);margin-top:10px">Save $1.98 with 3 credits or $4.96 with 5 compared with single credits. No subscription. Bundle analyses remain limited to 10 minutes and 200 MB.</p>
+    <p style="margin:12px 0 0;">Each credit runs one analysis with exports, or unlocks one existing free report. Monthly Premium alone supports videos up to 45 minutes.</p>
+    <div id="credit-access-step" hidden style="margin-top:16px;text-align:left">
+      <p>Private access key — anyone with it can use your credits:</p>
+      <code id="credit-access-key" style="display:block;overflow-wrap:anywhere;user-select:all;font-size:.72rem;padding:12px;background:var(--bg-alt)"></code>
+      <button class="btn-ghost" onclick="copyMonthlyKey()">Copy access key</button>
+      <label style="display:block;margin:12px 0"><input id="credit-access-saved" type="checkbox"> I have saved my access key privately</label>
+      <button class="plan-cta primary" onclick="continueCreditCheckout()">Continue to secure checkout</button>
+    </div>
   </div>
 </div>
 
@@ -1671,6 +1691,7 @@ function renderReport(text) {
   }
   target.append(document.createTextNode(text.slice(cursor)));
 }
+let bundleOffers = [], reportJobId = null, exportsUnlocked = false, exportUnlockBusy = false, checkoutOffer = "single";
 let freeCount = 1, paidCredits = 0, monthlyRemaining = 0, monthlyEnabled = false, manageBillingUrl = '', billingEnabled = false, busy = false;
 const storage = {
   get(key) { try { return localStorage.getItem(key); } catch { return null; } },
@@ -1767,11 +1788,26 @@ async function refreshUsage() {
     const data = await api('/usage');
     freeCount = data.free_remaining; paidCredits = data.paid_credits; monthlyRemaining = data.monthly_remaining || 0;
     monthlyEnabled = Boolean(data.subscription_enabled); manageBillingUrl = data.manage_billing_url || '';
-    billingEnabled = data.billing_enabled;
+    billingEnabled = data.billing_enabled; bundleOffers = data.bundle_offers || [];
     updateUI();
   } catch { document.getElementById('free-count').textContent = 'Allowance checked when you analyze'; }
 }
-async function buyCredit() {
+function buyCredit(offer = 'single', exportPurchase = false) {
+  if (!exportPurchase) storage.remove('adsv_export_job');
+  if (!billingEnabled || (offer !== 'single' && !bundleOffers.includes(offer))) { showCredits(); document.getElementById('billing-message').textContent = 'This checkout is temporarily unavailable.'; return; }
+  checkoutOffer = offer;
+  showCredits();
+  document.getElementById('credit-access-key').textContent = ownerToken;
+  document.getElementById('credit-access-step').hidden = false;
+  document.getElementById('credit-access-saved').checked = false;
+  document.getElementById('billing-message').textContent = 'Save your private access key before buying. It restores unused credits and report access in another browser.';
+}
+async function continueCreditCheckout() {
+  if (!document.getElementById('credit-access-saved').checked) { document.getElementById('billing-message').textContent = 'Please save the access key and tick the confirmation.'; return; }
+  const offer = checkoutOffer;
+  const value = {single:3.99,pack3:9.99,pack5:14.99}[offer];
+  storage.set('adsv_checkout_offer', offer);
+
   const el = document.getElementById('billing-message');
   if (!billingEnabled) {
     showCredits();
@@ -1779,13 +1815,13 @@ async function buyCredit() {
     el.textContent = 'Checkout is temporarily unavailable. Your free analysis resets tomorrow.';
     return;
   }
-  track('begin_checkout', { currency: 'USD', value: 3.99, items: [{ item_id: 'single_analysis', item_name: 'Single analysis credit', price: 3.99, quantity: 1 }] });
+  track('begin_checkout', { currency: 'USD', value, items: [{ item_id: offer, item_name: 'AdScanVideo credits', price: value, quantity: 1 }] });
   el.textContent = 'Opening secure checkout…';
   try {
-    const data = await api('/billing/checkout', { method: 'POST' });
+    const data = await api('/billing/checkout', { method: 'POST', headers: {'Content-Type':'application/json'}, body:JSON.stringify({offer}) });
     const target = new URL(data.url);
     if (target.protocol !== 'https:' || target.hostname !== 'checkout.stripe.com') throw new Error('Checkout is unavailable.');
-    track('checkout_redirected', { offer: 'single_credit' });
+    track('checkout_redirected', { offer });
     location.assign(target.href);
   } catch (error) {
     track('checkout_failed', { failure_type: requestFailureType(error) });
@@ -1928,7 +1964,11 @@ function updateUI() {
   document.getElementById('analyze-button-label').textContent = busy ? 'Analyzing…' : monthlyRemaining ? 'Analyze · use 1 monthly analysis' : freeCount ? 'Analyze free' : paidCredits ? 'Analyze · use 1 paid credit' : 'Analyze video';
   document.querySelectorAll('.tab-btn,.mode-ch').forEach(el => { el.disabled = busy; });
   document.getElementById('file').disabled = busy;
-  document.querySelectorAll('[data-checkout]').forEach(el => { el.textContent = billingEnabled ? 'Buy 1 analysis · $3.99' : 'Checkout unavailable'; });
+  document.querySelectorAll('[data-checkout]').forEach(el => {
+    const offer = el.dataset.offer || 'single';
+    el.disabled = !billingEnabled || (offer !== 'single' && !bundleOffers.includes(offer));
+    el.textContent = {single:'Buy 1 credit · $3.99',pack3:'3 credits · $9.99',pack5:'5 credits · $14.99'}[offer];
+  });
   document.getElementById('monthly-title').textContent = monthlyEnabled ? 'Monthly Premium' : 'Monthly Premium · unavailable';
   document.getElementById('monthly-price-label').textContent = '/month';
   document.getElementById('monthly-unavailable').hidden = monthlyEnabled;
@@ -1988,6 +2028,8 @@ async function pollJob(id) {
         if (!result.result) throw new Error('The result is not available yet. Reload to reconnect.');
         document.getElementById('result-title').textContent = data.title || 'Analysis';
         renderReport(result.result);
+        reportJobId = id; exportsUnlocked = false;
+        await refreshExportAccess();
         document.getElementById('verification-player').hidden = false;
         if (reportFile) setVerificationFile(reportFile);
         document.getElementById('result').style.display = 'block';
@@ -2095,8 +2137,12 @@ refreshUsage().then(async () => {
           const checkout = await api('/billing/checkout/' + encodeURIComponent(sessionId));
           if (checkout.status === 'paid') {
             await refreshUsage();
-            track('payment_confirmed', { currency: 'USD', value: 3.99, offer: 'single_credit' });
-            message('Payment confirmed. Your analysis credit is ready.');
+            const offer = storage.get('adsv_checkout_offer') || 'single';
+            track('payment_confirmed', { currency: 'USD', value: {single:3.99,pack3:9.99,pack5:14.99}[offer], offer });
+            message('Payment confirmed. Your credits are ready.');
+            const pendingReport = storage.get('adsv_export_job');
+            if (pendingReport) { await pollJob(pendingReport); if (reportJobId === pendingReport) await unlockReportExports(); }
+            storage.remove('adsv_checkout_offer');
             break;
           }
         } catch { /* The webhook or network may still be catching up. */ }
@@ -2132,9 +2178,43 @@ function closeCredits() {
   previousFocus?.focus();
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCredits(); });
+async function refreshExportAccess() {
+  exportsUnlocked = false;
+  const label = document.getElementById('export-access-label');
+  const button = document.getElementById('export-unlock');
+  button.hidden = true;
+  try {
+    const data = await api('/billing/export/' + encodeURIComponent(reportJobId));
+    exportsUnlocked = data.ready && data.unlocked;
+    label.textContent = exportsUnlocked ? 'Copy, Word and PDF are unlocked for this report.' : 'Your report is free to read here. Unlock Copy, Word and PDF for this report with 1 credit; no new analysis needed.';
+    button.hidden = exportsUnlocked || !data.ready;
+  } catch { label.textContent = 'Could not check export access. Reload your report and try again.'; }
+}
+function checkExportAccess() {
+  if (exportsUnlocked) return true;
+  document.getElementById('export-access').scrollIntoView({behavior:'smooth',block:'center'});
+  message('Use the unlock button to enable Copy, Word and PDF for this report.');
+  return false;
+}
+async function unlockReportExports() {
+  if (!reportJobId || exportUnlockBusy) return;
+  exportUnlockBusy = true;
+  const button = document.getElementById('export-unlock'); button.disabled = true;
+  try {
+    await api('/billing/export/' + encodeURIComponent(reportJobId) + '/unlock', {method:'POST'});
+    storage.remove('adsv_export_job');
+    await refreshExportAccess(); await refreshUsage();
+    message('Exports unlocked for this report. You can Copy or export it anytime you have report access.', 'success');
+    track('report_exports_unlocked', {analysis_mode:mode});
+  } catch (error) {
+    if (error.status === 402) { storage.set('adsv_export_job',reportJobId); buyCredit('single', true); }
+    else message(error.message,'error');
+  } finally { exportUnlockBusy = false; button.disabled = false; }
+}
 /* ── Export functions ───────────────────────────────── */
 function escapeHTML(value) { return value.replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char])); }
 async function copyResult() {
+  if (!checkExportAccess()) return;
   try {
     await navigator.clipboard.writeText(document.getElementById('result-content').textContent);
     track('result_copied', { analysis_mode: mode });
@@ -2148,6 +2228,7 @@ function dismissResult() {
   track('result_dismissed', { analysis_mode: mode });
 }
 function exportDOCX() {
+  if (!checkExportAccess()) return;
   const title = escapeHTML(document.getElementById('result-title').textContent);
   const content = escapeHTML(document.getElementById('result-content').textContent);
   const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title>
@@ -2175,6 +2256,7 @@ ${content.split('\n').filter(l => l.trim()).map(l => {
 }
 
 function exportPDF() {
+  if (!checkExportAccess()) return;
   const title = escapeHTML(document.getElementById('result-title').textContent);
   const content = escapeHTML(document.getElementById('result-content').textContent);
   const el = document.createElement('div');

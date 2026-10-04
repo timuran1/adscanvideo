@@ -24,7 +24,7 @@ class ServiceTests(unittest.TestCase):
     def setUp(self):
         self.client = module.app.test_client()
         with module._jobs_conn() as db:
-            for table in ('jobs','access','payments','checkouts','subscription_periods','subscriptions','subscription_checkouts'):
+            for table in ('jobs','access','payments','checkouts','subscription_periods','subscriptions','subscription_checkouts','export_unlocks'):
                 db.execute('DELETE FROM '+table)
         self.thread = patch('service.start_worker').start()
         self.validation = patch('service.validate_url', side_effect=lambda url: url).start()
@@ -176,7 +176,7 @@ class ServiceTests(unittest.TestCase):
         who=hashlib.sha256(TOKEN.encode()).hexdigest()
         session='cs_test_12345'
         with module._jobs_conn() as db:
-            db.execute('INSERT INTO checkouts VALUES(?,?,?)',(session,who,time.time()))
+            db.execute('INSERT INTO checkouts(session,owner,created) VALUES(?,?,?)',(session,who,time.time()))
         path='/api/billing/checkout/'+session
         self.assertEqual(self.client.get(path).status_code,404)
         self.assertEqual(self.client.get(path,headers={'Authorization':'Bearer '+'b'*64}).status_code,404)
@@ -188,7 +188,7 @@ class ServiceTests(unittest.TestCase):
 
     def test_webhook_signature_and_idempotency(self):
         who=hashlib.sha256(TOKEN.encode()).hexdigest()
-        with module._jobs_conn() as db: db.execute('INSERT INTO checkouts VALUES(?,?,?)',('cs_test',who,time.time()))
+        with module._jobs_conn() as db: db.execute('INSERT INTO checkouts(session,owner,created) VALUES(?,?,?)',('cs_test',who,time.time()))
         event={'type':'checkout.session.completed','data':{'object':{'id':'cs_test','payment_status':'paid','mode':'payment','client_reference_id':who,'amount_total':399,'currency':'usd'}}}
         raw=json.dumps(event).encode(); stamp=str(int(time.time())); secret='whsec_test'
         sig=hmac.new(secret.encode(),stamp.encode()+b'.'+raw,hashlib.sha256).hexdigest()
@@ -212,7 +212,7 @@ class ServiceTests(unittest.TestCase):
 
     def test_taxed_or_converted_paid_checkout_grants_one_credit(self):
         who=hashlib.sha256(TOKEN.encode()).hexdigest()
-        with module._jobs_conn() as db: db.execute('INSERT INTO checkouts VALUES(?,?,?)',('cs_taxed',who,time.time()))
+        with module._jobs_conn() as db: db.execute('INSERT INTO checkouts(session,owner,created) VALUES(?,?,?)',('cs_taxed',who,time.time()))
         event={'type':'checkout.session.completed','data':{'object':{'id':'cs_taxed','payment_status':'paid','mode':'payment','client_reference_id':who,'amount_total':450,'currency':'eur'}}}
         raw=json.dumps(event).encode(); stamp=str(int(time.time())); secret='whsec_test'
         sig=hmac.new(secret.encode(),stamp.encode()+b'.'+raw,hashlib.sha256).hexdigest()
@@ -220,6 +220,64 @@ class ServiceTests(unittest.TestCase):
             response=self.client.post('/api/billing/webhook',data=raw,headers={'Stripe-Signature':f't={stamp},v1={sig}'})
         self.assertEqual(response.status_code,200)
         self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['paid_credits'],1)
+
+    def test_bundles_use_server_price_and_grant_exactly_once(self):
+        who=hashlib.sha256(TOKEN.encode()).hexdigest()
+        env={'STRIPE_BILLING_ENABLED':'1','STRIPE_SECRET_KEY':'sk_test','STRIPE_WEBHOOK_SECRET':'whsec_test','STRIPE_PRICE_VIDEO':'price_single','STRIPE_PRICE_PACK3':'price_pack3','STRIPE_PRICE_PACK5':'price_pack5'}
+        with patch.dict(os.environ,env):
+            for offer,credits in [('pack3',3),('pack5',5)]:
+                response=Mock(); response.json.return_value={'id':'cs_'+offer,'url':'https://checkout.stripe.com/test'}
+                with patch('service.requests.post',return_value=response) as post:
+                    r=self.client.post('/api/billing/checkout',json={'offer':offer,'price':'price_attack','credits':99},headers=HEADERS)
+                self.assertEqual(r.status_code,200)
+                self.assertEqual(post.call_args.kwargs['data']['line_items[0][price]'],'price_'+offer)
+                self.assertEqual(post.call_args.kwargs['data']['line_items[0][quantity]'],'1')
+                event={'type':'checkout.session.completed','data':{'object':{'id':'cs_'+offer,'mode':'payment','payment_status':'paid','client_reference_id':who}}}
+                for _ in range(2): self.assertEqual(self.signed_event(event).status_code,200)
+                with module._jobs_conn() as db:
+                    self.assertEqual(db.execute('SELECT credits FROM payments WHERE session=?',('cs_'+offer,)).fetchone()[0],credits)
+            for bad in [{'offer':'bogus'},{'offer':[]},['pack3']]:
+                self.assertEqual(self.client.post('/api/billing/checkout',json=bad,headers=HEADERS).status_code,400)
+        self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['paid_credits'],8)
+
+    def test_export_unlock_ownership_credit_and_idempotency(self):
+        with patch.dict(os.environ,{'ADSCAN_EXPORT_PAYWALL':'1','ADSCAN_EXPORT_PAYWALL_FROM':'0'}):
+            r=self.post(); jid=r.json['job_id']; path='/api/billing/export/'+jid
+            self.assertEqual(self.client.post(path+'/unlock',headers=HEADERS).status_code,409)
+            self.finish(r)
+            self.assertFalse(self.client.get(path,headers=HEADERS).json['unlocked'])
+            self.assertEqual(self.client.post(path+'/unlock',headers=HEADERS).status_code,402)
+            self.assertEqual(self.client.post(path+'/unlock',headers={'Authorization':'Bearer '+'b'*64}).status_code,404)
+            who=hashlib.sha256(TOKEN.encode()).hexdigest()
+            with module._jobs_conn() as db: db.execute('INSERT INTO payments VALUES(?,?,?,?)',('cs_bundle',who,3,time.time()))
+            for _ in range(2): self.assertTrue(self.client.post(path+'/unlock',headers=HEADERS).json['unlocked'])
+            self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['paid_credits'],2)
+            self.assertTrue(self.client.get(path,headers=HEADERS).json['unlocked'])
+            self.assertEqual(self.thread.call_count,1) # Unlock never starts an AI job.
+            paid=self.post(); self.finish(paid)
+            self.assertTrue(self.client.get('/api/billing/export/'+paid.json['job_id'],headers=HEADERS).json['unlocked'])
+            self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['paid_credits'],1)
+
+    def test_old_free_report_keeps_exports(self):
+        r=self.post(); self.finish(r)
+        with patch.dict(os.environ,{'ADSCAN_EXPORT_PAYWALL':'1','ADSCAN_EXPORT_PAYWALL_FROM':str(time.time()+1)}):
+            path='/api/billing/export/'+r.json['job_id']
+            self.assertTrue(self.client.get(path,headers=HEADERS).json['unlocked'])
+            self.assertTrue(self.client.post(path+'/unlock',headers=HEADERS).json['unlocked'])
+            with module._jobs_conn() as db: self.assertEqual(db.execute('SELECT COUNT(*) FROM export_unlocks').fetchone()[0],0)
+
+    def test_monthly_export_unlock_counts_once_and_survives_expiry(self):
+        r=self.post(); self.finish(r); jid=r.json['job_id']
+        who=hashlib.sha256(TOKEN.encode()).hexdigest(); now=time.time()
+        with module._jobs_conn() as db:
+            db.execute('INSERT INTO subscription_periods VALUES(?,?,?,?,?,?,?)',('in_export','sub_export',who,now-1,now+86400,20,now))
+        with patch.dict(os.environ,{'ADSCAN_EXPORT_PAYWALL':'1','ADSCAN_EXPORT_PAYWALL_FROM':'0'}):
+            path='/api/billing/export/'+jid
+            for _ in range(2): self.assertTrue(self.client.post(path+'/unlock',headers=HEADERS).json['unlocked'])
+            self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['monthly_remaining'],19)
+            with module._jobs_conn() as db: db.execute('UPDATE subscription_periods SET ends=?',(now-1,))
+            self.assertTrue(self.client.get(path,headers=HEADERS).json['unlocked'])
+            self.assertEqual(self.client.get('/api/usage',headers=HEADERS).json['monthly_remaining'],0)
 
     def test_monthly_checkout_is_gated_and_uses_server_price(self):
         self.assertEqual(self.client.post('/api/billing/subscription/checkout',headers=HEADERS).status_code,503)
