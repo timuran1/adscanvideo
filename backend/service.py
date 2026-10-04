@@ -396,7 +396,7 @@ def install(app, jobs, db_path, runner):
 
     def inputs(data):
         question, mode = data.get('question', ''), data.get('mode', 'summary')
-        if not isinstance(question, str) or len(question) > 4000 or mode not in ('summary', 'shots', 'ads', 'ad', 'cinema', 'podcast', 'marketing', 'tutorial', 'moments'):
+        if not isinstance(question, str) or len(question) > 4000 or mode not in ('summary', 'shots', 'ads', 'ad', 'cinema', 'podcast', 'marketing', 'tutorial', 'moments', 'dashcam'):
             raise ValueError('Choose a valid analysis mode and a question under 4,000 characters.')
         return question, mode
 

@@ -103,3 +103,11 @@ or duration-limit increase was made in production. The controlled 11-minute nati
 probe found real events plus false candidates; separate short-window verification
 rejected the five false candidates. Real-world accuracy and latency require broader
 validation. Demo QA records are not evidence of new customer activity.
+
+## Native video release — October 4, 2026
+
+Production uses `ADSCAN_VIDEO_PROVIDER=gemini` with `gemini-3.8-flash` through the native Files API, including video audio. `GEMINI_API_KEY` is private in the server .env. Existing OpenRouter settings remain available for an explicit configuration rollback; provider failures restore allowance through existing job handling, not automatic duplicate calls. Limits remain 10 minutes / 200 MB. Token preflight enforces a conservative $0.25 maximum reservation per generation request.
+
+Customer result/status responses omit internal inference cost. Reports request plain text. Dashcam timeline provides observations and uncertainty without determining fault or legal responsibility. The existing dashboard retains estimated internal costs; a missing separate transcript is labelled as unmeasured for native jobs. Privacy describes native video/audio processing.
+
+Native processing does not extract a separate transcript or count locally sampled frames. Those dashboard measures therefore do not measure native audio/video coverage. The underlying production service.py is patched only for the dashcam mode allowlist; staged monthly billing code from the working repository is not installed by this release.

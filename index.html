@@ -1217,6 +1217,7 @@ nav {
   </div>
 
   <div class="modes">
+    <button class="mode-ch" data-mode="dashcam">Dashcam timeline</button>
     <button class="mode-ch" data-mode="moments">Find moments · beta</button>
     <button class="mode-ch active" data-mode="shots"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="12" cy="12" r="4"/></svg>Shot breakdown</button>
     <button class="mode-ch" data-mode="ad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-3"/></svg>Ad intelligence</button>
@@ -1231,7 +1232,7 @@ nav {
     <input id="moment-visual" maxlength="700" placeholder="Example: someone picks up the red cup">
     <label for="moment-dialogue">Spoken words to match (optional)</label>
     <input id="moment-dialogue" maxlength="700" placeholder="Example: this is the one I wanted">
-    <p>Get a shortlist of candidates to verify. Samples can miss brief actions. Dialogue matching needs an available transcript; some videos receive visual-only analysis.</p>
+    <p>Get a shortlist of candidates to verify. Brief actions and speech can be missed or misinterpreted. Check candidate matches in the original footage.</p>
   </div>
 
   <div class="analyzer-outcomes" aria-label="Analysis output details">
@@ -1953,6 +1954,7 @@ function q() {
     podcast: 'This is a podcast or conversation. Identify EVERY speaker — label each person by name, role, or distinguishing features. For each segment: timestamp, WHO is speaking (with visual cues like "man with glasses on left", "woman in red jacket"), and EXACTLY what they say. Include: key speakers with descriptions, complete transcript with speaker labels, main topics discussed (with timestamps), notable quotes verbatim, and a brief summary of the conversation.',
     marketing: 'Turn this video into marketing assets. Generate: 3 social media captions (short, punchy), 3 LinkedIn post drafts, 5 headline options for a blog post, and 3 hook ideas for promoting this content.',
     tutorial: 'Extract the step-by-step process from this video. List each step with timestamp, what to do, tools or resources mentioned, and tips or warnings. End with a quick reference checklist.',
+    dashcam: 'Create a neutral timeline of visible road events with approximate timestamps and uncertainties. Do not determine fault, liability, exact speeds or legal conclusions. Explain what to check in the original footage.',
     summary: 'Summarize this video comprehensively. Cover: what happens (chronologically), who is in it, key moments, main message, visual style, tone, and intended audience.'
   }[mode] || '';
 }
@@ -1976,8 +1978,8 @@ function updateUI() {
 updateUI();
 const stepProgress = { submitting: 5, uploading: 5, starting: 8, downloading: 22, transcribing: 40, extracting: 60, dedup: 75, analyzing: 90, done: 100 };
 const stageIndex = { submitting: 0, uploading: 0, starting: 0, downloading: 0, transcribing: 1, extracting: 2, dedup: 2, analyzing: 3 };
-const statusLabels = { submitting: 'Checking video link', uploading: 'Uploading your video', starting: 'Starting analysis', downloading: 'Downloading video', transcribing: 'Reading available audio', extracting: 'Extracting frames', dedup: 'Selecting frames', analyzing: 'Generating your report' };
-const statusDetails = { submitting: 'Connecting to the analyzer.', uploading: 'Sending your file to the analyzer.', starting: 'Your job is being prepared.', downloading: 'Retrieving the video. Some platforms take longer.', transcribing: 'Checking speech and captions when available.', extracting: 'Collecting visual moments with timestamps.', dedup: 'Keeping the most distinct frames.', analyzing: 'Turning the video evidence into your report.' };
+const statusLabels = { submitting: 'Checking video link', uploading: 'Uploading your video', starting: 'Starting analysis', downloading: 'Downloading video', transcribing: 'Reading available audio', extracting: 'Preparing video', dedup: 'Selecting frames', analyzing: 'Generating your report' };
+const statusDetails = { submitting: 'Connecting to the analyzer.', uploading: 'Sending your file to the analyzer.', starting: 'Your job is being prepared.', downloading: 'Retrieving the video. Some platforms take longer.', transcribing: 'Checking speech and captions when available.', extracting: 'Preparing the video for analysis.', dedup: 'Keeping the most distinct frames.', analyzing: 'Turning the video evidence into your report.' };
 function showProgress(status) {
   const panel = document.getElementById('progress');
   const wasHidden = panel.style.display !== 'block';
@@ -2028,12 +2030,12 @@ async function pollJob(id) {
         document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
         const context = jobContext(id);
         storage.remove('adsv_active_job');
-        message(data.transcript_chars ? 'Analysis complete.' : 'Analysis complete. No transcript was available; this result covers visuals only.', 'success');
+        message('Analysis complete. Check important details against the original video.', 'success');
         trackJobOnce('analysis_completed', id, {
           analysis_mode: context.analysis_mode || mode,
           input_method: context.input_method || tab,
           duration_bucket: durationBucket(data.duration),
-          transcript_available: data.transcript_chars ? 'yes' : 'no'
+          transcript_available: data.transcript_chars ? 'yes' : 'not_measured'
         });
         clearJobContext(id);
         return;
