@@ -18,7 +18,7 @@ only. No account is required.
 ## Limits and accuracy
 
 - Free and $3.99 single-credit video duration: 10 minutes
-- Planned $39.99 monthly premium video duration: 45 minutes; monthly billing is not available yet
+- $39.99 monthly premium video duration: 45 minutes; 20 analyses per paid billing month
 - Maximum uploaded file size: 200 MB
 - Video and available audio are analyzed; brief actions and details can be missed
 - Audible dialogue can be included; verify quotes against the original recording
@@ -30,10 +30,13 @@ only. No account is required.
 
 One analysis is free each day per network and resets at midnight UTC. Failed
 analyses restore the allowance. One additional analysis costs USD $3.99 per
-video with no subscription; tax is included where applicable. A monthly option
-is planned but cannot be purchased yet.
+video with no subscription; tax is included where applicable. Monthly Premium costs USD $39.99 per month for 20 analyses, up to 45 minutes each.
+Unused monthly analyses expire at the end of the paid period. Cancel using the
+Stripe billing portal. Save the private access key to restore analysis access.
 
 ## Official pages
+
+- [Analyze a 45-minute video](https://adscanvideo.com/blog/analyze-45-minute-video/): Premium limits, file preparation, focused questions and a timestamp review worksheet.
 
 - [AI video analysis vs frame-by-frame review](https://adscanvideo.com/blog/ai-video-analysis-frame-by-frame-accuracy/): Sampling limits, timestamp verification, and a copyable worksheet with a real sample.
 
