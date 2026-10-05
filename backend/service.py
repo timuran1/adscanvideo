@@ -287,8 +287,16 @@ def install(app, jobs, db_path, runner):
             }
         except (OSError, ValueError, TypeError):
             pass
+        marketing = None
+        try:
+            marketing = json.loads((ROOT / 'marketing-posts.json').read_text(encoding='utf-8'))
+            if not isinstance(marketing, dict) or not isinstance(marketing.get('posts'), list):
+                marketing = None
+        except (OSError, ValueError, TypeError):
+            pass
         return jsonify({
             "generated_at": int(now),
+            "marketing": marketing,
             "overview": {
                 "total": total,
                 "last_24h": len(last_24h),

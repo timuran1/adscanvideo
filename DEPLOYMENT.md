@@ -1,5 +1,24 @@
 # AdScanVideo deployment — verified September 20, 2026
 
+## Marketing dashboard — October 5, 2026
+
+`/dashboard/#marketing` adds the owner's searchable publication library, platform
+and status filters, original post links, CSV export and GA4 source totals. Overview
+and Marketing are separate views within the existing dashboard.
+
+The library is read by `/api/admin/dashboard` from
+`/opt/adscanvideo-api/marketing-posts.json`, under the existing nginx admin access
+restrictions. Its absence or invalid JSON does not prevent operations metrics.
+Keep the curated local source at `marketing/posts.json` (Git-ignored); upload it to
+the API directory with mode 640 after updating recorded publication evidence.
+Updating the JSON does not require an API restart. The public Pages staging must
+include `dashboard/marketing.css` and `dashboard/marketing.js`, but exclude the
+entire marketing source directory. No indexing status is inferred from posting.
+
+Initial import: 83 records including 42 external publications, 25 owned blog/sample
+pages, and 16 drafts, removed submissions or entries needing verification.
+Backend backup: `/opt/adscanvideo-api/backups/marketing-20261005-084518/`.
+
 ## Frontend
 
 Static HTML/CSS/JS, repository `timuran1/adscanvideo`, branch `main`. GitHub Pages

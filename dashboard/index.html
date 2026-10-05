@@ -6,6 +6,7 @@
 <meta name="robots" content="noindex,nofollow,noarchive">
 <meta name="adscan-api-base" content="https://api.adscanvideo.com/api">
 <title>Operations dashboard | AdScanVideo</title>
+<link rel="stylesheet" href="marketing.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -35,7 +36,7 @@
   <aside class="sidebar">
     <a class="brand" href="/"><svg width="22" height="18" viewBox="0 0 24 20" fill="none" aria-hidden="true"><rect x="1" y="2" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2"/><path d="m17 7 6-3v12l-6-3" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>AdScan<span>Video</span></a>
     <nav class="nav" aria-label="Dashboard"><a href="#overview" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13h6V4H4zm10 7h6v-9h-6zM4 20h6v-3H4zm10-13h6V4h-6z"/></svg>Overview</a><a href="#jobs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Recent jobs</a><a href="https://analytics.google.com/" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 20V10m7 10V4m7 16v-7"/></svg>Google Analytics</a><a href="https://search.google.com/search-console" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>Search Console</a></nav>
-    <div class="sidebar-note">Privacy-safe metrics<br><a href="/privacy/">Data handling policy</a></div>
+    <div class="sidebar-note">Your operations &amp; marketing workspace<br><a href="/privacy/">Data handling policy</a></div>
   </aside>
   <main class="main" id="overview">
     <header class="topbar"><div><h1>Operations overview</h1><p id="updated">Loading current metrics…</p></div><div class="actions"><button class="button" id="refresh">Refresh data</button></div></header>
@@ -48,6 +49,15 @@
     </section>
 
     <div class="layout">
+      <section class="panel full marketing-center" id="marketing" aria-labelledby="marketing-title">
+        <div class="panel-head"><div><span class="marketing-eyebrow">YOUR PUBLISHED WORK</span><h2 id="marketing-title">Marketing command center</h2><p>Find an article, video or community post and open the original.</p></div><span class="period" id="marketing-updated">Library loading</span></div>
+        <div class="traffic-strip marketing-summary" aria-label="Publication summary"><div class="traffic-stat"><strong id="marketing-published">—</strong><span>Recorded publications</span></div><div class="traffic-stat"><strong id="marketing-videos">—</strong><span>YouTube Shorts</span></div><div class="traffic-stat"><strong id="marketing-articles">—</strong><span>Articles &amp; guides</span></div><div class="traffic-stat"><strong id="marketing-review">—</strong><span>Need review</span></div></div>
+        <div class="marketing-performance" id="marketing-performance">Traffic attribution appears when GA4 is available.</div>
+        <div class="marketing-tools"><div class="marketing-search"><label for="marketing-search">Find a post</label><input type="search" id="marketing-search" placeholder="Search title, platform or topic…"></div><div><label for="marketing-platform">Platform</label><select id="marketing-platform"><option value="">All platforms</option></select></div><div><label for="marketing-status">Status</label><select id="marketing-status"><option value="Published">Published</option><option value="">All statuses</option><option value="Needs verification">Needs verification</option><option value="URL missing">URL missing</option><option value="Not live">Not live</option><option value="Draft">Draft</option></select></div><button type="button" class="button secondary" id="marketing-export" disabled>Download CSV</button></div>
+        <p class="marketing-count" id="marketing-count" role="status" aria-live="polite">Loading your post library…</p>
+        <div class="table-wrap"><table class="jobs marketing-table"><thead><tr><th>Date</th><th>Platform</th><th>Post / topic</th><th>Status</th><th>Original</th></tr></thead><tbody id="marketing-body"><tr><td colspan="5" class="empty">Publication links are loading…</td></tr></tbody></table></div>
+        <p class="note marketing-disclaimer">“Published” records publication evidence, not Google indexing or a guarantee that a community post is still visible. Missing URLs and removed submissions are kept for follow-up. Referral traffic cannot be attributed to an individual post without campaign tracking.</p>
+      </section>
       <section class="panel"><div class="panel-head"><div><h2>Analysis volume</h2><p>Completed and failed jobs by UTC day</p></div><span class="period">Last 14 days</span></div><div class="chart" id="trend" aria-label="Fourteen-day analysis volume chart"></div><div class="chart-legend"><span><i class="dot"></i>Completed</span><span><i class="dot bad"></i>Failed</span></div></section>
       <section class="panel"><div class="panel-head"><div><h2>System health</h2><p>Current queue and recent reliability</p></div><span id="health-pill" class="pill neutral"><i class="pulse"></i>Checking</span></div><div class="health"><div class="health-row"><span>Active jobs</span><strong id="h-active">0</strong></div><div class="health-row"><span>Longest active state</span><strong id="h-age">0 sec</strong></div><div class="health-row"><span>Failure rate, 7 days</span><strong id="h-failure">—</strong></div><div class="health-row"><span>Frames analyzed, 7 days</span><strong id="h-frames">0</strong></div></div></section>
 
@@ -81,8 +91,8 @@ async function load(){
   try{
     const response=await fetch(`${API}/admin/dashboard`,{cache:'no-store'});
     if(!response.ok)throw new Error(`Dashboard request failed (${response.status})`);
-    render(await response.json());
-  }catch(error){$('updated').textContent=`Could not refresh: ${error.message}`}finally{$('refresh').disabled=false;$('refresh').textContent='Refresh data'}
+    const data=await response.json();render(data);window.renderMarketing?.(data.marketing,data.traffic);
+  }catch(error){$('updated').textContent=`Could not refresh: ${error.message}`;window.renderMarketing?.(null,null)}finally{$('refresh').disabled=false;$('refresh').textContent='Refresh data'}
 }
 function render(data){
   const o=data.overview,ops=data.operations,rev=data.revenue;
@@ -129,7 +139,8 @@ function renderJobs(rows){
   $('jobs-body').innerHTML=rows.map(row=>{const statusClass=row.status==='done'?'good':row.status==='error'?'bad':'warn';const failedEarly=row.status==='error'&&(!row.mode||row.mode==='unknown');const transcript=row.status==='error'?'—':row.has_transcript?'Available':row.frames?'Visual only':'Not separately measured';return `<tr><td class="num">${esc(new Date(row.created*1000).toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}))}</td><td><span class="pill ${statusClass}">${esc(row.status)}</span></td><td>${failedEarly?'Stopped before analysis':esc(modeLabel(row.mode))}</td><td>${esc(inputLabel(row.input_method))}</td><td>${esc(countryLabel(row.country))}</td><td>${esc(row.tier)}</td><td class="num">${esc(row.duration||'—')}</td><td class="num">${row.frames||'—'}</td><td>${transcript}</td><td>${esc(row.failure_category||'—')}</td><td class="num">${usd(row.cost)}</td></tr>`}).join('');
 }
  $('refresh').addEventListener('click',load);
-load();
 </script>
+<script src="marketing.js"></script>
+<script>load();</script>
 </body>
 </html>
