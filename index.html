@@ -839,7 +839,6 @@ footer {
   .pricing-row { grid-template-columns: 1fr; }
   nav { padding: 12px 16px; }
   .nav-links { gap: 16px; }
-  .nav-links a:not(.nav-cta):not([href^=\"/blog/\"]) { display: none; }
   .hero { padding: 48px 16px 28px; }
   .input-zone { margin: 24px 16px 32px; }
 }
@@ -1132,6 +1131,20 @@ nav {
   .progress-stages{grid-template-columns:repeat(2,1fr)}
   .analyzer-outcomes{display:grid;grid-template-columns:1fr}.workflow-links{margin-bottom:58px;padding:0 17px}.workflow-link-list{justify-content:flex-start}.workflow-link-list a{text-align:left}
 }
+.nav-toggle { display:none; border:1px solid var(--border); background:var(--surface); color:var(--ink); padding:8px 14px; border-radius:8px; font:inherit; cursor:pointer; }
+.footer-left { flex-wrap:wrap; min-width:0; }
+.footer-left a { overflow-wrap:anywhere; }
+@media (max-width:900px) {
+  nav { flex-wrap:wrap; gap:12px; }
+  .nav-toggle { display:block; }
+  .nav-links { display:none; width:100%; min-width:0; flex-wrap:wrap; gap:12px 20px; padding:10px 0; }
+  .nav-links.is-open { display:flex; }
+}
+@media (max-width:640px) {
+  .footer-left { justify-content:center; }
+  .visual-orbit { max-width:100%; }
+  .hero-visual { overflow:hidden; }
+}
 </style>
 </head>
 <body>
@@ -1144,7 +1157,8 @@ nav {
       AdScan<span>Video</span>
     </a>
   </div>
-  <div class="nav-links">
+  <button type="button" class="nav-toggle" aria-controls="main-navigation" aria-expanded="false">Menu</button>
+  <div class="nav-links" id="main-navigation">
     <a href="/about/">About</a>
     <a href="/samples/">Samples</a>
     <a href="#usecases">Use cases</a>
@@ -1644,6 +1658,15 @@ nav {
 </footer>
 
 <script>
+const navToggle = document.querySelector('.nav-toggle');
+const mainNavigation = document.getElementById('main-navigation');
+function closeNavigation() { mainNavigation.classList.remove('is-open'); navToggle.setAttribute('aria-expanded', 'false'); }
+navToggle.addEventListener('click', () => {
+  const open = mainNavigation.classList.toggle('is-open');
+  navToggle.setAttribute('aria-expanded', String(open));
+});
+mainNavigation.addEventListener('click', event => { if (event.target.closest('a')) closeNavigation(); });
+document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeNavigation(); } });
 const API = document.querySelector('meta[name="adscan-api-base"]')?.content.replace(/\/$/, '') || '/api';
 let mode = 'shots', tab = 'upload', file = null, jobId = null;
 let reportFile = null, verificationURL = null;
