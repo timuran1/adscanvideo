@@ -62,7 +62,7 @@ Stripe billing portal. Save the private access key to restore analysis access.
 - [Methodology, privacy, and limitations](https://adscanvideo.com/about/)
 - [Extract dialogue and transcripts](https://adscanvideo.com/blog/extract-transcript-dialogue-from-video/)
 - [Analyze competitor video ads](https://adscanvideo.com/blog/analyze-competitor-video-ads-fast/)
-- [Build a production shot list](https://adscanvideo.com/blog/turn-video-into-production-shot-list/)
+- [Video to production shot list: real replayable example and free CSV worksheet](https://adscanvideo.com/blog/turn-video-into-production-shot-list/): Separate action ranges from verified cuts; check source evidence before planning camera setups.
 - [Video-to-prompt workflow: verified reference shot, original prompt, and generator-specific edits](https://adscanvideo.com/blog/ai-video-prompts-recreate-any-shot/)
 - [Privacy](https://adscanvideo.com/privacy/)
 - [Terms of service](https://adscanvideo.com/terms/)
