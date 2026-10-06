@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How to Extract Dialogue and a Transcript from Video | AdScanVideo</title>
-<meta name="description" content="Learn how to extract dialogue from a video, preserve timestamps and speakers, and understand when captions, speech recognition, or visual-only analysis is appropriate.">
+<title>Extract a Video Transcript and Verify Quotes | AdScanVideo</title>
+<meta name="description" content="Extract dialogue from video, check uncertain quotes against the original audio, and download a quote-verification worksheet for editors and podcast teams.">
 <link rel="canonical" href="https://adscanvideo.com/blog/extract-transcript-dialogue-from-video/">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <meta property="og:type" content="article">
-<meta property="og:title" content="How to Extract Dialogue and a Transcript from Video">
-<meta property="og:description" content="A practical workflow for timestamped dialogue, speaker labels, quotes, and visual context.">
+<meta property="og:title" content="Extract a Video Transcript and Verify Quotes">
+<meta property="og:description" content="Extract dialogue from video, check uncertain quotes against the original audio, and download a quote-verification worksheet for editors and podcast teams.">
 <meta property="og:url" content="https://adscanvideo.com/blog/extract-transcript-dialogue-from-video/">
 <meta property="og:site_name" content="AdScanVideo">
 <meta name="twitter:card" content="summary_large_image">
@@ -18,19 +18,19 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZS2C1B7429"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-ZS2C1B7429');</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://adscanvideo.com/#organization","name":"AdScanVideo","url":"https://adscanvideo.com"},{"@type":"Article","headline":"How to Extract Dialogue and a Transcript from Video","description":"A practical workflow for extracting timestamped dialogue, speaker labels, quotes, and visual context from video.","datePublished":"2026-09-20","dateModified":"2026-09-20","url":"https://adscanvideo.com/blog/extract-transcript-dialogue-from-video/","inLanguage":"en","publisher":{"@id":"https://adscanvideo.com/#organization"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://adscanvideo.com/blog/extract-transcript-dialogue-from-video/"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://adscanvideo.com/#organization","name":"AdScanVideo","url":"https://adscanvideo.com"},{"@type":"Article","headline":"Extract a Video Transcript and Verify Quotes","description":"Extract dialogue from video, check uncertain quotes against the original audio, and download a quote-verification worksheet for editors and podcast teams.","datePublished":"2026-09-20","dateModified":"2026-10-07","url":"https://adscanvideo.com/blog/extract-transcript-dialogue-from-video/","inLanguage":"en","publisher":{"@id":"https://adscanvideo.com/#organization"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://adscanvideo.com/blog/extract-transcript-dialogue-from-video/"}}]}</script>
 <style>
 :root{--bg:#f8f9fb;--surface:#fff;--surface2:#f1f3f6;--border:rgba(0,0,0,.08);--ink:#1a1a2e;--ink-dim:#505069;--ink-muted:#737386;--accent:#4f8cf7;--accent-soft:rgba(79,140,247,.09);--font:'DM Sans',-apple-system,sans-serif;--mono:'JetBrains Mono',monospace}
 *{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.68;-webkit-font-smoothing:antialiased}nav{align-items:center;background:rgba(248,249,251,.92);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;margin:0 auto;max-width:780px;padding:14px 24px;position:sticky;top:0;z-index:10;backdrop-filter:blur(12px)}.logo a{align-items:center;color:inherit;display:flex;font-size:1.05rem;font-weight:700;gap:8px;text-decoration:none}.logo svg{color:var(--accent);height:20px;width:20px}.logo span{color:var(--accent)}.nav-links{display:flex;gap:22px}.nav-links a{color:var(--ink-dim);font-size:.88rem;font-weight:600;text-decoration:none}.container{margin:0 auto;max-width:720px;padding:54px 24px 72px}.kicker{color:var(--accent);font:600 .78rem/1.2 var(--mono);margin-bottom:14px}.container h1{font-size:clamp(2rem,6vw,3.2rem);letter-spacing:-.035em;line-height:1.08;text-wrap:balance}.dek{color:var(--ink-dim);font-size:1.08rem;margin:18px 0 12px;max-width:62ch}.meta{color:var(--ink-muted);font:500 .78rem/1.5 var(--mono);margin-bottom:38px}.container h2{font-size:1.45rem;letter-spacing:-.02em;line-height:1.25;margin:38px 0 12px;text-wrap:balance}.container h3{font-size:1.05rem;margin:24px 0 8px}.container p,.container li{color:var(--ink-dim);font-size:.98rem}.container p{margin-bottom:17px}.container ul,.container ol{margin:0 0 18px 22px}.container li{margin-bottom:8px}.highlight{background:var(--accent-soft);border:1px solid rgba(79,140,247,.2);border-radius:12px;margin:26px 0;padding:18px 20px}.highlight p{color:var(--ink);margin:0}.workflow{background:var(--surface);border-radius:14px;margin:26px 0;padding:22px}.workflow dt{font-weight:700;margin-top:14px}.workflow dt:first-child{margin-top:0}.workflow dd{color:var(--ink-dim);margin-top:3px}.cta{background:var(--ink);border-radius:14px;margin:42px 0 0;padding:32px;text-align:center}.cta h2{color:#fff;margin:0 0 8px}.cta p{color:#c7c9d4;margin:0 0 20px}.cta a{background:#fff;border-radius:8px;color:var(--ink);display:inline-block;font-weight:700;padding:11px 22px;text-decoration:none}footer{border-top:1px solid var(--border);color:var(--ink-muted);display:flex;font-size:.82rem;justify-content:space-between;margin:0 auto;max-width:780px;padding:26px 24px}footer a{color:var(--ink-dim);text-decoration:none}@media(max-width:640px){nav{padding:12px 16px}.container{padding:34px 17px 56px}.nav-links{gap:14px}.cta{padding:26px 20px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-</style>
+.container a{color:#2364bd;overflow-wrap:anywhere}.cta a{color:var(--ink)}footer{flex-wrap:wrap;gap:12px}footer div{overflow-wrap:anywhere;min-width:0}</style>
 </head>
 <body>
 <nav><div class="logo"><a href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>AdScan<span>Video</span></a></div><div class="nav-links"><a href="/">Analyzer</a><a href="/blog/">Guides</a></div></nav>
 <main class="container">
   <div class="kicker">Transcript workflow</div>
-  <h1>How to extract dialogue from a video without losing the visual context</h1>
-  <p class="dek">A useful video transcript needs more than a block of text. It needs timestamps, reliable quotes, speaker cues, and the scene that explains what the words refer to.</p>
-  <div class="meta">September 20, 2026 · 6 min read</div>
+  <h1>Extract a video transcript and verify the quotes you use</h1>
+  <p class="dek">Get a draft of the dialogue, then build a short evidence list for the lines you actually plan to use. Each selected quote needs a source range, checked wording, speaker context, and a clear review status.</p>
+  <div class="meta">Updated October 7, 2026 · 8 min read</div>
 
   <h2>Choose the right source for the words</h2>
   <p>Dialogue can come from embedded subtitles, platform captions, or speech recognition applied to the audio track. These sources have different strengths. Captions are fast and often clean, but they may omit pauses, speaker names, or words the publisher considered unimportant. Speech recognition can recover dialogue from an uploaded file, but accents, overlapping voices, music, and poor microphones reduce accuracy.</p>
@@ -53,22 +53,60 @@
   </ul>
   <p>For editing, research, and ad analysis, dialogue notes are often the most useful because they preserve why a line matters. For accessibility or publication, you may still need a separate subtitle file and a human review pass.</p>
 
-  <h2>How AdScanVideo handles spoken content</h2>
-  <p>Upload a video or paste a public link, then choose <strong>Podcast notes</strong>, <strong>Shot breakdown</strong>, or <strong>Summary</strong>. AdScanVideo uses available captions or a speech transcript when possible and connects the words to timestamped visual observations. Short uploaded clips can be transcribed automatically. When no transcript is available, the result says so and covers the visuals only.</p>
-  <p>Use Podcast notes when the conversation is the main subject. Use Shot breakdown when you need dialogue aligned with camera changes, framing, and action. Use Summary when you need the fastest overview.</p>
+  <h2>How to extract dialogue in AdScanVideo today</h2>
+  <p>Upload a video file you have permission to use and choose <strong>Podcast notes</strong> when conversation is the main subject. Choose <strong>Shot breakdown</strong> when the words need to sit beside camera work and actions, or <strong>Summary</strong> for an overview. Keep the original file in your player or editor so you can compare the result with its audio.</p>
+  <p>The generated report is a first draft. It can miss words, merge speakers, or place a timestamp away from the line you want. A summary is not necessarily a complete verbatim transcript. If speech is missing, unclear, or summarized, do not reconstruct a quotation from the visual description.</p>
+  <div class="highlight"><p><strong>Current upload limits:</strong> one free daily on-screen analysis, no signup, up to 10 minutes and 200 MB. Monthly Premium supports videos up to 45 minutes, within the same 200 MB file limit. The input is a file upload; you do not need a public video link.</p></div>
 
-  <h2>Before you publish the transcript</h2>
+  <h2>Verify a selected quote without scrubbing the whole recording</h2>
+  <p>For an edit brief, start with a shortlist of the lines you intend to use. This narrows the review task; it does not certify the rest of the transcript. If you are publishing a complete transcript, review the complete recording.</p>
   <ol>
-    <li>Check names, numbers, and claims against the source video.</li>
-    <li>Remove filler only if you are producing edited notes, not a verbatim record.</li>
-    <li>Mark uncertain words instead of guessing.</li>
-    <li>Confirm consent and usage rights for private or sensitive recordings.</li>
-    <li>Keep the original video available for review.</li>
+    <li><strong>Save the candidate.</strong> Copy its generated wording, reported timestamp, and intended use into the worksheet. Mark it <em>Unverified</em>.</li>
+    <li><strong>Replay with context.</strong> In the original player, start a few seconds before the reported range and listen beyond its end. If the line is absent, expand the window and record the corrected range rather than treating the report's time as exact.</li>
+    <li><strong>Check the words that change meaning.</strong> Listen for names, quantities, negation, units, and qualifiers such as “may” or “up to.” Do not silently turn a possibility into a promise.</li>
+    <li><strong>Check who said it and what it refers to.</strong> Identify speaker changes and the preceding question. Record relevant screen text or demonstrations separately from speech.</li>
+    <li><strong>Choose the outcome.</strong> Mark <em>Verified verbatim</em>, <em>Corrected after replay</em>, <em>Paraphrase only</em>, or <em>Omit: unclear</em>. Save the corrected wording and the range you actually checked.</li>
   </ol>
+  <p>If two similar actions occur, visual similarity alone does not prove which occurrence contains the dialogue. Check both candidate ranges and keep the one that contains the audible line and the intended action together. If neither does, record no verified match.</p>
+  <p><a href="/blog/assets/video-quote-verification-worksheet.csv" download>Download the free quote-verification worksheet (CSV)</a>. Open it in Excel or Google Sheets. It is a blank editorial review sheet, not an automatic accuracy score or a new product feature.</p>
+  <dl class="workflow">
+    <dt>Source and candidate</dt><dd>File/version, report timestamp, generated wording, and intended use.</dd>
+    <dt>Evidence after replay</dt><dd>Checked start/end, corrected words, audible speaker cue, and visual context.</dd>
+    <dt>Decision</dt><dd>Review status, reviewer/date, and any separate factual check still needed.</dd>
+  </dl>
+
+  <h2>Real report example: a technical statement at 00:12</h2>
+  <p>Our <a href="/samples/semiconductor-podcast-analysis/#report">public semiconductor podcast sample</a> contains a generated entry at <strong>00:12</strong> naming silicon, gallium, and germanium. This is an existing 23-second sample report, not a newly verified transcription.</p>
+  <div class="highlight"><p><strong>Generated wording, not a verified quote:</strong> “Silicon. They are gallium, and they are germanium.”</p></div>
+  <p>The unusual sentence construction is a reason to replay, not permission to rewrite it inside quotation marks. A reviewer with the original clip should check the words around 00:12, confirm the speaker, and preserve the qualification in the following sentence. Until then, a suitable worksheet status is <em>Unverified: original audio needed</em>.</p>
+  <p>The sample page does not host the original audio. Its still frames cannot prove those spoken words. Even a correctly transcribed technical claim would still need a separate factual check before educational publication. Our <a href="/blog/analyze-video-podcast/">podcast workflow guide</a> covers chapters and repurposing after this review.</p>
+
+  <h2>Keep quotes, paraphrases, and scene observations separate</h2>
+  <ul>
+    <li><strong>Verbatim quote:</strong> wording checked against the audio, with attribution and source range.</li>
+    <li><strong>Paraphrase:</strong> your condensed explanation of the speaker's point, without quotation marks and without adding an unsupported claim.</li>
+    <li><strong>Scene observation:</strong> what the image shows, such as a speaker pointing at a diagram. It cannot establish what was said.</li>
+  </ul>
+  <p><a href="https://support.google.com/youtube/answer/6373554?hl=en">YouTube's automatic-caption guidance</a> warns that pronunciation, accents, dialects, and background noise can change the recognized speech, and asks creators to review the output. This supports checking the source instead of trusting polished wording alone.</p>
+  <p><a href="https://www.w3.org/WAI/media/av/transcripts/">W3C's transcript guidance</a> distinguishes speech and meaningful non-speech audio from visual information added to a descriptive transcript. Keep those evidence types clear. For a timed caption track, use our <a href="/blog/video-caption-quality-checklist/">caption quality checklist</a> and a caption editor; a video analysis report is not an SRT file.</p>
+
+  <h2>Share the checked brief, not an implied guarantee</h2>
+  <p>Before sending notes to a client, include the checked ranges and unresolved items. Preserve the original source version and confirm rights for private or sensitive recordings. Exporting a report does not verify its content.</p>
+  <p>The free report stays readable on screen. One credit unlocks built-in <strong>Copy, Word and PDF</strong> for that existing report without rerunning the analysis. A single credit costs $3.99; paid analyses include those actions. The blank worksheet above is free to download.</p>
+
+  <h2>Common questions</h2>
+  <h3>Can I use a generated sentence as a direct quote?</h3>
+  <p>Only after checking its wording and attribution against the original audio. If you have only a summary, use an attributed paraphrase or obtain the source before quoting.</p>
+  <h3>Are the timestamps exact edit boundaries?</h3>
+  <p>No. Use reported times to locate candidate passages, then set your checked start and end in the original player or editor. Do not treat them as frame-exact cuts.</p>
+  <h3>Do I need to review every second?</h3>
+  <p>For a few selected quotes, check each selected passage with enough surrounding context. That verifies those passages only. A full published transcript needs a full review.</p>
+  <h3>What if the audio is unclear?</h3>
+  <p>Mark the line unclear, get a cleaner recording or clarification where possible, or omit it. Do not fill gaps with plausible words inferred from the picture.</p>
 
   <section class="cta">
     <h2>Extract dialogue with timestamps</h2>
-    <p>Upload a short video and choose Podcast notes or Shot breakdown. One analysis is free each day.</p>
+    <p>Upload your video, choose Podcast notes, and use the report to shortlist lines for source review. One daily on-screen analysis is free.</p>
     <a href="/?mode=podcast#input-zone" data-cta="transcript-guide">Analyze a video</a>
   </section>
 </main>
