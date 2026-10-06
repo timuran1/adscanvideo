@@ -20,6 +20,9 @@ FUNNEL_EVENTS = {
     "analysis_validation_failed", "quota_blocked", "result_copied",
     "result_downloaded", "pricing_link_clicked", "pricing_section_viewed",
     "pricing_interest", "begin_checkout", "payment_confirmed",
+    "checkout_redirected", "checkout_returned", "checkout_failed",
+    "report_export_gate_viewed", "report_export_preview_opened",
+    "report_export_unlock_clicked", "report_exports_unlocked",
 }
 
 
@@ -121,6 +124,10 @@ def markdown(data):
         f"- Pricing links clicked: **{totals.get('pricing_link_clicked', 0)}**",
         f"- Paid-offer button clicked: **{totals.get('pricing_interest', 0)}**",
         f"- Confirmed payments: **{totals.get('payment_confirmed', 0)}**", "",
+        f"- Export gate shown: **{totals.get('report_export_gate_viewed', 0)}**",
+        f"- Export previews opened: **{totals.get('report_export_preview_opened', 0)}**",
+        f"- Export unlock clicks / completed unlocks: **{totals.get('report_export_unlock_clicked', 0)} / {totals.get('report_exports_unlocked', 0)}**",
+        f"- Checkout starts / redirects / failures: **{totals.get('begin_checkout', 0)} / {totals.get('checkout_redirected', 0)} / {totals.get('checkout_failed', 0)}**",
         "## Acquisition", "", "| Source / medium | Sessions | Engaged | Engagement |", "|---|---:|---:|---:|",
     ]
     for row in data["sources"][:10]:

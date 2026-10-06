@@ -138,3 +138,21 @@ Native processing does not extract a separate transcript or count locally sample
 ## Premium duration gate — October 4, 2026
 
 The server derives each worker's duration limit from its reserved entitlement: free and single-credit jobs receive 600 seconds, monthly jobs receive 2700. User request bodies cannot override that limit. Production still has no active monthly checkout; 45-minute access is reserved for the planned $39.99 monthly plan. Usage metadata returns 600 for the currently available tiers. The repository's future monthly reservation logic uses monthly credits before daily free credits, preserving premium job limits.
+
+## October 7, 2026: conversion audit and export preview
+
+Read-only Stripe reconciliation found all seven recorded one-time checkout
+sessions and the one subscription session expired and unpaid, with no missing
+paid grant among those sessions. Listing webhook endpoints returned 403 under
+the existing restricted key; live delivery is not verified by this audit.
+Seven of eight recent failures came from the retired URL workflow. The one
+native-upload failure indicates empty or truncated output; existing stored
+errors do not distinguish the provider finish reason. No provider, quota or
+pricing changes were made.
+
+The report export gate now previews an excerpt of the actual user's report,
+explains the existing one-credit unlock without rerunning, and records gate,
+preview and unlock interactions. Payment confirmation telemetry is deduplicated
+per checkout session in local storage. Weekly reporting includes these funnel
+events. Backend billing and native-video tests passed in isolated temporary
+state (50 tests, mocked provider/Stripe requests); no live card was charged.

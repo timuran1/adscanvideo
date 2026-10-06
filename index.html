@@ -1362,8 +1362,18 @@ nav {
     <input id="verification-file" type="file" accept="video/*">
   </div>
   <div class="result-card" id="result-content"></div>
-  <div id="export-access" style="margin-top:16px;padding:16px;border:1px solid var(--line);border-radius:12px" role="status">
+  <div id="export-access" style="margin-top:16px;padding:16px;border:1px solid var(--border);border-radius:12px" role="status">
     <p id="export-access-label">Checking export access…</p>
+    <details id="export-preview" hidden>
+      <summary onclick="trackJobOnce('report_export_preview_opened', reportJobId, {analysis_mode:mode})">Preview your client deliverable</summary>
+      <p style="font-size:.85rem;color:var(--ink-dim);margin-top:12px">Layout preview using an excerpt of your actual report. The unlocked Word and PDF exports contain the full report. Review observations against your original video before sharing.</p>
+      <div style="background:white;color:#1a1a2e;border:1px solid var(--border);border-radius:8px;padding:24px;margin:12px 0;overflow-wrap:anywhere">
+        <p style="font-size:.8rem;color:#5a5a72">AdScanVideo · Analysis report</p>
+        <h3 id="export-preview-title" style="border-bottom:2px solid #4f8cf7;padding-bottom:12px;margin:8px 0 16px"></h3>
+        <div id="export-preview-text" style="white-space:pre-wrap;font-size:.9rem;line-height:1.6"></div>
+      </div>
+      <p>One credit unlocks Copy, Word and PDF for this report. Buy one credit for $3.99, or use a credit you already have. No rerun or subscription required.</p>
+    </details>
     <button id="export-unlock" class="btn-ghost" onclick="unlockReportExports()" hidden>Unlock this report · use 1 credit</button>
   </div>
   <div class="result-actions">
@@ -2140,7 +2150,7 @@ refreshUsage().then(async () => {
           const checkout = await api('/billing/subscription/checkout/' + encodeURIComponent(sessionId));
           if (checkout.status === 'paid') {
             await refreshUsage();
-            track('payment_confirmed', { currency: 'USD', value: 39.99, offer: 'monthly_20' });
+            trackJobOnce('payment_confirmed', sessionId, { currency: 'USD', value: 39.99, offer: 'monthly_20' });
             message('Monthly payment confirmed. Your 20 analyses are available for this billing period.');
             break;
           }
@@ -2161,7 +2171,7 @@ refreshUsage().then(async () => {
           if (checkout.status === 'paid') {
             await refreshUsage();
             const offer = storage.get('adsv_checkout_offer') || 'single';
-            track('payment_confirmed', { currency: 'USD', value: {single:3.99,pack3:9.99,pack5:14.99}[offer], offer });
+            trackJobOnce('payment_confirmed', sessionId, { currency: 'USD', value: {single:3.99,pack3:9.99,pack5:14.99}[offer], offer });
             message('Payment confirmed. Your credits are ready.');
             const pendingReport = storage.get('adsv_export_job');
             if (pendingReport) { await pollJob(pendingReport); if (reportJobId === pendingReport) await unlockReportExports(); }
@@ -2206,11 +2216,18 @@ async function refreshExportAccess() {
   const label = document.getElementById('export-access-label');
   const button = document.getElementById('export-unlock');
   button.hidden = true;
+  document.getElementById('export-preview').hidden = true;
   try {
     const data = await api('/billing/export/' + encodeURIComponent(reportJobId));
     exportsUnlocked = data.ready && data.unlocked;
     label.textContent = exportsUnlocked ? 'Copy, Word and PDF are unlocked for this report.' : 'Your report is free to read here. Unlock Copy, Word and PDF for this report with 1 credit; no new analysis needed.';
     button.hidden = exportsUnlocked || !data.ready;
+    const preview = document.getElementById('export-preview');
+    preview.hidden = exportsUnlocked || !data.ready;
+    document.getElementById('export-preview-title').textContent = document.getElementById('result-title').textContent;
+    const reportText = document.getElementById('result-content').textContent;
+    document.getElementById('export-preview-text').textContent = reportText.length > 900 ? reportText.slice(0, 900) + '\n[Preview excerpt ends here]' : reportText;
+    if (data.ready && !exportsUnlocked) trackJobOnce('report_export_gate_viewed', reportJobId, {analysis_mode:mode});
   } catch { label.textContent = 'Could not check export access. Reload your report and try again.'; }
 }
 function checkExportAccess() {
@@ -2222,6 +2239,7 @@ function checkExportAccess() {
 async function unlockReportExports() {
   if (!reportJobId || exportUnlockBusy) return;
   exportUnlockBusy = true;
+  track('report_export_unlock_clicked', {analysis_mode:mode});
   const button = document.getElementById('export-unlock'); button.disabled = true;
   try {
     await api('/billing/export/' + encodeURIComponent(reportJobId) + '/unlock', {method:'POST'});
@@ -2267,7 +2285,7 @@ ${content.split('\n').filter(l => l.trim()).map(l => {
   if (/^\d+\.\s/.test(l)) return `<p>${l}</p>`;
   return `<p>${l}</p>`;
 }).join('\n')}
-<div class="footer">Generated by AdScanVideo — https://adscanvideo.com</div>
+<div class="footer">Generated by AdScanVideo · https://adscanvideo.com</div>
 </body></html>`;
   const blob = new Blob([html], { type: 'application/msword' });
   const a = document.createElement('a');
@@ -2287,7 +2305,7 @@ function exportPDF() {
   el.innerHTML = `<h1 style="font-size:18pt;font-weight:700;border-bottom:2px solid #4f8cf7;padding-bottom:8px">${title}</h1>
 <p style="color:#5a5a72;font-size:10pt;margin-bottom:20px">Generated by AdScanVideo · ${new Date().toLocaleDateString()}</p>
 ${content.split('\n').filter(l => l.trim()).map(l => `<p>${l}</p>`).join('\n')}
-<p style="margin-top:32px;padding-top:12px;border-top:1px solid #ddd;font-size:9pt;color:#9090a0">Generated by AdScanVideo — https://adscanvideo.com</p>`;
+<p style="margin-top:32px;padding-top:12px;border-top:1px solid #ddd;font-size:9pt;color:#9090a0">Generated by AdScanVideo · https://adscanvideo.com</p>`;
   document.body.appendChild(el);
   html2pdf().set({
     margin: [15, 15], filename: (title || 'adscanvideo-analysis') + '.pdf',
