@@ -49,7 +49,8 @@ Stripe billing portal. Save the private access key to restore analysis access.
 - [All video-analysis guides](https://adscanvideo.com/blog/)
 - [Video link troubleshooting and file-upload fallback](https://adscanvideo.com/blog/video-link-not-working-upload-file/)
 - [Video ad CTA and landing-page audit](https://adscanvideo.com/blog/video-ad-cta-landing-page-audit/)
-- [Video caption quality checklist for ads and demos](https://adscanvideo.com/blog/video-caption-quality-checklist/)
+- [Video caption quality checklist and free manual QA worksheet](https://adscanvideo.com/blog/video-caption-quality-checklist/): check exact wording, timing and final-version corrections.
+- [Free caption QA CSV worksheet](https://adscanvideo.com/blog/assets/video-caption-qa-worksheet.csv): manual issue log, not an automatic caption validator or SRT/VTT track.
 - [Product demo video audit checklist](https://adscanvideo.com/blog/product-demo-video-audit-checklist/)
 - [Turn a screen recording into a step-by-step SOP](https://adscanvideo.com/blog/screen-recording-to-step-by-step-sop/)
 - [YouTube Shorts shot-list template with a real example](https://adscanvideo.com/blog/youtube-shorts-shot-list-template/)
