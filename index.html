@@ -1365,7 +1365,7 @@ nav {
   <div id="export-access" style="margin-top:16px;padding:16px;border:1px solid var(--border);border-radius:12px" role="status">
     <p id="export-access-label">Checking export access…</p>
     <details id="export-preview" hidden>
-      <summary onclick="trackJobOnce('report_export_preview_opened', reportJobId, {analysis_mode:mode})">Preview your client deliverable</summary>
+      <summary>Preview your client deliverable</summary>
       <p style="font-size:.85rem;color:var(--ink-dim);margin-top:12px">Layout preview using an excerpt of your actual report. The unlocked Word and PDF exports contain the full report. Review observations against your original video before sharing.</p>
       <div style="background:white;color:#1a1a2e;border:1px solid var(--border);border-radius:8px;padding:24px;margin:12px 0;overflow-wrap:anywhere">
         <p style="font-size:.8rem;color:#5a5a72">AdScanVideo · Analysis report</p>
@@ -1776,7 +1776,7 @@ function clearJobContext(id) { storage.remove('adsv_job_context_' + id); }
 function durationBucket(value) {
   const match = /^(\d+):(\d{2})$/.exec(value || '');
   if (!match) return 'unknown';
-  const seconds = Number(match[1] || 0) * 3600 + Number(match[2]) * 60 + Number(match[3]);
+  const seconds = Number(match[1]) * 60 + Number(match[2]);
   if (seconds <= 30) return '0_30s';
   if (seconds <= 60) return '31_60s';
   if (seconds <= 180) return '1_3m';
@@ -1829,6 +1829,7 @@ function buyCredit(offer = 'single', exportPurchase = false) {
   if (!exportPurchase) storage.remove('adsv_export_job');
   if (!billingEnabled || (offer !== 'single' && !bundleOffers.includes(offer))) { showCredits(); document.getElementById('billing-message').textContent = 'This checkout is temporarily unavailable.'; return; }
   checkoutOffer = offer;
+  track('checkout_access_step_viewed', {...exportCheckoutContext(), offer});
   showCredits();
   document.getElementById('credit-access-key').textContent = ownerToken;
   document.getElementById('credit-access-step').hidden = false;
@@ -1848,16 +1849,16 @@ async function continueCreditCheckout() {
     el.textContent = 'Checkout is temporarily unavailable. Your free analysis resets tomorrow.';
     return;
   }
-  track('begin_checkout', { currency: 'USD', value, items: [{ item_id: offer, item_name: 'AdScanVideo credits', price: value, quantity: 1 }] });
+  track('begin_checkout', { ...exportCheckoutContext(), currency: 'USD', value, items: [{ item_id: offer, item_name: 'AdScanVideo credits', price: value, quantity: 1 }] });
   el.textContent = 'Opening secure checkout…';
   try {
     const data = await api('/billing/checkout', { method: 'POST', headers: {'Content-Type':'application/json'}, body:JSON.stringify({offer}) });
     const target = new URL(data.url);
     if (target.protocol !== 'https:' || target.hostname !== 'checkout.stripe.com') throw new Error('Checkout is unavailable.');
-    track('checkout_redirected', { offer });
+    track('checkout_redirected', { ...exportCheckoutContext(), offer });
     location.assign(target.href);
   } catch (error) {
-    track('checkout_failed', { failure_type: requestFailureType(error) });
+    track('checkout_failed', { ...exportCheckoutContext(), failure_type: requestFailureType(error) });
     el.textContent = error.message;
   }
 }
@@ -2062,7 +2063,6 @@ async function pollJob(id) {
         document.getElementById('result-title').textContent = data.title || 'Analysis';
         renderReport(result.result);
         reportJobId = id; exportsUnlocked = false;
-        await refreshExportAccess();
         document.getElementById('verification-player').hidden = false;
         if (reportFile) setVerificationFile(reportFile);
         document.getElementById('result').style.display = 'block';
@@ -2076,7 +2076,8 @@ async function pollJob(id) {
           duration_bucket: durationBucket(data.duration),
           transcript_available: data.transcript_chars ? 'yes' : 'not_measured'
         });
-        clearJobContext(id);
+        trackJobOnce('report_viewed', id, context);
+        await refreshExportAccess();
         return;
       }
       if (data.status === 'error' || data.status === 'not_found') {
@@ -2227,8 +2228,15 @@ async function refreshExportAccess() {
     document.getElementById('export-preview-title').textContent = document.getElementById('result-title').textContent;
     const reportText = document.getElementById('result-content').textContent;
     document.getElementById('export-preview-text').textContent = reportText.length > 900 ? reportText.slice(0, 900) + '\n[Preview excerpt ends here]' : reportText;
-    if (data.ready && !exportsUnlocked) trackJobOnce('report_export_gate_viewed', reportJobId, {analysis_mode:mode});
+    if (data.ready && !exportsUnlocked) trackJobOnce('report_export_gate_viewed', reportJobId, {...jobContext(reportJobId), analysis_mode:jobContext(reportJobId).analysis_mode || mode});
   } catch { label.textContent = 'Could not check export access. Reload your report and try again.'; }
+}
+document.getElementById('export-preview').addEventListener('toggle', event => {
+  if (event.currentTarget.open) trackJobOnce('report_export_preview_opened', reportJobId, {...jobContext(reportJobId), analysis_mode:jobContext(reportJobId).analysis_mode || mode});
+});
+function exportCheckoutContext() {
+  const id = storage.get('adsv_export_job');
+  return {checkout_origin:id ? 'report_export' : 'pricing', ...(id ? jobContext(id) : {})};
 }
 function checkExportAccess() {
   if (exportsUnlocked) return true;

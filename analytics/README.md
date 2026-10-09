@@ -35,3 +35,17 @@ snapshot remains on disk. GA4 country rows are aggregate visitor data and
 cannot be joined to historical video jobs. New jobs store only a two-letter
 country code from Cloudflare's `CF-IPCountry` header, with no raw IP address in
 the operations table.
+
+## Ordered report-to-checkout funnel
+
+Run `analytics/funnel.py --start 6daysAgo --end today --output /private/report/path`
+with the same read-only GA4 account. It uses the v1alpha closed user funnel API
+to require events in sequence, allowing intervening events. It is not a matched
+report cohort and includes founder activity and consent/data-delay limitations.
+The October 9 fix emits completion before the export gate, counts preview openings
+from the details toggle rather than clicks, and adds `checkout_access_step_viewed`
+before the access-key acknowledgment. Checkout events include `checkout_origin`
+(`report_export` or `pricing`) and original mode/input, without job IDs or keys.
+Older gate funnels are invalidated by the prior reversed event order; the access
+step was not measured before October 9. Missing historical events cannot be
+reconstructed. Preview and unlock paths are separate because preview is optional.

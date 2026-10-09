@@ -36,4 +36,41 @@ class NativeTests(unittest.TestCase):
         self.session.request.return_value=Mock(ok=False,status_code=401)
         with patch('native_video.requests.Session',return_value=self.session),self.assertRaisesRegex(native.NativeUnavailable,'temporarily unavailable'):
             native.analyze(self.path,'shots','')
+    @patch.dict(os.environ,{'GEMINI_API_KEY':'test-only'})
+    def test_generation_503_recovers_once(self):
+        self.responses(); responses=list(self.session.request.side_effect)
+        failed=Mock(ok=False,status_code=503,headers={})
+        self.session.request.side_effect=responses[:-1]+[failed,responses[-1]]
+        with patch('native_video.requests.Session',return_value=self.session),patch('native_video.time.sleep') as sleep:
+            with self.assertLogs('native_video',level='WARNING') as logs:
+                answer=native.analyze(self.path,'summary','')
+        self.assertIn('Visible action',answer['text']);self.assertEqual(self.session.request.call_count,5)
+        sleep.assert_called_once();self.assertIn('stage=generate http_status=503',logs.output[0])
+        self.assertNotIn('test-only',' '.join(logs.output));self.session.delete.assert_called_once()
+
+    @patch.dict(os.environ,{'GEMINI_API_KEY':'test-only'})
+    def test_generation_retry_is_bounded(self):
+        self.responses();responses=list(self.session.request.side_effect)
+        self.session.request.side_effect=responses[:-1]+[Mock(ok=False,status_code=429,headers={})]*2
+        with patch('native_video.requests.Session',return_value=self.session),patch('native_video.time.sleep'),self.assertRaises(native.NativeUnavailable):
+            native.analyze(self.path,'summary','')
+        self.assertEqual(self.session.request.call_count,5);self.session.delete.assert_called_once()
+
+    @patch.dict(os.environ,{'GEMINI_API_KEY':'test-only','ADSCAN_NATIVE_REQUEST_CAP_USD':'0.04'})
+    def test_generation_retry_cannot_exceed_request_cap(self):
+        self.responses();responses=list(self.session.request.side_effect)
+        self.session.request.side_effect=responses[:-1]+[Mock(ok=False,status_code=503,headers={})]
+        with patch('native_video.requests.Session',return_value=self.session),patch('native_video.time.sleep') as sleep,self.assertRaises(native.NativeUnavailable):
+            native.analyze(self.path,'summary','')
+        self.assertEqual(self.session.request.call_count,4);sleep.assert_not_called()
+
+    @patch.dict(os.environ,{'GEMINI_API_KEY':'test-only'})
+    def test_ambiguous_generation_timeout_not_retried(self):
+        self.responses();responses=list(self.session.request.side_effect)
+        self.session.request.side_effect=responses[:-1]+[native.requests.Timeout('private URL and token')]
+        with patch('native_video.requests.Session',return_value=self.session),self.assertRaisesRegex(native.NativeUnavailable,'connection failed'):
+            native.analyze(self.path,'summary','')
+        self.assertEqual(self.session.request.call_count,4);self.session.delete.assert_called_once()
+
 if __name__=='__main__': unittest.main()
+

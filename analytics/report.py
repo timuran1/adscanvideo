@@ -21,6 +21,7 @@ FUNNEL_EVENTS = {
     "result_downloaded", "pricing_link_clicked", "pricing_section_viewed",
     "pricing_interest", "begin_checkout", "payment_confirmed",
     "checkout_redirected", "checkout_returned", "checkout_failed",
+    "report_viewed", "checkout_access_step_viewed",
     "report_export_gate_viewed", "report_export_preview_opened",
     "report_export_unlock_clicked", "report_exports_unlocked",
 }
@@ -127,6 +128,7 @@ def markdown(data):
         f"- Export gate shown: **{totals.get('report_export_gate_viewed', 0)}**",
         f"- Export previews opened: **{totals.get('report_export_preview_opened', 0)}**",
         f"- Export unlock clicks / completed unlocks: **{totals.get('report_export_unlock_clicked', 0)} / {totals.get('report_exports_unlocked', 0)}**",
+        f"- Access-key checkout step opened: **{totals.get('checkout_access_step_viewed', 0)}**",
         f"- Checkout starts / redirects / failures: **{totals.get('begin_checkout', 0)} / {totals.get('checkout_redirected', 0)} / {totals.get('checkout_failed', 0)}**",
         "## Acquisition", "", "| Source / medium | Sessions | Engaged | Engagement |", "|---|---:|---:|---:|",
     ]
