@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 from datetime import date
 from pathlib import Path
 
@@ -144,6 +145,13 @@ def markdown(data):
     lines += ["", "These flags indicate traffic worth reviewing. They do not prove that a visitor is a bot. GA4 reports aggregate devices and sessions, not verified identities.", "", "## Funnel detail by mode and input", "", "| Event | Mode | Input | Count | Users |", "|---|---|---|---:|---:|"]
     for row in data["funnelRows"]:
         lines.append(f"| {row['eventName']} | {row['customEvent:analysis_mode']} | {row['customEvent:input_method']} | {row['eventCount']} | {row['activeUsers']} |")
+    ordered = data.get('orderedFunnel', {})
+    if ordered.get('journeys'):
+        lines.extend(['', '## Ordered conversion journeys', '', ordered['scope'], ''])
+        for name, journey in ordered['journeys'].items():
+            lines.append('- ' + name + ': ' + ' → '.join(f"{step['event']} ({step['users']} users)" for step in journey['steps']))
+    elif ordered.get('unavailable'):
+        lines.extend(['', 'Ordered conversion funnel unavailable for this refresh.'])
     return "\n".join(lines) + "\n"
 
 
@@ -156,6 +164,13 @@ def main():
         raise SystemExit(f"Credential file not found: {args.credentials}")
     args.output.mkdir(parents=True, exist_ok=True)
     data = build_report(Reporter(args.credentials))
+    try:
+        from funnel import run as ordered_funnel
+        data['orderedFunnel'] = ordered_funnel('6daysAgo', 'today', args.output, args.credentials, quiet=True)
+    except Exception as error:
+        # Do not replace authoritative audience data with a stale funnel on failure.
+        data['orderedFunnel'] = {'unavailable': True, 'errorType': type(error).__name__}
+        print('Ordered funnel unavailable; audience report still refreshed.', file=sys.stderr)
     for name, content in (("adscanvideo-weekly.json", json.dumps(data, indent=2)),
                           ("adscanvideo-weekly.md", markdown(data))):
         target = args.output / name
