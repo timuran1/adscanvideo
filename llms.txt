@@ -36,6 +36,8 @@ Stripe billing portal. Save the private access key to restore analysis access.
 
 ## Official pages
 
+- [Video ad hook checklist and free manual CSV worksheet](https://adscanvideo.com/blog/what-makes-great-video-ad-hook/): Review the first three seconds, separate visible objects from offers, and label source observations and editorial edit hypotheses. This is not an automatic product score.
+
 - [Analyze a 45-minute video](https://adscanvideo.com/blog/analyze-45-minute-video/): Premium limits, file preparation, focused questions and a timestamp review worksheet.
 
 - [AI video analysis vs frame-by-frame review](https://adscanvideo.com/blog/ai-video-analysis-frame-by-frame-accuracy/): Current video/audio processing scope, source replay, repeated action and dialogue tests, and a free CSV verification worksheet.
@@ -69,7 +71,7 @@ Stripe billing portal. Save the private access key to restore analysis access.
 - [Terms of service](https://adscanvideo.com/terms/)
 - [Support, billing and refunds](https://adscanvideo.com/support/)
 
-Last updated: 2026-10-10
+Last updated: 2026-10-11
 Contact: support@adscanvideo.com
 
 ## Credit bundles and exports
