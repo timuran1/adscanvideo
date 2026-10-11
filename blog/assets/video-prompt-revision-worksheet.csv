@@ -1,0 +1,3 @@
+reference,time_range,source_observation,verification_status,generated_report_excerpt,editorial_prompt_version,one_change_to_test,expected_end_state,generated_result_review,next_revision
+Public animated cat sample,00:00 to 00:01,Animated orange cat and small duck in grassy field; report describes slight zoom,Verify motion in original source,"Report observation, not a generated prompt",Two original paper cutout figures in a sunlit rooftop garden; gentle camera push; hold both figures in frame,Test camera push while subjects hold position,Both subjects remain in frame,Not measured; no generation result supplied,Record actual result before revising
+Your authorized clip,,,,,,,,,

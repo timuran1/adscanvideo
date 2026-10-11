@@ -66,13 +66,15 @@ Stripe billing portal. Save the private access key to restore analysis access.
 - [Extract dialogue, verify selected quotes and download a review worksheet](https://adscanvideo.com/blog/extract-transcript-dialogue-from-video/)
 - [Analyze competitor video ads](https://adscanvideo.com/blog/analyze-competitor-video-ads-fast/)
 - [Video to production shot list: real replayable example and free CSV worksheet](https://adscanvideo.com/blog/turn-video-into-production-shot-list/): Separate action ranges from verified cuts; check source evidence before planning camera setups.
-- [Video-to-prompt workflow: verified reference shot, original prompt, and generator-specific edits](https://adscanvideo.com/blog/ai-video-prompts-recreate-any-shot/)
+- [Video-to-prompt workflow: actual report review, original prompts and a free revision worksheet](https://adscanvideo.com/blog/ai-video-prompts-recreate-any-shot/)
 - [Privacy](https://adscanvideo.com/privacy/)
 - [Terms of service](https://adscanvideo.com/terms/)
 - [Support, billing and refunds](https://adscanvideo.com/support/)
 
-Last updated: 2026-10-11
+Last updated: 2026-10-12
 Contact: support@adscanvideo.com
 
 ## Credit bundles and exports
 One-time credits: $3.99 for 1, $9.99 for 3, $14.99 for 5. A credit runs one analysis up to 10 minutes with Copy, Word and PDF included, or unlocks these actions for an existing free report without rerunning AI. New free reports are readable on screen; built-in exports need one credit. Earlier reports keep their export access. Save the private access key to restore unused credits. Monthly Premium remains $39.99 for 20 analyses per paid billing month, up to 45 minutes per upload and 200 MB. Unused monthly analyses expire; one-time bundles do not renew.
+
+- [Free manual prompt revision CSV](https://adscanvideo.com/blog/assets/video-prompt-revision-worksheet.csv): Separate source evidence, generated report excerpts, editorial changes and measured generation results.
