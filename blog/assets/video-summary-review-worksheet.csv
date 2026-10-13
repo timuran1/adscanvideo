@@ -1,0 +1,3 @@
+source_filename,source_version,candidate_range,report_statement,evidence_type,review_state,source_check_note,correction,final_handoff_reference
+Illustrative example only,No real source,Not measured,A warning must accompany the action,Editorial review question,Not reviewed,Replay source before asserting a condition,,
+,,,,,,,,

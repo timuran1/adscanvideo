@@ -58,7 +58,7 @@ Stripe billing portal. Save the private access key to restore analysis access.
 - [YouTube Shorts shot-list template with a real example](https://adscanvideo.com/blog/youtube-shorts-shot-list-template/)
 - [Vertical video ad safe-zone checklist and free placement-review worksheet](https://adscanvideo.com/blog/vertical-video-ad-safe-zone-checklist/)
 - [How to analyze UGC video ads](https://adscanvideo.com/blog/how-to-analyze-ugc-video-ads/)
-- [How to summarize a video with AI](https://adscanvideo.com/blog/how-to-summarize-a-video-with-ai/)
+- [How to summarize a video with AI](https://adscanvideo.com/blog/how-to-summarize-a-video-with-ai/): source verification, incomplete-report checks, export handoff, and a free manual summary review CSV
 - [Real sample reports](https://adscanvideo.com/samples/)
 - [Animated video shot-breakdown example](https://adscanvideo.com/samples/animated-cat-shot-breakdown/)
 - [Transcript-aware podcast analysis example](https://adscanvideo.com/samples/semiconductor-podcast-analysis/)
