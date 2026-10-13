@@ -17,6 +17,7 @@ import threading
 import time
 
 import requests
+import report_email
 from flask import request, jsonify
 from network_guard import validate_url
 
@@ -107,6 +108,7 @@ def install(app, jobs, db_path, runner):
                 'monthly_remaining': sum(row[2] for row in periods),
                 'monthly_ends_at': min((row[1] for row in periods), default=None),
                 'subscription_enabled': subscription_enabled(),
+                'report_email_enabled': report_email.configured(),
                 'bundle_offers': [name for name, env in [('pack3','STRIPE_PRICE_PACK3'),('pack5','STRIPE_PRICE_PACK5')] if billing_enabled() and os.getenv(env)],
                 'manage_billing_url': os.getenv('STRIPE_PORTAL_LOGIN_URL', '') if has_subscription else '',
                 'reset_at': (int(time.time())//86400+1)*86400,
@@ -159,6 +161,8 @@ def install(app, jobs, db_path, runner):
         if request.path.startswith('/api/'):
             response.headers['Cache-Control'] = 'no-store'
         return response
+
+    report_email.install(app, connect, jobs, owner, ip_key)
 
     @app.get('/api/usage')
     def usage():

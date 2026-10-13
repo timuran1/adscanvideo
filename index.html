@@ -1251,7 +1251,8 @@ nav {
     </button>
     <span class="free-badge" id="free-count"></span>
   </div>
-  <p id="analysis-message" class="input-feedback" role="status" aria-live="polite"></p>
+  <p id="billing-availability" role="status" aria-live="polite"></p>
+<p id="analysis-message" class="input-feedback" role="status" aria-live="polite"></p>
   <div id="progress" aria-label="Analysis progress">
     <div class="progress-inner">
       <div class="spinner" aria-hidden="true"></div>
@@ -1376,6 +1377,18 @@ nav {
     </details>
     <button id="export-unlock" class="btn-ghost" onclick="unlockReportExports()" hidden>Unlock this report · use 1 credit</button>
   </div>
+  <details id="report-email-action" hidden style="margin:16px 0">
+    <summary>Email me a private link to this report</summary>
+    <p>Optional. Your full on-screen report stays available. This does not unlock paid exports.</p>
+    <form id="report-email-form">
+      <label for="report-email-address">Email address</label>
+      <input id="report-email-address" type="email" maxlength="254" autocomplete="email" required>
+      <label><input id="report-email-marketing" type="checkbox"> I would like occasional AdScanVideo tips. Confirm this separately from the email link.</label>
+      <button id="report-email-send" class="btn-ghost" type="submit">Email my report link</button>
+      <p>Resend delivers a private seven-day link to this address. Anyone with the link can read this report. <a href="/privacy/">Privacy policy</a></p>
+      <p id="report-email-message" role="status" aria-live="polite"></p>
+    </form>
+  </details>
   <div class="result-actions">
     <button class="btn-ghost" onclick="copyResult()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -1550,7 +1563,7 @@ nav {
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>20 analyses per paid billing month</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Export to Word &amp; PDF</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Unused monthly analyses expire at the end of the paid period; not unlimited</li>
-        <li id="monthly-unavailable"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Monthly checkout is temporarily unavailable</li>
+        <li id="monthly-unavailable" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Monthly checkout is temporarily unavailable</li>
       </ul>
       <a id="monthly-interest" href="mailto:support@adscanvideo.com?subject=Monthly%20plan%20interest" class="plan-cta secondary">Ask about monthly access</a>
       <button id="monthly-checkout" type="button" class="plan-cta primary" onclick="prepareMonthlyCheckout()" hidden>Subscribe · $39.99/month</button>
@@ -1725,7 +1738,7 @@ function renderReport(text) {
   target.append(document.createTextNode(text.slice(cursor)));
 }
 let bundleOffers = [], reportJobId = null, exportsUnlocked = false, exportUnlockBusy = false, checkoutOffer = "single";
-let freeCount = 1, paidCredits = 0, monthlyRemaining = 0, monthlyEnabled = false, manageBillingUrl = '', billingEnabled = false, busy = false;
+let freeCount = 1, paidCredits = 0, monthlyRemaining = 0, monthlyEnabled = null, usageState = 'loading', reportEmailEnabled = false, manageBillingUrl = '', billingEnabled = null, busy = false;
 const storage = {
   get(key) { try { return localStorage.getItem(key); } catch { return null; } },
   set(key, value) { try { localStorage.setItem(key, value); } catch {} },
@@ -1820,14 +1833,28 @@ async function refreshUsage() {
   try {
     const data = await api('/usage');
     freeCount = data.free_remaining; paidCredits = data.paid_credits; monthlyRemaining = data.monthly_remaining || 0;
-    monthlyEnabled = Boolean(data.subscription_enabled); manageBillingUrl = data.manage_billing_url || '';
-    billingEnabled = data.billing_enabled; bundleOffers = data.bundle_offers || [];
+    monthlyEnabled = typeof data.subscription_enabled === 'boolean' ? data.subscription_enabled : null;
+    reportEmailEnabled = data.report_email_enabled === true; usageState = 'ready'; manageBillingUrl = data.manage_billing_url || '';
+    billingEnabled = typeof data.billing_enabled === 'boolean' ? data.billing_enabled : null; bundleOffers = data.bundle_offers || [];
     updateUI();
-  } catch { document.getElementById('free-count').textContent = 'Allowance checked when you analyze'; }
+  } catch { usageState = 'error'; updateUI(); document.getElementById('free-count').textContent = 'Allowance checked when you analyze'; }
 }
+document.getElementById('report-email-form').addEventListener('submit', async event => {
+  event.preventDefault();
+  if (!reportJobId) return;
+  const button = document.getElementById('report-email-send'), notice = document.getElementById('report-email-message');
+  button.disabled = true; notice.textContent = 'Sending your private link…';
+  track('report_email_requested', jobContext(reportJobId));
+  try {
+    const data = await api('/reports/' + reportJobId + '/email', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:document.getElementById('report-email-address').value.trim(),marketing_opt_in:document.getElementById('report-email-marketing').checked})});
+    notice.textContent = data.message;
+    track('report_email_accepted', {...jobContext(reportJobId), marketing_opt_in:document.getElementById('report-email-marketing').checked});
+  } catch (error) { notice.textContent = error.message; track('report_email_failed', {failure_type:requestFailureType(error)}); }
+  finally { button.disabled = false; }
+});
 function buyCredit(offer = 'single', exportPurchase = false) {
   if (!exportPurchase) storage.remove('adsv_export_job');
-  if (!billingEnabled || (offer !== 'single' && !bundleOffers.includes(offer))) { showCredits(); document.getElementById('billing-message').textContent = 'This checkout is temporarily unavailable.'; return; }
+  if (billingEnabled === false || (billingEnabled === true && offer !== 'single' && !bundleOffers.includes(offer))) { showCredits(); document.getElementById('billing-message').textContent = 'This checkout is temporarily unavailable.'; return; }
   checkoutOffer = offer;
   track('checkout_access_step_viewed', {...exportCheckoutContext(), offer});
   showCredits();
@@ -1843,7 +1870,7 @@ async function continueCreditCheckout() {
   storage.set('adsv_checkout_offer', offer);
 
   const el = document.getElementById('billing-message');
-  if (!billingEnabled) {
+  if (billingEnabled === false) {
     showCredits();
     track('pricing_interest', { offer: 'single_credit' });
     el.textContent = 'Checkout is temporarily unavailable. Your free analysis resets tomorrow.';
@@ -1863,7 +1890,7 @@ async function continueCreditCheckout() {
   }
 }
 function prepareMonthlyCheckout() {
-  if (!monthlyEnabled) return;
+  if (monthlyEnabled === false || usageState === 'loading') return;
   document.getElementById('monthly-access-key').textContent = ownerToken;
   document.getElementById('monthly-access-step').hidden = false;
   document.getElementById('monthly-checkout').hidden = true;
@@ -1877,7 +1904,7 @@ async function copyMonthlyKey() {
   }
 }
 async function startMonthlyCheckout() {
-  if (!monthlyEnabled || !document.getElementById('monthly-key-saved').checked) {
+  if (monthlyEnabled === false || !document.getElementById('monthly-key-saved').checked) {
     document.getElementById('billing-message').textContent = 'Save your private access key and check the box before subscribing.';
     return;
   }
@@ -2000,14 +2027,19 @@ function updateUI() {
   document.getElementById('file').disabled = busy;
   document.querySelectorAll('[data-checkout]').forEach(el => {
     const offer = el.dataset.offer || 'single';
-    el.disabled = !billingEnabled || (offer !== 'single' && !bundleOffers.includes(offer));
+    el.disabled = usageState === 'loading' || billingEnabled === false || (billingEnabled === true && offer !== 'single' && !bundleOffers.includes(offer));
     el.textContent = {single:'Buy 1 credit · $3.99',pack3:'3 credits · $9.99',pack5:'5 credits · $14.99'}[offer];
   });
-  document.getElementById('monthly-title').textContent = monthlyEnabled ? 'Monthly Premium' : 'Monthly Premium · unavailable';
+  document.getElementById('monthly-title').textContent = monthlyEnabled === false ? 'Monthly Premium · unavailable' : 'Monthly Premium';
   document.getElementById('monthly-price-label').textContent = '/month';
-  document.getElementById('monthly-unavailable').hidden = monthlyEnabled;
-  document.getElementById('monthly-interest').hidden = monthlyEnabled;
-  document.getElementById('monthly-checkout').hidden = !monthlyEnabled || Boolean(manageBillingUrl) || !document.getElementById('monthly-access-step').hidden;
+  document.getElementById('monthly-unavailable').hidden = monthlyEnabled !== false;
+  document.getElementById('monthly-interest').hidden = monthlyEnabled !== false;
+  const monthlyButton = document.getElementById('monthly-checkout');
+  monthlyButton.hidden = monthlyEnabled === false || Boolean(manageBillingUrl) || !document.getElementById('monthly-access-step').hidden;
+  monthlyButton.disabled = usageState === 'loading';
+  monthlyButton.textContent = usageState === 'loading' ? 'Checking checkout…' : 'Subscribe · $39.99/month';
+  document.getElementById('billing-availability').textContent = usageState === 'error' ? 'Could not check availability. You can retry checkout; payment is validated securely before charging.' : '';
+  document.getElementById('report-email-action').hidden = !reportEmailEnabled;
   const manage = document.getElementById('monthly-manage');
   manage.hidden = !manageBillingUrl;
   if (manageBillingUrl && manageBillingUrl.startsWith('https://billing.stripe.com/p/login/')) manage.href = manageBillingUrl;

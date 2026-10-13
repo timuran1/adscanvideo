@@ -7,6 +7,7 @@ from google.oauth2.service_account import Credentials
 from google.auth.transport.requests import AuthorizedSession
 
 JOURNEYS={
+ 'complete_conversion':['analysis_completed','report_export_preview_opened','report_export_unlock_clicked','begin_checkout','payment_confirmed'],
  'completion_to_preview':['analysis_completed','report_export_preview_opened','begin_checkout'],
  'completion_to_unlock':['analysis_completed','report_export_unlock_clicked','begin_checkout','payment_confirmed'],
  'export_checkout':['report_export_unlock_clicked','checkout_access_step_viewed','begin_checkout','checkout_redirected'],
