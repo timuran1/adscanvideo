@@ -78,3 +78,5 @@ Contact: support@adscanvideo.com
 One-time credits: $3.99 for 1, $9.99 for 3, $14.99 for 5. A credit runs one analysis up to 10 minutes with Copy, Word and PDF included, or unlocks these actions for an existing free report without rerunning AI. New free reports are readable on screen; built-in exports need one credit. Earlier reports keep their export access. Save the private access key to restore unused credits. Monthly Premium remains $39.99 for 20 analyses per paid billing month, up to 45 minutes per upload and 200 MB. Unused monthly analyses expire; one-time bundles do not renew.
 
 - [Free manual prompt revision CSV](https://adscanvideo.com/blog/assets/video-prompt-revision-worksheet.csv): Separate source evidence, generated report excerpts, editorial changes and measured generation results.
+
+- [Video creative brief handoff](https://adscanvideo.com/blog/video-creative-brief/): evidence, editorial hypotheses, permissions, approvals and a free manual CSV worksheet.
