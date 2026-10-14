@@ -1085,7 +1085,7 @@ nav {
 
 /* ── Analysis credit modal ──────────────────────────── */
 .overlay {
-  position:fixed; inset:0; z-index:9999;
+  position:fixed; inset:0; z-index:300;
   background:rgba(0,0,0,0.55); backdrop-filter:blur(4px);
   display:flex; align-items:center; justify-content:center;
   padding:20px;
@@ -1145,6 +1145,63 @@ nav {
   .visual-orbit { max-width:100%; }
   .hero-visual { overflow:hidden; }
 }
+
+/* Report delivery and credit purchase */
+#result {scroll-margin-top:110px}
+.result-actions {flex-wrap:wrap}
+.result-top h2 {overflow-wrap:anywhere}
+#report-email-message[data-state="error"] {color:#b42318}
+#report-email-message[data-state="success"] {color:#21633e}
+.report-email-panel {display:grid;grid-template-columns:minmax(180px,.8fr) minmax(0,1.4fr);gap:28px;background:#edf3fe;padding:24px;border-radius:12px;margin:18px 0 24px;color:var(--ink)}
+.report-email-panel[hidden] {display:none}
+.report-email-intro h3,.report-export-panel h3 {font-size:1.2rem;font-weight:700;letter-spacing:-.02em;line-height:1.3;margin-bottom:8px}
+.report-email-intro p {font-size:.9rem;color:#45516c;max-width:27ch}
+#report-email-form > label:first-child {display:block;font-size:.8rem;font-weight:600;margin-bottom:7px}
+.report-email-row {display:flex;gap:8px;align-items:stretch}
+#report-email-address {width:100%;min-width:0;min-height:46px;padding:11px 12px;border:1px solid #b0bed6;border-radius:8px;background:white;font:inherit;font-size:.9rem;color:var(--ink)}
+#report-email-address::placeholder {color:#59647a}
+.report-primary {border:0;min-height:46px;border-radius:8px;padding:12px 18px;background:#245edb;color:white;font:600 .9rem var(--font);white-space:nowrap;cursor:pointer;transition:transform .18s cubic-bezier(.32,.72,0,1),background .18s}
+.report-primary:hover {background:#194dbd}.report-primary:active {transform:scale(.98)}
+.report-primary:disabled {opacity:.6;cursor:wait}
+.report-consent {display:flex;align-items:flex-start;gap:8px;margin-top:13px;font-size:.8rem;line-height:1.5;color:#45516c;cursor:pointer}
+.report-consent input {width:16px;height:16px;flex-shrink:0;margin-top:2px;accent-color:#245edb}
+.consent-optional {white-space:nowrap}
+.report-fineprint {font-size:.75rem;color:#45516c;line-height:1.6;margin-top:9px}
+.report-fineprint a {color:#194dbd}
+#report-email-message {font-size:.85rem;margin-top:8px;overflow-wrap:anywhere}#report-email-message:empty {display:none}
+.report-export-panel {padding:24px;background:white;border:1px solid #dce3ee;border-radius:12px;margin-top:18px}
+#export-access-label {font-size:.9rem;color:var(--ink-dim);max-width:65ch;margin:8px 0 16px}
+#export-preview > summary {display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;font-size:.88rem;font-weight:600;cursor:pointer;list-style:none;color:#194dbd}
+#export-preview > summary::-webkit-details-marker {display:none}
+#export-preview[open] > summary span {transform:rotate(45deg)}
+#export-unlock {margin-top:10px}
+.credit-modal {max-width:500px;text-align:left;padding:36px;box-shadow:0 8px 8px rgba(26,26,46,.10)}
+.credit-modal h3 {font-size:1.65rem;line-height:1.2;letter-spacing:-.03em;max-width:90%;margin:8px 0 12px}
+.credit-modal .credit-context {font-size:.8rem;font-weight:600;color:#245edb;margin:0}
+.credit-modal #billing-message {font-size:.95rem;line-height:1.6;color:#45516c;margin-bottom:18px}
+.credit-benefits {display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.8rem;font-weight:600;margin-bottom:24px;color:var(--ink)}
+.credit-benefits span::before {content:'✓';color:#23734d;margin-right:5px}
+.credit-modal .plan-cta {display:flex;align-items:center;justify-content:center;min-height:48px;width:100%;padding:13px 16px;border:0;border-radius:8px;font:600 .95rem var(--font);cursor:pointer;transition:transform .18s cubic-bezier(.32,.72,0,1),background .18s}
+.credit-modal .plan-cta.primary {background:#245edb;color:white}
+.credit-modal .plan-cta.primary:hover {background:#194dbd}
+.credit-modal .plan-cta.secondary {background:#edf1f7;color:#293752}
+.credit-modal .plan-cta.secondary:hover {background:#e0e7f1}
+.credit-modal .plan-cta:active {transform:scale(.98)}
+.credit-modal .plan-cta:disabled {opacity:.55;cursor:not-allowed}
+.credit-bundles {display:flex;gap:10px;margin-top:10px}
+.credit-modal .credit-fineprint {font-size:.8rem;color:#45516c;margin:10px 0 0}
+.credit-modal .credit-terms {border-top:1px solid #e6eaf1;padding-top:20px;margin:24px 0 12px;font-size:.8rem;line-height:1.7;color:#45516c}
+.credit-read-free {background:none;border:0;padding:8px 0;color:#194dbd;text-decoration:underline;text-underline-offset:3px;font:500 .85rem var(--font);cursor:pointer}
+.credit-modal .modal-close {width:36px;height:36px;display:grid;place-items:center;color:#45516c;border-radius:8px;top:10px;right:10px}
+.credit-modal .modal-close:hover {background:#edf1f7}
+#credit-access-step {padding-top:16px;border-top:1px solid #e6eaf1}
+#credit-access-step > p {font-size:.95rem;font-weight:600}
+#credit-access-step code {background:#edf1f7!important;border-radius:8px;margin:10px 0}
+#credit-access-step label {font-size:.85rem;color:#45516c}
+.report-primary:focus-visible,#report-email-address:focus-visible,#export-preview summary:focus-visible,.credit-modal button:focus-visible {outline:3px solid #245edb;outline-offset:3px}
+@media(max-width:640px) {#result {width:calc(100% - 28px);margin-left:14px;margin-right:14px}.result-card {padding:20px}.report-email-panel {grid-template-columns:1fr;gap:18px;padding:20px}.report-email-intro p {max-width:none}.report-email-row {flex-direction:column}.report-export-panel {padding:20px}.credit-modal {padding:32px 22px 24px}.credit-modal h3 {font-size:1.5rem}.credit-bundles {flex-direction:column}}
+@media(prefers-reduced-motion:reduce) {.report-primary,.credit-modal .plan-cta {transition:none}}
+
 </style>
 </head>
 <body>
@@ -1362,11 +1419,28 @@ nav {
     <label for="verification-file">After reloading, choose the same original file to check timestamps:</label>
     <input id="verification-file" type="file" accept="video/*">
   </div>
+  <section id="report-email-action" class="report-email-panel" aria-labelledby="report-email-title" hidden>
+    <div class="report-email-intro">
+      <h3 id="report-email-title">Email me this report</h3>
+      <p>Keep a free link to your report. No account needed.</p>
+    </div>
+    <form id="report-email-form">
+      <label for="report-email-address">Email address</label>
+      <div class="report-email-row">
+        <input id="report-email-address" type="email" maxlength="254" autocomplete="email" placeholder="you@company.com" aria-describedby="report-email-privacy" required>
+        <button id="report-email-send" class="report-primary" type="submit">Send my report</button>
+      </div>
+      <label class="report-consent"><input id="report-email-marketing" type="checkbox"><span>Also send me occasional AdScanVideo tips <span class="consent-optional">(optional)</span></span></label>
+      <p id="report-email-privacy" class="report-fineprint">Your link works for 7 days. Anyone with it can read the report. Exports unlock separately. <a href="/privacy/">Privacy policy</a></p>
+      <p id="report-email-message" role="status" aria-live="polite"></p>
+    </form>
+  </section>
   <div class="result-card" id="result-content"></div>
-  <div id="export-access" style="margin-top:16px;padding:16px;border:1px solid var(--border);border-radius:12px" role="status">
-    <p id="export-access-label">Checking export access…</p>
+  <section id="export-access" class="report-export-panel" aria-labelledby="report-export-title">
+    <h3 id="report-export-title">Take your report into your next brief</h3>
+    <p id="export-access-label" role="status">Checking export access…</p>
     <details id="export-preview" hidden>
-      <summary>Preview your client deliverable</summary>
+      <summary>Preview Word &amp; PDF exports <span aria-hidden="true">＋</span></summary>
       <p style="font-size:.85rem;color:var(--ink-dim);margin-top:12px">Layout preview using an excerpt of your actual report. The unlocked Word and PDF exports contain the full report. Review observations against your original video before sharing.</p>
       <div style="background:white;color:#1a1a2e;border:1px solid var(--border);border-radius:8px;padding:24px;margin:12px 0;overflow-wrap:anywhere">
         <p style="font-size:.8rem;color:#5a5a72">AdScanVideo · Analysis report</p>
@@ -1375,20 +1449,8 @@ nav {
       </div>
       <p>One credit unlocks Copy, Word and PDF for this report. Buy one credit for $3.99, or use a credit you already have. No rerun or subscription required.</p>
     </details>
-    <button id="export-unlock" class="btn-ghost" onclick="unlockReportExports()" hidden>Unlock this report · use 1 credit</button>
-  </div>
-  <details id="report-email-action" hidden style="margin:16px 0">
-    <summary>Email me a private link to this report</summary>
-    <p>Optional. Your full on-screen report stays available. This does not unlock paid exports.</p>
-    <form id="report-email-form">
-      <label for="report-email-address">Email address</label>
-      <input id="report-email-address" type="email" maxlength="254" autocomplete="email" required>
-      <label><input id="report-email-marketing" type="checkbox"> I would like occasional AdScanVideo tips. Confirm this separately from the email link.</label>
-      <button id="report-email-send" class="btn-ghost" type="submit">Email my report link</button>
-      <p>Resend delivers a private seven-day link to this address. Anyone with the link can read this report. <a href="/privacy/">Privacy policy</a></p>
-      <p id="report-email-message" role="status" aria-live="polite"></p>
-    </form>
-  </details>
+    <button id="export-unlock" class="report-primary" onclick="unlockReportExports()" hidden>Unlock exports · 1 credit</button>
+  </section>
   <div class="result-actions">
     <button class="btn-ghost" onclick="copyResult()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -1632,22 +1694,24 @@ nav {
 
 <!-- ── Analysis credit modal ─────────────────────────── -->
 <div id="credit-overlay" class="overlay hidden" onclick="if(event.target===this)closeCredits()">
-  <div class="credit-modal" role="dialog" aria-modal="true" aria-label="Analysis credits">
+  <div class="credit-modal" role="dialog" aria-modal="true" aria-labelledby="credit-title" aria-describedby="billing-message" tabindex="-1">
     <button class="modal-close" onclick="closeCredits()" aria-label="Close">&times;</button>
-    <div class="credit-icon">
-      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    </div>
-    <h3>Analysis and export credits</h3>
-    <p id="billing-message" role="status">One analysis is free each day. Additional analyses require a $3.99 credit.</p>
-    <button type="button" class="plan-cta primary" onclick="buyCredit()" data-checkout>Buy 1 credit · $3.99</button>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
-        <button class="plan-cta secondary" style="flex:1" onclick="buyCredit('pack3')" data-checkout data-offer="pack3">3 credits · $9.99</button>
-        <button class="plan-cta secondary" style="flex:1" onclick="buyCredit('pack5')" data-checkout data-offer="pack5">5 credits · $14.99</button>
+    <p class="credit-context" id="credit-context">Pay only when you need more</p>
+    <h3 id="credit-title">Get analysis credits</h3>
+    <p id="billing-message" role="status">Your daily free report stays free. Use a credit for another analysis or to unlock exports.</p>
+    <div class="credit-benefits"><span>Copy text</span><span>Word document</span><span>PDF report</span></div>
+    <div class="credit-offers" id="credit-offers">
+      <button type="button" class="plan-cta primary" onclick="buyCredit('single', !!storage.get('adsv_export_job'))" data-checkout>Buy 1 credit · $3.99</button>
+      <div class="credit-bundles">
+        <button type="button" class="plan-cta secondary" onclick="buyCredit('pack3', !!storage.get('adsv_export_job'))" data-checkout data-offer="pack3">3 credits · $9.99</button>
+        <button type="button" class="plan-cta secondary" onclick="buyCredit('pack5', !!storage.get('adsv_export_job'))" data-checkout data-offer="pack5">5 credits · $14.99</button>
       </div>
-      <p style="font-size:.76rem;color:var(--ink-muted);margin-top:10px">Save $1.98 with 3 credits or $4.96 with 5 compared with single credits. No subscription. Bundle analyses remain limited to 10 minutes and 200 MB.</p>
-    <p style="margin:12px 0 0;">Each credit runs one analysis with exports, or unlocks one existing free report. Monthly Premium alone supports videos up to 45 minutes.</p>
+      <p class="credit-fineprint">One time purchase. No subscription.</p>
+    </div>
+    <p class="credit-terms">1 credit = 1 analysis with exports, or exports for 1 existing free report. No rerun needed.<br>Credit analyses: up to 10 minutes and 200 MB.</p>
+    <button type="button" class="credit-read-free" onclick="closeCredits()">Keep reading my free report</button>
     <div id="credit-access-step" hidden style="margin-top:16px;text-align:left">
-      <p>Private access key — anyone with it can use your credits:</p>
+      <p>Save your private access key</p>
       <code id="credit-access-key" style="display:block;overflow-wrap:anywhere;user-select:all;font-size:.72rem;padding:12px;background:var(--bg-alt)"></code>
       <button class="btn-ghost" onclick="copyMonthlyKey()">Copy access key</button>
       <label style="display:block;margin:12px 0"><input id="credit-access-saved" type="checkbox"> I have saved my access key privately</label>
@@ -1843,14 +1907,14 @@ document.getElementById('report-email-form').addEventListener('submit', async ev
   event.preventDefault();
   if (!reportJobId) return;
   const button = document.getElementById('report-email-send'), notice = document.getElementById('report-email-message');
-  button.disabled = true; notice.textContent = 'Sending your private link…';
+  button.disabled = true; button.textContent = 'Sending…'; notice.dataset.state = 'sending'; notice.textContent = 'Sending your private link…';
   track('report_email_requested', jobContext(reportJobId));
   try {
     const data = await api('/reports/' + reportJobId + '/email', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:document.getElementById('report-email-address').value.trim(),marketing_opt_in:document.getElementById('report-email-marketing').checked})});
-    notice.textContent = data.message;
+    notice.textContent = data.message; notice.dataset.state = 'success';
     track('report_email_accepted', {...jobContext(reportJobId), marketing_opt_in:document.getElementById('report-email-marketing').checked});
-  } catch (error) { notice.textContent = error.message; track('report_email_failed', {failure_type:requestFailureType(error)}); }
-  finally { button.disabled = false; }
+  } catch (error) { notice.dataset.state = 'error'; notice.textContent = error.message; track('report_email_failed', {failure_type:requestFailureType(error)}); }
+  finally { button.disabled = false; button.textContent = 'Send my report'; }
 });
 function buyCredit(offer = 'single', exportPurchase = false) {
   if (!exportPurchase) storage.remove('adsv_export_job');
@@ -1860,6 +1924,8 @@ function buyCredit(offer = 'single', exportPurchase = false) {
   showCredits();
   document.getElementById('credit-access-key').textContent = ownerToken;
   document.getElementById('credit-access-step').hidden = false;
+  document.getElementById('credit-offers').hidden = true;
+  document.getElementById('credit-title').textContent = 'Keep access to your credits';
   document.getElementById('credit-access-saved').checked = false;
   document.getElementById('billing-message').textContent = 'Save your private access key before buying. It restores unused credits and report access in another browser.';
 }
@@ -2234,16 +2300,37 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 /* ── Analysis credit modal ──────────────────────────── */
 let previousFocus = null;
+let previousBodyOverflow = null;
 function showCredits() {
-  previousFocus = document.activeElement;
+  if (document.getElementById('credit-overlay').classList.contains('hidden')) previousFocus = document.activeElement;
+  const exportIntent = !!storage.get('adsv_export_job');
+  document.getElementById('credit-context').textContent = exportIntent ? 'Your report is ready' : 'Pay only when you need more';
+  document.getElementById('credit-title').textContent = exportIntent ? 'Unlock this report’s exports' : 'Get analysis credits';
+  document.getElementById('billing-message').textContent = exportIntent ? 'Keep the full report in Copy, Word and PDF. One credit unlocks all three, without a new analysis.' : 'Your daily free report stays free. Use a credit for another analysis or to unlock exports.';
+  document.getElementById('credit-offers').hidden = false;
+  document.getElementById('credit-access-step').hidden = true;
+  document.querySelector('.credit-read-free').hidden = !reportJobId;
+  if (previousBodyOverflow === null) previousBodyOverflow = document.body.style.overflow;
+  document.body.style.overflow = 'hidden';
   document.getElementById('credit-overlay').classList.remove('hidden');
   document.querySelector('.modal-close').focus();
 }
 function closeCredits() {
   document.getElementById('credit-overlay').classList.add('hidden');
+  if (previousBodyOverflow !== null) document.body.style.overflow = previousBodyOverflow;
+  previousBodyOverflow = null;
   previousFocus?.focus();
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCredits(); });
+document.addEventListener('keydown', e => {
+  const overlay = document.getElementById('credit-overlay');
+  if (overlay.classList.contains('hidden')) return;
+  if (e.key === 'Escape') { e.preventDefault(); closeCredits(); return; }
+  if (e.key !== 'Tab') return;
+  const controls = [...overlay.querySelectorAll('button:not(:disabled), input:not(:disabled), a[href], [tabindex="0"]')].filter(el => !el.hidden && el.getClientRects().length);
+  const first = controls[0], last = controls[controls.length - 1];
+  if (e.shiftKey && (document.activeElement === first || !overlay.contains(document.activeElement))) { e.preventDefault(); last?.focus(); }
+  else if (!e.shiftKey && (document.activeElement === last || !overlay.contains(document.activeElement))) { e.preventDefault(); first?.focus(); }
+});
 async function refreshExportAccess() {
   exportsUnlocked = false;
   const label = document.getElementById('export-access-label');
@@ -2253,7 +2340,8 @@ async function refreshExportAccess() {
   try {
     const data = await api('/billing/export/' + encodeURIComponent(reportJobId));
     exportsUnlocked = data.ready && data.unlocked;
-    label.textContent = exportsUnlocked ? 'Copy, Word and PDF are unlocked for this report.' : 'Your report is free to read here. Unlock Copy, Word and PDF for this report with 1 credit; no new analysis needed.';
+    label.textContent = exportsUnlocked ? 'Copy, Word and PDF are unlocked for this report.' : 'Your full report is free to read. One credit unlocks Copy, Word and PDF, with no rerun.';
+    button.textContent = paidCredits > 0 ? 'Unlock exports · use 1 credit' : 'Unlock exports · $3.99';
     button.hidden = exportsUnlocked || !data.ready;
     const preview = document.getElementById('export-preview');
     preview.hidden = exportsUnlocked || !data.ready;
