@@ -18,6 +18,7 @@ import time
 
 import requests
 import report_email
+import email_auth
 from flask import request, jsonify
 from network_guard import validate_url
 
@@ -74,7 +75,9 @@ def install(app, jobs, db_path, runner):
     def owner(required=False):
         value = request.headers.get('Authorization', '').removeprefix('Bearer ')
         if re.fullmatch(r'[A-Za-z0-9_-]{32,128}', value):
-            return hashlib.sha256(value.encode()).hexdigest(), value
+            resolved = auth['resolve_token'](value)
+            if resolved:
+                return resolved, value
         if required:
             return None, None
         value = secrets.token_urlsafe(32)
@@ -96,6 +99,8 @@ def install(app, jobs, db_path, runner):
         # Stable keyed hash avoids storing visitor addresses in the quota table.
         return hmac.new(os.environ['ADSCAN_QUOTA_SECRET'].encode(), ip.encode(), hashlib.sha256).hexdigest()
 
+    auth = email_auth.install(app, connect, owner, ip_key)
+
     def allowance(db, who, ip):
         day = time.strftime('%Y-%m-%d', time.gmtime())
         used = db.execute("SELECT COUNT(*) FROM access a JOIN jobs j ON j.id=a.job WHERE a.day=? AND (a.ip=? OR a.owner=?) AND a.tier='free' AND j.status!='error'", (day, ip, who)).fetchone()[0]
@@ -109,6 +114,7 @@ def install(app, jobs, db_path, runner):
                 'monthly_ends_at': min((row[1] for row in periods), default=None),
                 'subscription_enabled': subscription_enabled(),
                 'report_email_enabled': report_email.configured(),
+                'email_auth_enabled': email_auth.configured(),
                 'bundle_offers': [name for name, env in [('pack3','STRIPE_PRICE_PACK3'),('pack5','STRIPE_PRICE_PACK5')] if billing_enabled() and os.getenv(env)],
                 'manage_billing_url': os.getenv('STRIPE_PORTAL_LOGIN_URL', '') if has_subscription else '',
                 'reset_at': (int(time.time())//86400+1)*86400,
@@ -169,7 +175,8 @@ def install(app, jobs, db_path, runner):
         who, token = owner()
         with connect() as db:
             data = allowance(db, who, ip_key())
-        return jsonify(**data, owner_token=token)
+        email = auth['account_email'](who)
+        return jsonify(**data, owner_token=token, authenticated=bool(email), account_email=email)
 
     @app.get('/api/admin/dashboard')
     def admin_dashboard():
@@ -191,6 +198,14 @@ def install(app, jobs, db_path, runner):
                 "SELECT COALESCE(SUM(credits),0) AS credits, COUNT(*) AS payments FROM payments"
             ).fetchone()
             checkout_count = db.execute("SELECT COUNT(*) AS count FROM checkouts").fetchone()["count"]
+            signups = db.execute('SELECT COUNT(*) FROM email_accounts').fetchone()[0]
+            signups_7d = db.execute('SELECT COUNT(*) FROM email_accounts WHERE verified>?',(week_ago,)).fetchone()[0]
+            marketing_optins = db.execute('SELECT COUNT(*) FROM email_consents WHERE opted_in=1 AND confirmed_at IS NOT NULL').fetchone()[0]
+            subscriptions_paid = db.execute('SELECT COUNT(DISTINCT subscription) FROM subscription_periods').fetchone()[0]
+            active_subscriptions = db.execute("SELECT COUNT(DISTINCT s.id) FROM subscriptions s JOIN subscription_periods p ON p.subscription=s.id WHERE s.status='active' AND p.ends>?",(now,)).fetchone()[0]
+            buyers = db.execute('SELECT COUNT(*) FROM (SELECT owner FROM payments UNION SELECT owner FROM subscription_periods)').fetchone()[0]
+            converted_signups = db.execute('SELECT COUNT(*) FROM email_accounts WHERE owner IN (SELECT owner FROM payments UNION SELECT owner FROM subscription_periods)').fetchone()[0]
+
 
         access_by_job = {row["job"]: row for row in access_rows}
         tier_by_job = {job: row["tier"] for job, row in access_by_job.items()}
@@ -326,6 +341,13 @@ def install(app, jobs, db_path, runner):
                 "credits_issued": payment["credits"],
                 "paid_jobs": paid_jobs,
                 "free_jobs": free_jobs,
+            },
+            "leads": {
+                "email_signups": signups, "email_signups_7d": signups_7d,
+                "marketing_optins": marketing_optins, "paid_subscriptions": subscriptions_paid,
+                "active_paid_subscriptions": active_subscriptions, "verified_paid_buyers": buyers,
+                "converted_email_signups": converted_signups,
+                "email_signup_paid_rate": rate(converted_signups,signups),
             },
             "daily": days,
             "modes": sorted(mode_counts.values(), key=lambda item: (-item["total"], item["mode"])),
@@ -477,6 +499,9 @@ def install(app, jobs, db_path, runner):
         who, _ = owner(True)
         if not who:
             return jsonify(error='Open the analyzer to initialize your browser session.'), 401
+        email = auth['account_email'](who)
+        if email_auth.configured() and not email:
+            return jsonify(error='Sign in with your email before checkout.', code='email_login_required'),401
         # Only the server chooses price and credit quantity. No browser-supplied prices.
         body = request.get_json(silent=True) or {}
         if not isinstance(body, dict):
@@ -495,6 +520,7 @@ def install(app, jobs, db_path, runner):
                 'mode': 'payment', 'line_items[0][price]': os.environ[price_env], 'line_items[0][quantity]': '1',
                 'managed_payments[enabled]': 'true',
                 'client_reference_id': who, 'metadata[owner]': who,
+                **({'customer_email':email} if email else {}),
                 'success_url': 'https://adscanvideo.com/?payment=success&session_id={CHECKOUT_SESSION_ID}#input-zone',
                 'cancel_url': 'https://adscanvideo.com/?payment=cancelled#pricing',
             }, timeout=20)
@@ -533,7 +559,10 @@ def install(app, jobs, db_path, runner):
             state = export_access(db,jid,who)
         if state is None:
             return jsonify(error='Report not found.'), 404
-        return jsonify(unlocked=state[0], ready=state[1]=='done')
+        verified = bool(auth['account_email'](who))
+        with connect() as db:
+            clean_paid = bool(db.execute("SELECT 1 FROM access a WHERE a.job=? AND (a.tier IN ('paid','monthly') OR EXISTS(SELECT 1 FROM export_unlocks e WHERE e.job=a.job AND e.tier IN ('paid','monthly')))",(jid,)).fetchone())
+        return jsonify(unlocked=clean_paid if email_auth.configured() else state[0], ready=state[1]=='done', free_export_enabled=email_auth.configured(), can_export=state[0] or verified, watermarked=not clean_paid)
 
     @app.post('/api/billing/export/<jid>/unlock')
     def export_unlock(jid):
@@ -545,7 +574,8 @@ def install(app, jobs, db_path, runner):
                 return jsonify(error='Report not found.'), 404
             if state[1] != 'done':
                 return jsonify(error='Wait until the report is ready.'), 409
-            if state[0]:
+            clean_paid = bool(db.execute("SELECT 1 FROM access a WHERE a.job=? AND (a.tier IN ('paid','monthly') OR EXISTS(SELECT 1 FROM export_unlocks e WHERE e.job=a.job AND e.tier IN ('paid','monthly')))",(jid,)).fetchone())
+            if state[0] and (clean_paid or not email_auth.configured()):
                 return jsonify(unlocked=True)
             data = allowance(db,who,ip_key())
             # A purchased credit unlocks this report permanently; no AI rerun.
@@ -566,6 +596,9 @@ def install(app, jobs, db_path, runner):
         who, _ = owner(True)
         if not who:
             return jsonify(error='Open the analyzer to initialize your browser session.'), 401
+        email = auth['account_email'](who)
+        if email_auth.configured() and not email:
+            return jsonify(error='Sign in with your email before subscribing.', code='email_login_required'),401
         with connect() as db:
             existing = db.execute("SELECT 1 FROM subscriptions WHERE owner=? AND status!='canceled'", (who,)).fetchone()
             pending = db.execute("SELECT url FROM subscription_checkouts WHERE owner=? AND subscription='' AND created>? ORDER BY created DESC LIMIT 1",
@@ -580,6 +613,7 @@ def install(app, jobs, db_path, runner):
                 'mode': 'subscription', 'line_items[0][price]': os.environ['STRIPE_PRICE_MONTHLY'],
                 'line_items[0][quantity]': '1', 'managed_payments[enabled]': 'true',
                 'client_reference_id': who, 'metadata[owner]': who,
+                **({'customer_email':email} if email else {}),
                 'success_url': 'https://adscanvideo.com/?payment=monthly_success&session_id={CHECKOUT_SESSION_ID}#input-zone',
                 'cancel_url': 'https://adscanvideo.com/?payment=cancelled#pricing',
             }, timeout=20)
@@ -630,7 +664,7 @@ def install(app, jobs, db_path, runner):
                     # Stripe Managed Payments may add tax or convert the displayed currency.
                     # This session was created server-side for exactly one configured Price;
                     # the signed, paid session and stored owner are the fulfillment proof.
-                    if session.get('client_reference_id') != row[0]:
+                    if auth['resolve_reference'](db, session.get('client_reference_id')) != row[0]:
                         return jsonify(error='Checkout details do not match.'), 400
                     db.execute('INSERT OR IGNORE INTO payments VALUES(?,?,?,?)', (session['id'], row[0], row[1], time.time()))
             elif session.get('mode') == 'subscription' and session.get('subscription') and session.get('customer'):
@@ -638,7 +672,7 @@ def install(app, jobs, db_path, runner):
                     row = db.execute('SELECT owner,subscription FROM subscription_checkouts WHERE session=?', (session.get('id'),)).fetchone()
                     if not row:
                         return jsonify(error='Unknown subscription checkout.'), 503
-                    if session.get('client_reference_id') != row[0]:
+                    if auth['resolve_reference'](db, session.get('client_reference_id')) != row[0]:
                         return jsonify(error='Checkout details do not match.'), 400
                     if row[1] and row[1] != session['subscription']:
                         return jsonify(error='Subscription details do not match.'), 400
