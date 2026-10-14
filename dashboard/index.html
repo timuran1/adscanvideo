@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+[hidden]{display:none!important}
 :root{--page:#f5f7fb;--surface:#fff;--surface-2:#eef2f8;--ink:#17182d;--muted:#62697a;--faint:#8c93a3;--line:#dfe4ed;--accent:#4f8cf7;--accent-strong:#2f6edb;--accent-soft:#e9f1ff;--good:#087a55;--good-soft:#e8f7f1;--bad:#bd3232;--bad-soft:#fceded;--warn:#98600b;--warn-soft:#fff4dd;--radius:14px;--focus:0 0 0 3px rgba(79,140,247,.25)}
 *{box-sizing:border-box}html{color-scheme:light}body{margin:0;background:var(--page);color:var(--ink);font-family:"DM Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}button,input{font:inherit}button{cursor:pointer}a{color:inherit}.hidden{display:none!important}
 .shell{min-height:100vh;display:grid;grid-template-columns:232px minmax(0,1fr)}
@@ -32,14 +33,15 @@
 </style>
 </head>
 <body>
-<div class="shell" id="dashboard-view">
+<section class="auth" id="dashboard-auth"><form class="auth-box" id="dashboard-auth-form"><div class="auth-brand">AdScanVideo</div><h1>Private dashboard</h1><p>Enter your existing admin access token to view operations, leads and payment metrics.</p><div class="field"><label for="dashboard-admin-token">Admin access token</label><input id="dashboard-admin-token" type="password" autocomplete="off" required></div><button class="button" type="submit">Open dashboard</button><p class="auth-note">This admin credential is separate from customer email sign in. It stays in this browser tab's session.</p><p id="dashboard-auth-message" role="status" aria-live="polite"></p></form></section>
+<div class="shell" id="dashboard-view" hidden>
   <aside class="sidebar">
     <a class="brand" href="/"><svg width="22" height="18" viewBox="0 0 24 20" fill="none" aria-hidden="true"><rect x="1" y="2" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2"/><path d="m17 7 6-3v12l-6-3" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>AdScan<span>Video</span></a>
     <nav class="nav" aria-label="Dashboard"><a href="#overview" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13h6V4H4zm10 7h6v-9h-6zM4 20h6v-3H4zm10-13h6V4h-6z"/></svg>Overview</a><a href="#jobs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Recent jobs</a><a href="https://analytics.google.com/" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 20V10m7 10V4m7 16v-7"/></svg>Google Analytics</a><a href="https://search.google.com/search-console" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>Search Console</a></nav>
     <div class="sidebar-note">Your operations &amp; marketing workspace<br><a href="/privacy/">Data handling policy</a></div>
   </aside>
   <main class="main" id="overview">
-    <header class="topbar"><div><h1>Operations overview</h1><p id="updated">Loading current metrics…</p></div><div class="actions"><button class="button" id="refresh">Refresh data</button></div></header>
+    <header class="topbar"><div><h1>Operations overview</h1><p id="updated">Loading current metrics…</p></div><div class="actions"><button class="button" id="refresh">Refresh data</button><button class="button" id="lock-dashboard">Lock dashboard</button></div></header>
     <section class="metrics" aria-label="Key metrics">
       <div class="metric"><strong id="m-analyses" class="skeleton">000</strong><span>Analyses, 7 days</span><small id="m-analyses-note">Current demand</small></div>
       <div class="metric"><strong id="m-completion" class="skeleton">00%</strong><span>Completion rate</span><small>Finished jobs, 7 days</small></div>
@@ -87,12 +89,18 @@ const modeLabel=value=>({ads:'Ad intelligence',shots:'Shot breakdown',podcast:'P
 const inputLabel=value=>({url:'Video URL',upload:'File upload'}[value]||'Unknown');
 const countryLabel=value=>{if(!value||value==='unknown')return 'Unknown';try{return new Intl.DisplayNames(['en'],{type:'region'}).of(value)||value}catch{return value}};
 const count=value=>Number(value||0).toLocaleString();
+let dashboardToken='';try{dashboardToken=sessionStorage.getItem('adsv_admin_token')||'';}catch{}
+function dashboardAuth(message=''){ $('dashboard-view').hidden=true;$('dashboard-auth').hidden=false;$('dashboard-auth-message').textContent=message; }
+$('dashboard-auth-form').addEventListener('submit',event=>{event.preventDefault();dashboardToken=$('dashboard-admin-token').value.trim();load();});
+$('lock-dashboard').addEventListener('click',()=>{try{sessionStorage.removeItem('adsv_admin_token');}catch{}location.reload();});
 async function load(){
+  if(!dashboardToken){dashboardAuth();return;}
   $('refresh').disabled=true;$('refresh').textContent='Refreshing…';
   try{
-    const response=await fetch(`${API}/admin/dashboard`,{cache:'no-store'});
+    const response=await fetch(`${API}/admin/dashboard`,{cache:'no-store',headers:{Authorization:'Bearer '+dashboardToken}});
+    if(response.status===401||response.status===403){dashboardToken='';try{sessionStorage.removeItem('adsv_admin_token');}catch{}dashboardAuth('Admin access was not accepted. Check the token and retry.');return;}
     if(!response.ok)throw new Error(`Dashboard request failed (${response.status})`);
-    const data=await response.json();render(data);window.renderMarketing?.(data.marketing,data.traffic);
+    const data=await response.json();try{sessionStorage.setItem('adsv_admin_token',dashboardToken);}catch{}$('dashboard-admin-token').value='';$('dashboard-auth').hidden=true;$('dashboard-view').hidden=false;render(data);window.renderMarketing?.(data.marketing,data.traffic);
   }catch(error){$('updated').textContent=`Could not refresh: ${error.message}`;window.renderMarketing?.(null,null)}finally{$('refresh').disabled=false;$('refresh').textContent='Refresh data'}
 }
 function render(data){
