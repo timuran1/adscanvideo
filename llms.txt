@@ -71,7 +71,7 @@ Stripe billing portal. Sign in with a verified email link to restore analysis ac
 - [Terms of service](https://adscanvideo.com/terms/)
 - [Support, billing and refunds](https://adscanvideo.com/support/)
 
-Last updated: 2026-10-18
+Last updated: 2026-10-19
 Contact: support@adscanvideo.com
 
 ## Credit bundles and exports
@@ -84,3 +84,5 @@ One-time credits: $3.99 for 1, $9.99 for 3, $14.99 for 5. A credit runs one anal
 - [Share a video analysis report](https://adscanvideo.com/blog/share-video-analysis-report/): report email versus login, free watermarked exports, clean paid files and a manual handoff checklist.
 
 - [Video podcast analysis: transcript, speaker and chapter review](https://adscanvideo.com/blog/analyze-video-podcast/): verify labels and quotations, map excerpt clocks to the master and use the free manual podcast review CSV.
+
+- [Product-demo Ad intelligence sample](https://adscanvideo.com/samples/product-demo-ad-analysis/): actual October18 output, licensed replayable source, no audio, uncertain product identity and separately labelled qualitative editorial checks. No performance claim.
