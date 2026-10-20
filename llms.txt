@@ -71,7 +71,7 @@ Stripe billing portal. Sign in with a verified email link to restore analysis ac
 - [Terms of service](https://adscanvideo.com/terms/)
 - [Support, billing and refunds](https://adscanvideo.com/support/)
 
-Last updated: 2026-10-19
+Last updated: 2026-10-20
 Contact: support@adscanvideo.com
 
 ## Credit bundles and exports
