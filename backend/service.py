@@ -18,6 +18,7 @@ import time
 
 import requests
 import report_email
+import contact_inbox
 import email_auth
 from flask import request, jsonify
 from network_guard import validate_url
@@ -144,7 +145,7 @@ def install(app, jobs, db_path, runner):
     def access_control():
         if request.method == 'OPTIONS':
             return None
-        if request.path in ('/api/recover', '/api/reap', '/admin', '/api/admin/dashboard'):
+        if request.path.startswith('/api/admin/') or request.path in ('/api/recover', '/api/reap', '/admin'):
             expected = os.getenv('ADSCAN_ADMIN_TOKEN', '')
             actual = request.headers.get('Authorization', '').removeprefix('Bearer ')
             if not expected or not hmac.compare_digest(actual, expected):
@@ -169,6 +170,7 @@ def install(app, jobs, db_path, runner):
         return response
 
     report_email.install(app, connect, jobs, owner, ip_key)
+    contact_inbox.install(app, connect)
 
     @app.get('/api/usage')
     def usage():

@@ -7,6 +7,7 @@
 <meta name="adscan-api-base" content="https://api.adscanvideo.com/api">
 <title>Operations dashboard | AdScanVideo</title>
 <link rel="stylesheet" href="marketing.css">
+<link rel="stylesheet" href="inbox.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -37,7 +38,7 @@
 <div class="shell" id="dashboard-view" hidden>
   <aside class="sidebar">
     <a class="brand" href="/"><svg width="22" height="18" viewBox="0 0 24 20" fill="none" aria-hidden="true"><rect x="1" y="2" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2"/><path d="m17 7 6-3v12l-6-3" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>AdScan<span>Video</span></a>
-    <nav class="nav" aria-label="Dashboard"><a href="#overview" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13h6V4H4zm10 7h6v-9h-6zM4 20h6v-3H4zm10-13h6V4h-6z"/></svg>Overview</a><a href="#jobs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Recent jobs</a><a href="https://analytics.google.com/" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 20V10m7 10V4m7 16v-7"/></svg>Google Analytics</a><a href="https://search.google.com/search-console" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>Search Console</a></nav>
+    <nav class="nav" aria-label="Dashboard"><a href="#overview" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13h6V4H4zm10 7h6v-9h-6zM4 20h6v-3H4zm10-13h6V4h-6z"/></svg>Overview</a><a href="#contacts-inbox">Contacts &amp; inbox</a><a href="#jobs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Recent jobs</a><a href="https://analytics.google.com/" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 20V10m7 10V4m7 16v-7"/></svg>Google Analytics</a><a href="https://search.google.com/search-console" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>Search Console</a></nav>
     <div class="sidebar-note">Your operations &amp; marketing workspace<br><a href="/privacy/">Data handling policy</a></div>
   </aside>
   <main class="main" id="overview">
@@ -73,6 +74,7 @@
       <section class="panel"><div class="panel-head"><div><h2>Product actions</h2><p>GA4 events, subject to reporting delay</p></div></div><div class="breakdown" id="ga-funnel"><div class="empty">GA4 data unavailable.</div></div></section>
 
       <section class="panel full" id="lead-metrics"><div class="panel-head"><div><h2>Email and paid conversions</h2><p>Verified email accounts and server-confirmed payments, all time unless noted</p></div></div><div class="revenue-strip"><div class="revenue-item"><strong id="l-signups">—</strong><span>Verified email signups</span></div><div class="revenue-item"><strong id="l-optins">—</strong><span>Confirmed marketing opt ins</span></div><div class="revenue-item"><strong id="l-subscriptions">—</strong><span>Active paid subscriptions</span></div><div class="revenue-item"><strong id="l-paid">—</strong><span>Verified paid buyers</span></div></div><p id="l-conversion" class="note">Conversion data is loading.</p><p class="note">Signups require a verified login link. Marketing consent is separate. Paid buyers combine credit payments and paid subscription invoices. Founder tests are included where not explicitly identified; checkout visits are not payments.</p></section>
+      <section class="panel full" id="contacts-inbox"><div class="panel-head"><div><h2>Contacts &amp; inbox</h2><p>Saved email addresses, checkout activity and individual support conversations</p></div><span class="period" id="contact-count">Loading contacts</span></div><p class="inbox-status" id="inbox-sync">Loading mailbox connection status…</p><form id="contact-search-form" class="contact-tools"><label>Find a saved email<input id="contact-search" type="search" placeholder="Search email addresses" autocomplete="off"></label><button class="button secondary">Search</button><button type="button" id="inbox-refresh" class="button secondary">Refresh history</button></form><p id="inbox-result" class="note" role="status"></p><div class="inbox-layout"><div id="contact-list" class="contact-list" aria-label="Saved contacts"></div><div id="contact-detail" class="contact-detail"><p class="empty">Choose a contact to see checkout activity and saved messages.</p></div></div><div class="inbox-pager"><button class="button secondary" id="inbox-prev" type="button" disabled>Previous</button><span id="inbox-page"></span><button class="button secondary" id="inbox-next" type="button" disabled>Next</button></div></section>
       <section class="panel full" id="jobs"><div class="panel-head"><div><h2>Recent jobs</h2><p>Video names, URLs, and report text are excluded. Country and input type are recorded only for new jobs; earlier jobs show unknown. “Done” means a report was generated, not that the visitor viewed or exported it.</p></div><span class="period">Latest 30</span></div><div class="table-wrap"><table class="jobs"><thead><tr><th>Started</th><th>Status</th><th>Mode</th><th>Input</th><th>Country</th><th>Tier</th><th>Length</th><th>Frames</th><th>Transcript</th><th>Issue</th><th>AI cost</th></tr></thead><tbody id="jobs-body"><tr><td colspan="11" class="empty">Loading jobs…</td></tr></tbody></table></div></section>
     </div>
   </main>
@@ -100,7 +102,7 @@ async function load(){
     const response=await fetch(`${API}/admin/dashboard`,{cache:'no-store',headers:{Authorization:'Bearer '+dashboardToken}});
     if(response.status===401||response.status===403){dashboardToken='';try{sessionStorage.removeItem('adsv_admin_token');}catch{}dashboardAuth('Admin access was not accepted. Check the token and retry.');return;}
     if(!response.ok)throw new Error(`Dashboard request failed (${response.status})`);
-    const data=await response.json();try{sessionStorage.setItem('adsv_admin_token',dashboardToken);}catch{}$('dashboard-admin-token').value='';$('dashboard-auth').hidden=true;$('dashboard-view').hidden=false;render(data);window.renderMarketing?.(data.marketing,data.traffic);
+    const data=await response.json();try{sessionStorage.setItem('adsv_admin_token',dashboardToken);}catch{}$('dashboard-admin-token').value='';$('dashboard-auth').hidden=true;$('dashboard-view').hidden=false;render(data);window.renderMarketing?.(data.marketing,data.traffic);window.loadContactInbox?.();
   }catch(error){$('updated').textContent=`Could not refresh: ${error.message}`;window.renderMarketing?.(null,null)}finally{$('refresh').disabled=false;$('refresh').textContent='Refresh data'}
 }
 function render(data){
@@ -152,6 +154,7 @@ function renderJobs(rows){
  $('refresh').addEventListener('click',load);
 </script>
 <script src="marketing.js"></script>
+<script src="inbox.js"></script>
 <script>load();</script>
 </body>
 </html>
