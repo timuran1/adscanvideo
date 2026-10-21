@@ -16,7 +16,7 @@ The founder-approved October 21 checkout support email was sent through the conn
 
 Gmail OAuth access in the assistant connector is not available to the website backend. Dashboard refresh reloads saved records and does not poll Gmail. The UI says this explicitly and provides a contact-specific Gmail link. Replies to the October 21 Gmail message continue to that Gmail conversation.
 
-## Automatic Resend receiving (not enabled until credentials and routing are configured)
+## Automatic Resend receiving
 
 The existing Resend key has send-only permission. Do not use it to claim incoming mail works. Automatic receiving needs:
 
@@ -32,3 +32,9 @@ Do not change root-domain MX records or create broader credentials without the o
 ## Deployment and validation
 
 Run `python -m unittest test_contact_inbox.ContactInboxTests` plus the existing service, native-video, report-email and email-auth suites. Stage and test the backend before restart; defer if analysis jobs are active. Back up source, environment and databases. Restore source/config only if rollback is needed; never overwrite new live customer records with an old database snapshot.
+
+## October 21 receiving setup
+
+The owner approved a new server-only full-access receiving key. The existing Resend login `timuran1@gmail.com` has a predefined `phsloli.resend.app` receiving domain. Incoming replies use that domain; the working AdScanVideo send-only key is retained. This receiving account lists the Connect Limo sending domain, so do not assume it owns `mail.adscanvideo.com`. The October 13 setup did not record the sending key owner. No root-domain DNS or existing sending-domain configuration is changed.
+
+The dashboard polls saved contact/message history every 30 seconds while visible, preserving the support composer and history scroll position. Legacy Gmail conversations still need the Gmail connector import; changing the future Reply-To does not redirect replies to an email already sent from Gmail. Delivery events from a separate sending account are not implied by incoming integration.

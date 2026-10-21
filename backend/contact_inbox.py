@@ -68,7 +68,7 @@ def install(app, connect):
     def state(db):
         sync = [dict(zip(('provider','synced','detail'), row)) for row in db.execute('SELECT provider,synced,detail FROM support_sync')]
         return {'sending_enabled': bool(os.getenv('RESEND_API_KEY') and os.getenv('RESEND_FROM') and os.getenv('RESEND_REPLY_TO')),
-                'reply_to': os.getenv('RESEND_REPLY_TO',''), 'automatic_receiving': bool(os.getenv('ADSCAN_INBOX_WEBHOOK_SECRET') and os.getenv('ADSCAN_INBOX_RECEIVING_KEY') and os.getenv('ADSCAN_INBOX_REPLY_DOMAIN')),
+                'reply_to': os.getenv('RESEND_REPLY_TO',''), 'receiving_domain': os.getenv('ADSCAN_INBOX_REPLY_DOMAIN',''), 'automatic_receiving': bool(os.getenv('ADSCAN_INBOX_WEBHOOK_SECRET') and os.getenv('ADSCAN_INBOX_RECEIVING_KEY') and os.getenv('ADSCAN_INBOX_REPLY_DOMAIN')),
                 'sync': sync}
 
     @app.get('/api/admin/contacts')
@@ -125,7 +125,7 @@ def install(app, connect):
             db.execute("INSERT INTO support_messages(id,contact_id,direction,provider,provider_id,subject,body,created,status,sender,recipient) VALUES(?,?,'outgoing','resend',?,?,?,?,'sending',?,?)",(key,ident,'pending:'+key,subject,body,time.time(),os.environ['RESEND_FROM'],c['email']))
         reply_to = os.environ['RESEND_REPLY_TO']
         domain = os.getenv('ADSCAN_INBOX_REPLY_DOMAIN','')
-        if domain and re.fullmatch(r'[a-z0-9.-]+',domain): reply_to = 'reply+'+c['reply_token']+'@'+domain
+        if domain and re.fullmatch(r'[a-z0-9.-]+',domain): reply_to = 'reply+'+c['reply_token'].lower()+'@'+domain
         try:
             response = requests.post('https://api.resend.com/emails',headers={'Authorization':'Bearer '+os.environ['RESEND_API_KEY'],'Idempotency-Key':'support-'+key},json={'from':os.environ['RESEND_FROM'],'to':[c['email']],'reply_to':reply_to,'subject':subject,'text':body},timeout=15)
             response.raise_for_status(); provider_id = response.json().get('id')
@@ -176,14 +176,15 @@ def install(app, connect):
             except Exception: return jsonify(error='Mailbox retrieval unavailable'),503
             tokens=[]
             for address in mail.get('to',[]):
-                address=parseaddr(address)[1]; match=re.fullmatch(r'reply\+([a-zA-Z0-9_-]{32})@'+re.escape(os.getenv('ADSCAN_INBOX_REPLY_DOMAIN','')),address)
+                address=parseaddr(address)[1].lower(); match=re.fullmatch(r'reply\+([a-zA-Z0-9_-]{32})@'+re.escape(os.getenv('ADSCAN_INBOX_REPLY_DOMAIN','')),address)
                 if match: tokens.append(match[1])
             sender=parseaddr(str(mail.get('from','')))[1].lower()
             with connect() as db:
                 for token in tokens:
-                    c=db.execute('SELECT id,email FROM support_contacts WHERE reply_token=?',(token,)).fetchone()
+                    c=db.execute('SELECT id,email FROM support_contacts WHERE lower(reply_token)=?',(token,)).fetchone()
                     if c and sender==c[1]:
                         db.execute('INSERT OR IGNORE INTO support_messages(id,contact_id,direction,provider,provider_id,subject,body,created,status,sender,recipient) VALUES(?,?,\'incoming\',\'resend\',?,?,?,?,\'received\',?,?)',('resend-'+pid,c[0],pid,str(mail.get('subject',''))[:500],plain_body(mail),time.time(),sender,c[1]))
+                db.execute('INSERT OR REPLACE INTO support_sync VALUES(?,?,?)',('resend',time.time(),'Incoming email received through the signed Resend webhook.'))
                 db.execute('INSERT OR IGNORE INTO support_webhook_events VALUES(?,?)',(event_id,time.time()))
         elif kind in ('email.delivered','email.bounced','email.failed','email.delivery_delayed'):
             status=kind.split('.')[1]

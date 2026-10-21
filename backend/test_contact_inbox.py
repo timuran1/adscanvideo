@@ -26,6 +26,7 @@ class ContactInboxTests(unittest.TestCase):
  def test_support_send_idempotent_and_no_marketing(self,sender):
   sender.return_value=Mock(json=lambda:{'id':'provider-support-1'})
   self.assertEqual(self.send().status_code,202);self.assertEqual(self.send().status_code,200);self.assertEqual(sender.call_count,1);self.assertEqual(sender.call_args.kwargs['json']['to'],['buyer@example.com'])
+  reply=sender.call_args.kwargs['json']['reply_to'];self.assertEqual(reply,reply.lower());self.assertTrue(reply.endswith('@inbox.example.com'))
   self.assertEqual(self.send(body='Changed').status_code,409);self.assertEqual(self.send(purpose='marketing',request_id='other-unique-send-00001').status_code,400)
  @patch('contact_inbox.requests.post',side_effect=TimeoutError)
  def test_timeout_does_not_duplicate(self,sender):
@@ -41,6 +42,7 @@ class ContactInboxTests(unittest.TestCase):
   pid='12345678-1234-1234-1234-123456789012';fetch.return_value=Mock(json=lambda:{'to':['reply+'+token+'@inbox.example.com'],'from':'buyer@example.com','subject':'Re: Help','html':'<script>alert(1)</script><p>Need help</p>'});event={'type':'email.received','data':{'email_id':pid}}
   self.assertEqual(self.webhook(event).status_code,200);self.assertEqual(self.webhook(event).status_code,200);self.assertEqual(fetch.call_count,1)
   messages=self.client.get('/api/admin/contacts/'+self.ident+'/messages',headers=ADMIN).json['messages'];self.assertEqual(len(messages),1);self.assertEqual(messages[0]['body'],'Need help')
+  sync=self.client.get('/api/admin/contacts',headers=ADMIN).json['sync'];self.assertTrue(any(x['provider']=='resend' for x in sync))
   self.assertEqual(self.webhook(event,stamp=int(time.time()-1000)).status_code,403);self.assertEqual(self.client.post('/api/email/inbound',json=event).status_code,403)
  @patch('contact_inbox.requests.get')
  def test_unrelated_sender_not_imported(self,fetch):
