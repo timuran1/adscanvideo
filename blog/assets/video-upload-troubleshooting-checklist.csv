@@ -1,0 +1,10 @@
+Stage,Check,Observation,Next action,Reviewer notes
+File inspection example,Published umbrella MP4,25 seconds; 3105534 bytes; H.264; 720x1280; no audio stream,Size and duration fit free limits; no new analysis performed,
+File selection,Actual MP4/MOV/WebM/MKV selected,,,
+File size,200 MB or smaller,,,
+Duration,Within active plan allowance,,,
+Local playback,Picture and relevant speech can be reviewed,,,
+Transfer,Exact error and whether a job started,,,
+Preparation / generation,Stage; approximate time and time zone,,,
+Retry,Change one factor; record outcome,,,
+Support,Browser; duration; size; redacted error screenshot,,,
