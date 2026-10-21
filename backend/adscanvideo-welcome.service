@@ -1,0 +1,11 @@
+[Unit]
+Description=AdScanVideo queued account welcome emails
+After=network-online.target adscanvideo-api.service
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/opt/adscanvideo-api
+EnvironmentFile=/opt/adscanvideo-api/.env
+ExecStart=/opt/adscanvideo-api/venv/bin/python /opt/adscanvideo-api/welcome_email.py
+TimeoutStartSec=180

@@ -9,11 +9,12 @@
     return data;
   }
   function messageHtml(messages){
-    return messages.length?messages.map(m=>`<article class="support-message ${m.direction==='incoming'?'incoming':'outgoing'}"><header><span>${m.direction==='incoming'?'Reply received':'Sent message'} · ${esc(m.provider)} · ${esc(m.status)}</span><time>${esc(date(m.created))}</time></header><h4>${esc(m.subject)}</h4><pre>${esc(m.body)}</pre>${m.error?'<p class="inbox-error">'+esc(m.error)+'</p>':''}</article>`).join(''):'<p class="empty">No saved messages yet.</p>';
+    return messages.length?messages.map(m=>`<article class="support-message ${m.direction==='incoming'?'incoming':'outgoing'}"><header><span>${m.direction==='incoming'?'Reply received':['scheduled','retry','sending','unknown'].includes(m.status)?'Outgoing email':'Sent message'} · ${esc(m.provider)} · ${esc(m.status)}</span><time>${esc(date(m.created))}</time></header><h4>${esc(m.subject)}</h4><pre>${esc(m.body)}</pre>${m.error?'<p class="inbox-error">'+esc(m.error)+'</p>':''}</article>`).join(''):'<p class="empty">No saved messages yet.</p>';
   }
   function state(data){
     const sync=(data.sync||[]).find(s=>s.provider==='gmail');
     $('inbox-sync').textContent=data.automatic_receiving?'Automatic reply capture is connected for support emails sent through this dashboard. New replies appear here within 30 seconds while this page is open. Earlier Gmail conversations remain in Gmail.':`Replies go to ${data.reply_to||'the connected Gmail mailbox'}. ${sync?'Gmail last checked '+date(sync.synced)+'. ':'Gmail has not been synced yet. '}Refreshing this dashboard reloads saved history; it does not check Gmail. Open the mailbox for the newest replies.`;
+    if(data.welcome_enabled)$('inbox-sync').textContent+=' Welcome email enabled: sent once, about two minutes after a new user verifies their email. Replies return here. Existing accounts are not backfilled.';
   }
   function list(){
     $('contact-list').innerHTML=contacts.length?contacts.map(c=>`<button type="button" class="contact-row" data-contact="${esc(c.id)}" aria-pressed="${c.id===selected}"><strong>${esc(c.email)}</strong><small>${c.verified?'Verified '+esc(date(c.verified)):'Report email only'}<br>${c.marketing_opt_in?'Marketing opted in':'No confirmed marketing opt in'}</small><small class="${c.credit_checkouts+c.subscription_checkouts&&!c.confirmed_payments?'contact-checkout':''}">${count(c.credit_checkouts+c.subscription_checkouts)} checkout starts · ${count(c.confirmed_payments)} confirmed payments</small><small>${count(c.messages_sent)} support messages · ${count(c.replies)} replies</small></button>`).join(''):'<p class="empty">No matching saved emails.</p>';

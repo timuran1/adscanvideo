@@ -38,3 +38,13 @@ Run `python -m unittest test_contact_inbox.ContactInboxTests` plus the existing 
 The owner approved a new server-only full-access receiving key. The existing Resend login `timuran1@gmail.com` has a predefined `phsloli.resend.app` receiving domain. Incoming replies use that domain; the working AdScanVideo send-only key is retained. This receiving account lists the Connect Limo sending domain, so do not assume it owns `mail.adscanvideo.com`. The October 13 setup did not record the sending key owner. No root-domain DNS or existing sending-domain configuration is changed.
 
 The dashboard polls saved contact/message history every 30 seconds while visible, preserving the support composer and history scroll position. Legacy Gmail conversations still need the Gmail connector import; changing the future Reply-To does not redirect replies to an email already sent from Gmail. Delivery events from a separate sending account are not implied by incoming integration.
+
+## One-time welcome after verification
+
+With `ADSCAN_WELCOME_ENABLED=1`, the first successful email verification creates one durable welcome record in the same transaction as the account. Email input alone and later sign-ins never enqueue it. Existing accounts are not backfilled. The welcome is account support, does not grant marketing consent, and contains no promotion or checkout tracking claim.
+
+The message is due 120 seconds after verification. `adscanvideo-welcome.timer` runs the separate worker every 15 seconds, so dispatch normally starts two minutes to two minutes fifteen seconds after verification, plus provider delivery time. Install the matching service/timer under `/etc/systemd/system/`, then enable the timer. The API and worker share the existing private environment and jobs database. There is no long-lived request thread or browser dependency.
+
+Scheduled, retry, accepted and review-needed records appear in contact message history. Reply-To uses the same per-contact signed-webhook receiving workflow as manual dashboard support. Incoming replies never trigger this welcome, preventing acknowledgment loops. The worker transactionally claims each record; every retry reuses an immutable payload and the same Resend idempotency key. It stops after eight attempts or 22 hours from the first attempt, before the provider's 24-hour idempotency window ends. `accepted` means provider acceptance, not confirmed delivery. A blocked/unknown welcome requires operator review, not a new send identifier.
+
+Validate with `test_welcome_email.WelcomeEmailTests` and the existing suites. Tests mock the provider; they do not email real users.

@@ -6,6 +6,7 @@ import secrets
 import time
 from html import escape
 import requests
+import welcome_email
 from flask import request, jsonify
 
 
@@ -27,6 +28,7 @@ def install(app, connect, owner, ip_key):
         CREATE TABLE IF NOT EXISTS email_preferences (hash TEXT PRIMARY KEY, email TEXT NOT NULL, created REAL NOT NULL);
         CREATE TABLE IF NOT EXISTS email_consents (email TEXT PRIMARY KEY, opted_in INTEGER NOT NULL DEFAULT 0, confirmed_at REAL, updated REAL NOT NULL);
         ''')
+        welcome_email.install_schema(db)
 
     def resolve_reference(db, who):
         row = db.execute('SELECT owner FROM email_owner_aliases WHERE source=?', (who,)).fetchone()
@@ -104,6 +106,7 @@ def install(app, connect, owner, ip_key):
             canonical=account[0] if account else digest(secrets.token_urlsafe(32))
             if not account:
                 db.execute('INSERT INTO email_accounts VALUES(?,?,?,?)',(email,canonical,now,now))
+                welcome_email.enqueue(db,email,now)
             # Only attach this browser's proven anonymous holdings. Never attach a
             # different signed-in account or retain an old anonymous key as login.
             migrated=False

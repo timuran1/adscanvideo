@@ -1,0 +1,11 @@
+[Unit]
+Description=Check AdScanVideo welcome queue every 15 seconds
+
+[Timer]
+OnBootSec=15
+OnUnitInactiveSec=15
+AccuracySec=1
+Unit=adscanvideo-welcome.service
+
+[Install]
+WantedBy=timers.target

@@ -69,7 +69,8 @@ def install(app, connect):
         sync = [dict(zip(('provider','synced','detail'), row)) for row in db.execute('SELECT provider,synced,detail FROM support_sync')]
         return {'sending_enabled': bool(os.getenv('RESEND_API_KEY') and os.getenv('RESEND_FROM') and os.getenv('RESEND_REPLY_TO')),
                 'reply_to': os.getenv('RESEND_REPLY_TO',''), 'receiving_domain': os.getenv('ADSCAN_INBOX_REPLY_DOMAIN',''), 'automatic_receiving': bool(os.getenv('ADSCAN_INBOX_WEBHOOK_SECRET') and os.getenv('ADSCAN_INBOX_RECEIVING_KEY') and os.getenv('ADSCAN_INBOX_REPLY_DOMAIN')),
-                'sync': sync}
+                'welcome_enabled': os.getenv('ADSCAN_WELCOME_ENABLED') == '1',
+                'welcome_delay_seconds': 120, 'sync': sync}
 
     @app.get('/api/admin/contacts')
     def admin_contacts():
