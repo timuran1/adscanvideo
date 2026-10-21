@@ -72,4 +72,32 @@ class NativeTests(unittest.TestCase):
             native.analyze(self.path,'summary','')
         self.assertEqual(self.session.request.call_count,4);self.session.delete.assert_called_once()
 
+    @patch.dict(os.environ,{'GEMINI_API_KEY':'test-only'})
+    def test_incomplete_report_logs_only_safe_metadata(self):
+        self.responses();responses=list(self.session.request.side_effect)
+        responses[-1].json.return_value={'candidates':[{'finishReason':'MAX_TOKENS','content':{'parts':[{'text':'private report output'}]}}],
+            'usageMetadata':{'promptTokenCount':100,'candidatesTokenCount':4096,'thoughtsTokenCount':250}}
+        self.session.request.side_effect=responses
+        with patch('native_video.requests.Session',return_value=self.session),self.assertLogs('native_video',level='WARNING') as logs,self.assertRaises(native.NativeUnavailable):
+            native.analyze(self.path,'shots','private user criteria')
+        message=' '.join(logs.output)
+        self.assertIn('reason=max_tokens finish=MAX_TOKENS',message)
+        self.assertIn('output_tokens=4096 thought_tokens=250',message)
+        for secret in ['private report output','private user criteria','test-only','https://']:
+            self.assertNotIn(secret,message)
+        self.assertEqual(self.session.request.call_count,4);self.session.delete.assert_called_once()
+
+    @patch.dict(os.environ,{'GEMINI_API_KEY':'test-only'})
+    def test_empty_report_diagnostics_sanitize_unexpected_provider_fields(self):
+        self.responses();responses=list(self.session.request.side_effect)
+        responses[-1].json.return_value={'candidates':[{'finishReason':'private untrusted value','content':{'parts':[]}}],
+            'usageMetadata':{'promptTokenCount':'private data','candidatesTokenCount':-50,'thoughtsTokenCount':True}}
+        self.session.request.side_effect=responses
+        with patch('native_video.requests.Session',return_value=self.session),self.assertLogs('native_video',level='WARNING') as logs,self.assertRaises(native.NativeUnavailable):
+            native.analyze(self.path,'summary','')
+        message=' '.join(logs.output)
+        self.assertIn('reason=empty finish=OTHER',message)
+        self.assertIn('prompt_tokens=0 output_tokens=0 thought_tokens=0',message)
+        self.assertNotIn('private',message)
+
 if __name__=='__main__': unittest.main()

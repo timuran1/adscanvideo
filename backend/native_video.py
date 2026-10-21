@@ -74,7 +74,20 @@ def analyze(path, mode, question, progress=lambda stage: None):
         data=call('POST',base+':generateContent',stage='generate',retry=ceiling*2 <= request_cap,json={'contents':contents,'systemInstruction':system,'generationConfig':config}).json()
         text='\n'.join(p.get('text','') for c in data.get('candidates',[]) for p in c.get('content',{}).get('parts',[]) if not p.get('thought'))
         reasons=[c.get('finishReason') for c in data.get('candidates',[])]
-        if not text.strip() or 'MAX_TOKENS' in reasons: raise NativeUnavailable('The report could not be completed. Try a narrower question or shorter video; your allowance was restored.')
+        if not text.strip() or 'MAX_TOKENS' in reasons:
+            # Log only bounded enum/count metadata, never model content or criteria.
+            known={'STOP','MAX_TOKENS','SAFETY','RECITATION','OTHER','BLOCKLIST',
+                   'PROHIBITED_CONTENT','SPII','MALFORMED_FUNCTION_CALL',
+                   'UNEXPECTED_TOOL_CALL','FINISH_REASON_UNSPECIFIED','MODEL_ARMOR'}
+            safe_reasons=','.join(r if isinstance(r,str) and r in known else 'OTHER' for r in reasons[:8]) or 'NONE'
+            usage=data.get('usageMetadata') or {}
+            def safe_count(name):
+                value=usage.get(name,0)
+                return max(0,min(value,10000000)) if isinstance(value,int) and not isinstance(value,bool) else 0
+            LOGGER.warning('native_report_incomplete reason=%s finish=%s output_chars=%s prompt_tokens=%s output_tokens=%s thought_tokens=%s',
+                'max_tokens' if 'MAX_TOKENS' in reasons else 'empty',safe_reasons,len(text),
+                safe_count('promptTokenCount'),safe_count('candidatesTokenCount'),safe_count('thoughtsTokenCount'))
+            raise NativeUnavailable('The report could not be completed. Try a narrower question or shorter video; your allowance was restored.')
         u=data.get('usageMetadata',{}); cost=(u.get('promptTokenCount',0)*.75+(u.get('candidatesTokenCount',0)+u.get('thoughtsTokenCount',0))*3.75)/1e6
         return {'text':text,'cost':cost,'generation_seconds':round(time.monotonic()-start,2)}
     finally:
