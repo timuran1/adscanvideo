@@ -1,149 +1,114 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How to Analyze Competitor Video Ads in 60 Seconds — AdScanVideo Blog</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZS2C1B7429"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-ZS2C1B7429');
-</script>
-<style>
-:root { --bg: #f8f9fb; --surface: #ffffff; --surface2: #f1f3f6; --border: rgba(0,0,0,0.06); --border-strong: rgba(0,0,0,0.10); --ink: #1a1a2e; --ink-dim: #5a5a72; --ink-muted: #9090a0; --accent: #4f8cf7; --accent-soft: rgba(79,140,247,0.08); --radius: 12px; --radius-sm: 7px; --font: 'DM Sans', -apple-system, sans-serif; --mono: 'JetBrains Mono', monospace; }
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: var(--font); background: var(--bg); color: var(--ink); line-height: 1.6; -webkit-font-smoothing: antialiased; }
-nav { display:flex; justify-content:space-between; align-items:center; padding:14px 32px; max-width:760px; margin:0 auto; background:rgba(248,249,251,0.85); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; }
-.logo { font-weight:700; font-size:1.05rem; }
-.logo a { color:inherit; text-decoration:none; display:flex; align-items:center; gap:8px; }
-.logo svg { width:20px; height:20px; color:var(--accent); }
-.logo span { color:var(--accent); }
-.nav-links { display:flex; gap:28px; align-items:center; }
-.nav-links a { color:var(--ink-dim); text-decoration:none; font-size:0.88rem; font-weight:500; transition:color 0.15s; }
-.nav-links a:hover { color:var(--ink); }
-.container { max-width: 680px; margin: 0 auto; padding: 48px 24px; }
-h1 { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 8px; line-height: 1.2; }
-.meta { font-size: 0.82rem; color: var(--ink-muted); font-family: var(--mono); margin-bottom: 32px; }
-h2 { font-size: 1.25rem; font-weight: 700; margin: 32px 0 10px; }
-h3 { font-size: 1.05rem; font-weight: 600; margin: 24px 0 8px; }
-p { margin-bottom: 16px; color: var(--ink-dim); font-size: 0.95rem; }
-li { margin-bottom: 6px; color: var(--ink-dim); font-size: 0.95rem; }
-ul, ol { margin: 0 0 16px 20px; }
-.highlight { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 16px 20px; border-radius: 8px; margin: 20px 0; }
-.highlight p { margin: 0; color: var(--ink); font-weight: 500; }
-.cta-box { background: var(--ink); border-radius: 14px; padding: 32px; text-align: center; margin: 32px 0; }
-.cta-box h3 { color: #fff; margin: 0 0 8px; }
-.cta-box p { color: rgba(255,255,255,0.65); margin: 0 0 18px; }
-.cta-box a { display: inline-block; padding: 10px 24px; background: #fff; color: var(--ink); border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
-.cta-box a:hover { background: var(--surface2); }
-footer { border-top: 1px solid var(--border); padding: 24px; max-width: 760px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; color: var(--ink-muted); }
-footer a { color: var(--ink-dim); text-decoration: none; }
-@media (max-width: 768px) { nav { padding: 12px 16px; } .nav-links { gap: 16px; } .container { padding: 28px 16px; } }
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How to Analyze Competitor Video Ads: An Evidence-First Workflow | AdScanVideo</title>
+<meta name="description" content="Research competitor video ads without guessing their results. Use public ad libraries, record observable creative evidence, and turn patterns into original tests.">
 <link rel="canonical" href="https://adscanvideo.com/blog/analyze-competitor-video-ads-fast/">
-<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
-<meta property="og:type" content="Article">
-<meta property="og:title" content="How to Analyze Competitor Video Ads in 60 Seconds — AdScanVideo Blog">
-<meta property="og:description" content="Reverse-engineer competitor video ads with shot-by-shot analysis. Learn to identify hooks, pacing, CTAs, and audience targeting in under a minute.">
+<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to Analyze Competitor Video Ads: An Evidence-First Workflow">
+<meta property="og:description" content="A practical process for finding public ad examples, separating visible evidence from assumptions, and planning original creative tests.">
 <meta property="og:url" content="https://adscanvideo.com/blog/analyze-competitor-video-ads-fast/">
 <meta property="og:site_name" content="AdScanVideo">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="How to Analyze Competitor Video Ads in 60 Seconds — AdScanVideo Blog">
-<meta name="twitter:description" content="Reverse-engineer competitor video ads with shot-by-shot analysis. Learn to identify hooks, pacing, CTAs, and audience targeting in under a minute.">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://adscanvideo.com/#organization","name":"AdScanVideo","url":"https://adscanvideo.com","description":"AI video analysis for ads, podcasts, tutorials and shot breakdowns."},{"@type":"Article","headline":"How to Analyze Competitor Video Ads in 60 Seconds \u2014 AdScanVideo Blog","description":"Reverse-engineer competitor video ads with shot-by-shot analysis. Learn to identify hooks, pacing, CTAs, and audience targeting in under a minute.","url":"https://adscanvideo.com/blog/analyze-competitor-video-ads-fast/","inLanguage":"en","publisher":{"@id":"https://adscanvideo.com/#organization"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://adscanvideo.com/blog/analyze-competitor-video-ads-fast/"}}]}</script>
-<meta name="description" content="Reverse-engineer competitor video ads with shot-by-shot analysis. Learn to identify hooks, pacing, CTAs, and audience targeting in under a minute.">
+<meta name="twitter:title" content="How to Analyze Competitor Video Ads: An Evidence-First Workflow">
+<meta name="twitter:description" content="Find public examples, record what the video actually shows, and turn patterns into original tests without guessing performance.">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZS2C1B7429"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-ZS2C1B7429');</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://adscanvideo.com/#organization","name":"AdScanVideo","url":"https://adscanvideo.com/"},{"@type":"Article","headline":"How to Analyze Competitor Video Ads: An Evidence-First Workflow","description":"A practical process for finding public ad examples, separating visible evidence from assumptions, and planning original creative tests.","dateModified":"2026-10-23","url":"https://adscanvideo.com/blog/analyze-competitor-video-ads-fast/","inLanguage":"en","publisher":{"@id":"https://adscanvideo.com/#organization"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://adscanvideo.com/blog/analyze-competitor-video-ads-fast/"}}]}</script>
+<style>
+:root{--paper:#f4f3ed;--ink:#141918;--lime:#d5ff71;--muted:#606963;--line:#d9ddd4;--card:#fffefa;--blue:#345cda;--font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);line-height:1.7;-webkit-font-smoothing:antialiased}a{color:#244dbb;text-underline-offset:3px}nav{display:flex;justify-content:space-between;align-items:center;max-width:900px;margin:auto;padding:16px 22px;border-bottom:1px solid var(--line)}.brand{color:var(--ink);font-weight:800;text-decoration:none}.brand span{color:#50751b}.navlinks{display:flex;gap:22px}.navlinks a{color:var(--muted);font-size:.9rem;text-decoration:none;font-weight:650}main{max-width:780px;margin:auto;padding:52px 22px 76px}.eyebrow{font:700 .72rem/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#50751b}h1{max-width:720px;margin:13px 0 14px;font-size:clamp(2.3rem,6vw,4.1rem);letter-spacing:-.055em;line-height:1.03}.dek{font-size:1.17rem;color:#3f4943;max-width:66ch}.meta{color:var(--muted);font:500 .76rem/1.5 var(--mono);margin:20px 0 35px}.lead,.callout{background:var(--card);border:1px solid var(--line);border-left:5px solid #9cbd42;border-radius:12px;padding:19px 21px;margin:26px 0}.lead p:last-child,.callout p:last-child{margin-bottom:0}h2{margin:44px 0 13px;letter-spacing:-.03em;line-height:1.2;font-size:1.55rem}h3{margin:24px 0 7px;font-size:1.05rem}p,li{color:#46504a}p{margin:0 0 17px}ul,ol{padding-left:23px;margin:12px 0 22px}li{padding-left:3px;margin:0 0 9px}.tablewrap{overflow-x:auto;margin:24px 0}.evidence{border-collapse:collapse;width:100%;min-width:560px;background:var(--card);border:1px solid var(--line)}.evidence th,.evidence td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:12px 14px}.evidence th{background:#e8ebdf;color:var(--ink);font-size:.84rem}.evidence td{font-size:.91rem}.example,.template{background:#1a211e;color:#eef3e9;border-radius:13px;padding:20px 22px;margin:23px 0;overflow:auto}.example p,.example li,.template{color:#d5ded7}.example strong{color:#fff}.template{font:500 .83rem/1.75 var(--mono);white-space:pre-wrap}.faq{border-top:1px solid var(--line);padding:19px 0}.faq h3{margin:0 0 7px}.faq p{margin:0}.sources{border-top:1px solid var(--line);margin-top:42px;padding-top:22px}.sources h2{font-size:1.2rem;margin:0 0 10px}.sources li{font-size:.9rem}.cta{background:var(--ink);border-radius:16px;padding:32px;margin-top:42px;text-align:center}.cta h2{margin:0 0 9px;color:#fff}.cta p{color:#d5ded7;max-width:54ch;margin:0 auto 20px}.cta a{display:inline-block;background:var(--lime);color:var(--ink);font-weight:800;text-decoration:none;border-radius:9px;padding:12px 18px}footer{border-top:1px solid var(--line);max-width:900px;margin:auto;padding:24px 22px;display:flex;justify-content:space-between;gap:12px;font-size:.83rem;color:var(--muted)}footer a{color:var(--muted);text-decoration:none}@media(max-width:600px){nav{padding:13px 16px}.navlinks{gap:14px}main{padding:36px 17px 58px}footer{flex-wrap:wrap}}
+</style>
 </head>
 <body>
-<nav>
-  <div class="logo"><a href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>AdScan<span>Video</span></a></div>
-  <div class="nav-links"><a href="/">Home</a><a href="/blog/">Blog</a></div>
-</nav>
-<div class="container">
+<nav><a class="brand" href="/">AdScan<span>Video</span></a><div class="navlinks"><a href="/video-ad-analyzer/">Ad analyzer</a><a href="/blog/">Guides</a></div></nav>
+<main>
+<div class="eyebrow">Competitor research · Video ads</div>
+<h1>How to analyze competitor video ads without guessing what worked</h1>
+<p class="dek">A public ad can show you the message, footage, offer, and advertiser. It rarely shows the full campaign. Use this workflow to separate what you can observe from what needs your own data.</p>
+<div class="meta">Updated October 23, 2026 · 8 min read</div>
+<div class="lead"><p><strong>Start with a boundary:</strong> creative analysis describes the video. Performance analysis measures what happened in a campaign. A visible hook or product demo is an observation. “This ad is profitable” is a claim that needs reliable spend and outcome data.</p></div>
 
-<h1>How to Analyze Competitor Video Ads in 60 Seconds</h1>
-<div class="meta">Ad Intelligence · July 2026 · 4 min read</div>
-
-<p>Most marketers watch a competitor's video ad and think, <em>"That looks good"</em> — then move on. But the best performing ads follow specific patterns. Hook timing. Pacing. Visual language. CTA positioning. If you can read those signals, you can replicate what works and avoid what doesn't.</p>
-
-<p>Here's a framework for analyzing any video ad systematically — and how to do it in about 60 seconds with the right tool.</p>
-
-<h2>The 5-Point Ad Analysis Framework</h2>
-
-<h3>1. The Hook (First 3 Seconds)</h3>
-<p>The first 3 seconds determine whether someone scrolls past or watches. Look for:</p>
+<h2>1. Find examples in the platform's own library</h2>
+<p>Choose the country, advertiser, product category, or platform that fits your research question. Keep the platform and observation date in your notes because ad libraries have different coverage and change over time.</p>
 <ul>
-  <li><strong>Visual hook:</strong> A striking image, unexpected movement, or bold text overlay</li>
-  <li><strong>Verbal hook:</strong> A question, bold claim, or relatable pain point</li>
-  <li><strong>Pacing:</strong> Fast cuts to grab attention, or slow for premium feel?</li>
+<li><strong>Meta Ad Library:</strong> search by advertiser or keyword to review ads currently running across Meta technologies. The library is useful for seeing the creative and basic advertiser context. Do not treat ordinary commercial ads as a complete archive or a source of their sales results.</li>
+<li><strong>TikTok Creative Center Top Ads:</strong> browse the selected, advertiser-authorized examples and filters. TikTok may display engagement or performance indicators for a listed ad. Those indicators apply to that ad and the library's selected set, not your campaign or every ad in the market.</li>
+<li><strong>Google Ads Transparency Center:</strong> search for an advertiser or website and inspect ads published through Google. Its transparency listing helps identify advertiser and creative examples; it does not provide a complete competitor performance report.</li>
 </ul>
-<p>Most high-performing ads use <strong>both</strong> a visual and verbal hook within the first second.</p>
+<p>Save the library entry or ad identifier, advertiser name, platform, country or region filter, and the date you looked. If an ad disappears later, your dated note will still show what you reviewed.</p>
 
-<h3>2. Structure &amp; Pacing</h3>
-<p>Map the ad's timeline. Count the scene changes. How long does each scene last?</p>
-<ul>
-  <li><strong>Problem → Solution → CTA:</strong> Classic structure, works for most products</li>
-  <li><strong>Story arc:</strong> Character-driven, emotional, slower pacing</li>
-  <li><strong>Fast cuts (1-2 sec per scene):</strong> Energy, urgency, younger audience</li>
-  <li><strong>Slow dissolves (4-6 sec per scene):</strong> Premium, luxury, considered purchases</li>
-</ul>
+<h2>2. Build a small evidence log</h2>
+<p>Pick three to five relevant examples instead of collecting a large unfiltered swipe file. Record only details you can point to in the ad or library. The final column is where you put a question or interpretation, not a fact.</p>
+<div class="tablewrap"><table class="evidence"><thead><tr><th>Record</th><th>Observable evidence</th><th>Keep separate</th></tr></thead><tbody>
+<tr><td>Opening</td><td>First spoken line, visible action, on-screen text, or opening image</td><td>Whether a particular audience found it persuasive</td></tr>
+<tr><td>Demonstration</td><td>What the creator shows, in what order, and whether the result is visible</td><td>Whether the demonstration caused a sale</td></tr>
+<tr><td>Proof</td><td>Specific comparison, testimonial, interface, claim, or supporting detail</td><td>Whether the claim is independently substantiated</td></tr>
+<tr><td>Offer and next step</td><td>Price or offer shown, spoken ask, on-screen ask, and destination when visible</td><td>Conversion rate, customer value, or return on spend</td></tr>
+<tr><td>Context</td><td>Advertiser, library ID, region, active date, format, and source URL</td><td>Audience targeting or budget when the library does not show it</td></tr>
+</tbody></table></div>
+<div class="callout"><p><strong>Use two labels in your notes:</strong> “Observed” for something visible, audible, or explicitly listed by the source. “Hypothesis” for what you want to test in your own creative. This stops a plausible explanation from turning into a false fact.</p></div>
 
-<h3>3. Visual Language</h3>
-<p>Every visual choice communicates something:</p>
-<ul>
-  <li>Color palette — warm (trust, comfort) vs cool (tech, premium)</li>
-  <li>Camera movement — handheld (authentic) vs gimbal (polished)</li>
-  <li>Aspect ratio — vertical (TikTok/Reels) vs square (feed) vs landscape (YouTube)</li>
-  <li>Lighting — high-key (approachable) vs low-key (dramatic, premium)</li>
-</ul>
+<h2>3. Review one video in sequence</h2>
+<p>Watch the whole ad once without pausing. Write one sentence describing the promise and the action requested. Then replay the opening and the key demonstration. Note approximate playback positions only as navigation aids; a sampled report timestamp may not mark an exact edit boundary.</p>
+<ol>
+<li><strong>Opening:</strong> What does the viewer see and hear first? Do the words and image support the same promise?</li>
+<li><strong>Product proof:</strong> When does the product appear, and what can a viewer actually see it do?</li>
+<li><strong>Progression:</strong> Does each scene add a new reason to care, demonstrate use, answer a concern, or repeat an earlier point?</li>
+<li><strong>Offer and CTA:</strong> What should the viewer do next? If a library page shows the destination, does it match the ask?</li>
+<li><strong>Missing evidence:</strong> What would you need campaign reporting, a source replay, or another document to verify?</li>
+</ol>
+<p>For a human review of the first three seconds, write the four checks separately: opening promise, visible proof, transitions, and audible beats. If a field is absent from the generated report, label it as your own review. If you assign a number, state the rubric and call it an editorial score.</p>
 
-<h3>4. Text Overlays &amp; Captions</h3>
-<p>More than half of video ads are watched without sound. Top-performing ads always have:</p>
-<ul>
-  <li>Subtitles that pop visually (not just white text)</li>
-  <li>Key claims reinforced on screen</li>
-  <li>Brand name visible within 5 seconds</li>
-</ul>
+<h2>4. Turn the pattern into an original test</h2>
+<p>Do not copy the competitor's footage, wording, creator, or distinctive treatment. Reduce the observation to a broad strategy, then express it with your own product, audience, evidence, and permission-cleared assets.</p>
+<div class="example"><p><strong>Illustrative example, not a real ad or performance result:</strong> You observe several authorized software ads showing the interface before the end card.</p><ul><li><strong>Observed:</strong> the screen recording appears before the offer in the examples reviewed.</li><li><strong>Hypothesis:</strong> showing the workflow earlier could help our intended audience understand the product.</li><li><strong>Original test:</strong> keep our claim and CTA fixed, but move our own permission-cleared interface demonstration earlier in one variant.</li><li><strong>Measure:</strong> compare the chosen campaign outcome under comparable audience, placement, offer, and budget conditions.</li></ul><p>The observation suggests a test. It does not show why the competitor ran the ad or predict the outcome of your version.</p></div>
+<p>Change one important creative element at a time when practical. Keep the audience, placement, offer, landing page, and measurement window consistent if the goal is to learn what the edit changed. Use your own campaign dashboard for results. A public library is not a substitute for your experiment.</p>
 
-<h3>5. The CTA</h3>
-<p>How does the ad ask for action?</p>
-<ul>
-  <li><strong>Direct:</strong> "Swipe up," "Click the link"</li>
-  <li><strong>Soft:</strong> "Learn more," "See how it works"</li>
-  <li><strong>Urgency:</strong> "Limited time," "Only X left"</li>
-</ul>
+<h2>Where AdScanVideo fits</h2>
+<p>AdScanVideo's Ad intelligence mode can create a first-pass report from an uploaded video file you have the right to submit and analyze. It can organize observations about the hook, audience, promise, proof, pacing, offer, and CTA. It does not read a competitor's private campaign metrics, and video links are not accepted. If you do not have permission to submit a clip, review it in the public library and make your own notes without uploading or republishing it.</p>
+<p>Check the original source before relying on a quote, claim, timestamp, or visual interpretation. The <a href="/video-ad-analyzer/">Ad intelligence overview</a> explains the report's scope. The <a href="/blog/video-ad-cta-landing-page-audit/">CTA and landing-page audit</a> covers the click path, and the <a href="/samples/product-demo-ad-analysis/">public sample report</a> shows the difference between generated observations and a separately labeled human hypothesis.</p>
 
-<div class="highlight">
-  <p>💡 Pro tip: The best CTAs are visible for at least 2 seconds AND repeated in the voiceover. If you have to pause to read it, it's too fast.</p>
-</div>
+<h2>Copyable competitor ad review template</h2>
+<p>Prefer a spreadsheet? <a href="/blog/assets/competitor-video-ad-review.csv" download>Download the blank competitor video ad review sheet</a>. It records the library source and separates what you observed from your hypothesis and the result you will measure in your own campaign.</p>
+<div class="template">Research question:
+Advertiser / product category:
+Platform and library URL:
+Library or ad identifier:
+Region and filters:
+Date reviewed:
 
-<h2>How AdScanVideo Accelerates This</h2>
-<p>Instead of manually re-watching an ad 5 times and scribbling notes, drop the URL into AdScanVideo, select <strong>"Ad intelligence"</strong> mode, and get back:</p>
-<ul>
-  <li>Timestamped shot-by-shot breakdown</li>
-  <li>Hook analysis with exact timestamps</li>
-  <li>Target audience inference</li>
-  <li>Structural map (scenes, transitions, pacing)</li>
-  <li>CTA evaluation</li>
-  <li>Improvement recommendations</li>
-</ul>
-<p>Total time: <strong>~60 seconds.</strong></p>
+OBSERVED
+Opening promise or image:
+First visible product demonstration:
+Proof shown:
+Offer and CTA:
+What is not shown:
 
-<div class="cta-box">
-  <h3>Try it on your competitor's ad</h3>
-  <p>Your first analysis is free — no signup, no credit card.</p>
-  <a href="https://adscanvideo.com">Analyze a video →</a>
-</div>
+HYPOTHESIS FOR OUR CREATIVE
+One broad pattern worth exploring:
+Our original footage, claim, and script:
+One variable to change:
+Outcome to measure in our own campaign:
+Audience, placement, offer, and test window:</div>
 
-</div>
-<footer>
-  <div><a href="/">AdScanVideo</a> · <a href="/blog/">Blog</a></div>
-  <div>hello@adscanvideo.com</div>
-</footer>
+<h2>Frequently asked questions</h2>
+<div class="faq"><h3>Can a public ad library tell me whether a competitor's ad is profitable?</h3><p>Usually no. Public libraries can show creative and advertiser details, and some selected programs expose specific performance indicators. They do not generally reveal a competitor's complete spend, audience, margin, or return. Use your own campaign data to measure your results.</p></div>
+<div class="faq"><h3>Can AdScanVideo analyze an ad from its public URL?</h3><p>No. AdScanVideo currently accepts uploaded video files, not video links. You must have the right to submit and analyze the file. If you do not, use the public library to review the ad in place and record your own observations.</p></div>
+<div class="faq"><h3>What should I record when reviewing a competitor video ad?</h3><p>Record the advertiser, platform, library or ad identifier, observation date, visible opening, product demonstration, proof, offer, CTA, and any missing evidence. Label your interpretation separately from what is visible or audible.</p></div>
+<div class="faq"><h3>Should I copy a competitor's ad that appears successful?</h3><p>No. Extract a broad strategy such as demonstrating a product early, then create an original script, footage, and visual treatment for your own brand. Verify permissions before using any source material.</p></div>
+
+<section class="sources"><h2>Official research sources</h2><ul>
+<li><a href="https://www.facebook.com/ads/library/" rel="noopener">Meta Ad Library</a> and <a href="https://about.fb.com/news/2019/03/a-better-way-to-learn-about-ads/" rel="noopener">Meta's explanation of the library's coverage</a>.</li>
+<li><a href="https://ads.tiktok.com/business/creativecenter/inspiration/topads/pc/en" rel="noopener">TikTok Creative Center Top Ads</a> and <a href="https://ads.tiktok.com/resources/help/article/top-ads?lang=en" rel="noopener">TikTok's Top Ads description and authorization note</a>.</li>
+<li><a href="https://adstransparency.google.com/" rel="noopener">Google Ads Transparency Center</a>.</li>
+<li><a href="https://support.google.com/webmasters/answer/10268906?hl=en" rel="noopener">Google Search Console performance reports</a> for checking your own site's queries, clicks, and impressions.</li>
+</ul></section>
+<section class="cta"><h2>Turn an authorized video into a reviewable brief.</h2><p>Upload a video you have the right to analyze, choose Ad intelligence, and check the generated observations against the source. One on-screen analysis is free each day during early access.</p><a href="/?mode=ad#input-zone" data-cta="competitor-ad-research">Analyze an authorized video</a></section>
+</main>
+<footer><div><a href="/">AdScanVideo</a> · <a href="/blog/">All guides</a> · <a href="/privacy/">Privacy</a></div><div>Early access · Upload-only analysis</div></footer>
+<script>document.querySelectorAll('[data-cta]').forEach(a=>a.addEventListener('click',()=>gtag('event','content_cta_clicked',{content_topic:'competitor_video_ad_research',cta_placement:a.dataset.cta})))</script>
 </body>
 </html>

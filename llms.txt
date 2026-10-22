@@ -45,7 +45,7 @@ Stripe billing portal. Sign in with a verified email link to restore analysis ac
 - [Analyzer and pricing](https://adscanvideo.com/)
 - [What AdScanVideo is](https://adscanvideo.com/what-is-adscanvideo/)
 - [AI video analyzer](https://adscanvideo.com/ai-video-analyzer/)
-- [Video ad analyzer](https://adscanvideo.com/video-ad-analyzer/)
+- [Video ad analyzer](https://adscanvideo.com/video-ad-analyzer/): uploaded video files only; video links are not accepted.
 - [Video to shot list](https://adscanvideo.com/video-to-shot-list/)
 - [Video to prompt generator](https://adscanvideo.com/video-to-prompt/)
 - [All video-analysis guides](https://adscanvideo.com/blog/)
@@ -65,14 +65,14 @@ Stripe billing portal. Sign in with a verified email link to restore analysis ac
 - [Transcript-aware podcast analysis example](https://adscanvideo.com/samples/semiconductor-podcast-analysis/)
 - [Methodology, privacy, and limitations](https://adscanvideo.com/about/)
 - [Extract dialogue, verify selected quotes and download a review worksheet](https://adscanvideo.com/blog/extract-transcript-dialogue-from-video/)
-- [Analyze competitor video ads](https://adscanvideo.com/blog/analyze-competitor-video-ads-fast/)
+- [Analyze competitor video ads](https://adscanvideo.com/blog/analyze-competitor-video-ads-fast/): research public ad libraries, record observable evidence, separate hypotheses from performance claims, and plan original tests. AdScanVideo accepts video files, not links.
 - [Video to production shot list: real replayable example and free CSV worksheet](https://adscanvideo.com/blog/turn-video-into-production-shot-list/): Separate action ranges from verified cuts; check source evidence before planning camera setups.
 - [Video-to-prompt workflow: actual report review, original prompts and a free revision worksheet](https://adscanvideo.com/blog/ai-video-prompts-recreate-any-shot/)
 - [Privacy](https://adscanvideo.com/privacy/)
 - [Terms of service](https://adscanvideo.com/terms/)
 - [Support, billing and refunds](https://adscanvideo.com/support/)
 
-Last updated: 2026-10-20
+Last updated: 2026-10-23
 Contact: support@adscanvideo.com
 
 ## Credit bundles and exports
