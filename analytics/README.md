@@ -44,8 +44,15 @@ to require events in sequence, allowing intervening events. It is not a matched
 report cohort and includes founder activity and consent/data-delay limitations.
 The October 9 fix emits completion before the export gate, counts preview openings
 from the details toggle rather than clicks, and adds `checkout_access_step_viewed`
-before the access-key acknowledgment. Checkout events include `checkout_origin`
+before the access-key acknowledgment. Since October 24, the export gate also emits
+`report_export_preview_available` when the excerpt is made available, separate from the
+user-action event `report_export_preview_opened`. Earlier weeks cannot recover that
+exposure count. Checkout events include `checkout_origin`
 (`report_export` or `pricing`) and original mode/input, without job IDs or keys.
 Older gate funnels are invalidated by the prior reversed event order; the access
 step was not measured before October 9. Missing historical events cannot be
 reconstructed. Preview and unlock paths are separate because preview is optional.
+
+The weekly audience report includes `sessionCampaignName` and source/medium so
+links tagged with UTMs can be compared by campaign. Attribution helps distinguish
+tagged visits; it does not establish that a post caused a signup, analysis or payment.

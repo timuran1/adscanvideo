@@ -24,6 +24,7 @@ FUNNEL_EVENTS = {
     "checkout_redirected", "checkout_returned", "checkout_failed",
     "report_viewed", "checkout_access_step_viewed",
     "report_export_gate_viewed", "report_export_preview_opened",
+    "report_export_preview_available",
     "report_export_unlock_clicked", "report_exports_unlocked",
 }
 
@@ -77,9 +78,10 @@ def build_report(reporter):
     previous = overview(reporter, "13daysAgo", "7daysAgo")
     channels = reporter.run(["sessionDefaultChannelGroup"], ["sessions", "engagedSessions", "engagementRate", "activeUsers"], "6daysAgo")
     sources = reporter.run(["sessionSourceMedium"], ["sessions", "engagedSessions", "engagementRate", "activeUsers"], "6daysAgo")
+    campaigns = reporter.run(["sessionCampaignName", "sessionSourceMedium"], ["sessions", "engagedSessions", "engagementRate", "activeUsers"], "6daysAgo")
     countries = reporter.run(["country"], ["sessions", "engagedSessions", "engagementRate", "activeUsers"], "6daysAgo")
     pages = reporter.run(["landingPagePlusQueryString"], ["sessions", "engagedSessions", "engagementRate", "activeUsers"], "6daysAgo")
-    event_rows = reporter.run(["eventName", "customEvent:analysis_mode", "customEvent:input_method"], ["eventCount", "activeUsers"], "6daysAgo", limit=500)
+    event_rows = reporter.run(["eventName", "customEvent:analysis_mode", "customEvent:input_method", "customEvent:failure_type"], ["eventCount", "activeUsers"], "6daysAgo", limit=1000)
     funnel = [row for row in event_rows if row.get("eventName") in FUNNEL_EVENTS]
     totals = {}
     for row in funnel:
@@ -91,8 +93,10 @@ def build_report(reporter):
         "generated": date.today().isoformat(), "property": PROPERTY_ID,
         "period": "last 7 calendar days including today (GA4 may be delayed)", "overview": current,
         "previousPeriod": previous, "channels": channels, "sources": sources,
+        "campaigns": campaigns,
         "countries": countries, "landingPages": pages, "funnelRows": funnel,
         "funnelTotals": totals,
+        "submissionFailureRows": [row for row in funnel if row.get("eventName") == "analysis_submission_failed"],
         "completionRate": completed / started if started else None,
         "failureRate": failed / started if started else None,
         "submissionFailures": totals.get("analysis_submission_failed", 0),
@@ -127,7 +131,7 @@ def markdown(data):
         f"- Paid-offer button clicked: **{totals.get('pricing_interest', 0)}**",
         f"- Confirmed payments: **{totals.get('payment_confirmed', 0)}**", "",
         f"- Export gate shown: **{totals.get('report_export_gate_viewed', 0)}**",
-        f"- Export previews opened: **{totals.get('report_export_preview_opened', 0)}**",
+        f"- Export preview available (new event) / opened: **{totals.get('report_export_preview_available', 0)} / {totals.get('report_export_preview_opened', 0)}**",
         f"- Export unlock clicks / completed unlocks: **{totals.get('report_export_unlock_clicked', 0)} / {totals.get('report_exports_unlocked', 0)}**",
         f"- Access-key checkout step opened: **{totals.get('checkout_access_step_viewed', 0)}**",
         f"- Checkout starts / redirects / failures: **{totals.get('begin_checkout', 0)} / {totals.get('checkout_redirected', 0)} / {totals.get('checkout_failed', 0)}**",
@@ -135,6 +139,17 @@ def markdown(data):
     ]
     for row in data["sources"][:10]:
         lines.append(f"| {row['sessionSourceMedium']} | {row['sessions']} | {row['engagedSessions']} | {pct(number(row['engagementRate']))} |")
+    lines += ["", "Preview-availability tracking is newly instrumented. Periods before its site release cannot reconstruct how often the excerpt was available; zero in those periods means unavailable historical capture, not necessarily no views. Availability means the excerpt loaded in the page, not that it entered the viewport or was read."]
+    lines += ["", "## Campaign-tagged sessions", "", "Session attribution groups tagged visits by campaign and source. This helps compare tagged links; it does not prove that a post caused a signup or payment.", "", "| Campaign | Source / medium | Sessions | Engaged | Engagement |", "|---|---|---:|---:|---:|"]
+    tagged_campaigns = [row for row in data.get("campaigns", []) if row.get("sessionCampaignName") not in ("", "(not set)", "(direct)", "(organic)", "(referral)", "(ai-assistant)")]
+    for row in tagged_campaigns[:20]:
+        lines.append(f"| {row['sessionCampaignName']} | {row['sessionSourceMedium']} | {row['sessions']} | {row['engagedSessions']} | {pct(number(row['engagementRate']))} |")
+    if not tagged_campaigns:
+        lines.append("| No UTM-tagged campaign sessions yet | | 0 | 0 | |")
+    if data.get("submissionFailureRows"):
+        lines += ["", "## Pre-start submission failure detail", "", "These are client-reported categories at the upload request, before a job ID was confirmed. A connection error can reflect network, browser, DNS, CORS or edge/API transport; the category alone does not identify which one.", "", "| Failure type | Mode | Input | Count |", "|---|---|---|---:|"]
+        for row in data["submissionFailureRows"]:
+            lines.append(f"| {row.get('customEvent:failure_type', '(not set)')} | {row.get('customEvent:analysis_mode', '(not set)')} | {row.get('customEvent:input_method', '(not set)')} | {row['eventCount']} |")
     lines += ["", "## Low-quality traffic review", ""]
     flags = data["qualityFlags"]["sources"] + data["qualityFlags"]["countries"]
     if flags:

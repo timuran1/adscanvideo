@@ -9,13 +9,14 @@ from google.auth.transport.requests import AuthorizedSession
 JOURNEYS={
  'complete_conversion':['analysis_completed','report_export_preview_opened','report_export_unlock_clicked','begin_checkout','payment_confirmed'],
  'completion_to_preview':['analysis_completed','report_export_preview_opened','begin_checkout'],
+ 'completion_to_preview_availability':['analysis_completed','report_export_gate_viewed','report_export_preview_available'],
  'completion_to_unlock':['analysis_completed','report_export_unlock_clicked','begin_checkout','payment_confirmed'],
  'export_checkout':['report_export_unlock_clicked','checkout_access_step_viewed','begin_checkout','checkout_redirected'],
 }
 def run(start,end,output,credentials_path=None,quiet=False):
  credentials=Credentials.from_service_account_file(str(credentials_path) if credentials_path else os.getenv('GOOGLE_APPLICATION_CREDENTIALS',str(Path('~/.config/adscanvideo/ga4-reader.json').expanduser())),scopes=['https://www.googleapis.com/auth/analytics.readonly'])
  session=AuthorizedSession(credentials);property_id=os.getenv('ADSCAN_GA4_PROPERTY','543672363')
- result={'queriedAt':datetime.now(timezone.utc).isoformat(),'start':start,'end':end,'scope':'Ordered GA4 users, closed funnel, indirectly followed steps; includes founder activity. Not same-report cohorts. GA4 can be delayed. Access-step event added October 9.','journeys':{}}
+ result={'queriedAt':datetime.now(timezone.utc).isoformat(),'start':start,'end':end,'scope':'Ordered GA4 users, closed funnel, indirectly followed steps; includes founder activity. Not same-report cohorts. GA4 can be delayed. Access-step event added October 9. Preview-availability event was added October 24; earlier zero values mean unavailable historical capture.','journeys':{}}
  for name,events in JOURNEYS.items():
   request={'dateRanges':[{'startDate':start,'endDate':end}],'funnel':{'isOpenFunnel':False,'steps':[{'name':event,'filterExpression':{'funnelEventFilter':{'eventName':event}}} for event in events]}}
   response=session.post(f'https://analyticsdata.googleapis.com/v1alpha/properties/{property_id}:runFunnelReport',json=request,timeout=30)

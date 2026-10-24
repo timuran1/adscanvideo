@@ -1883,6 +1883,15 @@ function requestFailureType(error) {
   if (error?.status >= 400) return 'invalid_request';
   return 'connection';
 }
+function addUploadTroubleshootingLink() {
+  const notice = document.getElementById('analysis-message');
+  const link = document.createElement('a');
+  link.href = '/blog/video-link-not-working-upload-file/';
+  link.textContent = 'Open the upload troubleshooting checklist.';
+  link.style.display = 'block';
+  link.style.marginTop = '6px';
+  notice.append(link);
+}
 let accountSignedIn = false, accountEmail = '', emailAuthEnabled = false, canExportReport = false, reportWatermarked = true;
 let authIntent = 'account', authPreviousFocus = null, authPreviousOverflow = '';
 let ownerToken = storage.get('adsv_owner');
@@ -2253,6 +2262,7 @@ async function tryFree() {
   if (isUpload && !file) { track('analysis_validation_failed', { failure_type: 'missing_file', input_method: 'upload' }); message('Choose a video file first.', 'error'); return; }
   if (isUpload && (file.size > 200 * 1024 * 1024 || !/\.(mp4|mov|webm|mkv)$/i.test(file.name))) { track('analysis_validation_failed', { failure_type: 'invalid_file', input_method: 'upload' }); message('Choose an MP4, MOV, WebM or MKV video up to 200 MB.', 'error'); return; }
   if (mode === 'moments' && !document.getElementById('moment-visual').value.trim()) {
+    track('analysis_validation_failed', {failure_type:'missing_visual_criterion', input_method:'upload', analysis_mode:mode});
     message('Describe the visual action you want to find.', 'error');
     document.getElementById('moment-visual').focus(); return;
   }
@@ -2273,7 +2283,16 @@ async function tryFree() {
     });
     await pollJob(jobId);
   } catch (error) {
-    message(error.name === 'AbortError' ? 'The request timed out. Please check your connection and retry.' : error.message, 'error');
+    const failureType = requestFailureType(error);
+    if (failureType === 'timeout') {
+      message('The upload request timed out before AdScanVideo confirmed that analysis started. If you received a report link, open it before retrying.', 'error');
+      addUploadTroubleshootingLink();
+    } else if (failureType === 'connection') {
+      message('The connection ended before AdScanVideo confirmed that analysis started. Check your connection. If you received a report link, open it before retrying.', 'error');
+      addUploadTroubleshootingLink();
+    } else {
+      message(error.message, 'error');
+    }
     if (error.code === 'payment_required') {
       track('quota_blocked', { analysis_mode: mode, input_method: isUpload ? 'upload' : 'url' });
       showCredits();
@@ -2281,7 +2300,7 @@ async function tryFree() {
       track('analysis_submission_failed', {
         analysis_mode: mode,
         input_method: isUpload ? 'upload' : 'url',
-        failure_type: requestFailureType(error)
+        failure_type: failureType
       });
     }
   } finally { busy = false; document.getElementById('progress').style.display = 'none'; updateUI(); await refreshUsage(); }
@@ -2407,7 +2426,11 @@ async function refreshExportAccess() {
     document.getElementById('export-preview-title').textContent = document.getElementById('result-title').textContent;
     const reportText = document.getElementById('result-content').textContent;
     document.getElementById('export-preview-text').textContent = reportText.length > 900 ? reportText.slice(0, 900) + '\n[Preview excerpt ends here]' : reportText;
-    if (data.ready && !exportsUnlocked) trackJobOnce('report_export_gate_viewed', reportJobId, {...jobContext(reportJobId), analysis_mode:jobContext(reportJobId).analysis_mode || mode});
+    if (data.ready && !exportsUnlocked) {
+      const context = {...jobContext(reportJobId), analysis_mode:jobContext(reportJobId).analysis_mode || mode};
+      trackJobOnce('report_export_gate_viewed', reportJobId, context);
+      trackJobOnce('report_export_preview_available', reportJobId, context);
+    }
   } catch { label.textContent = 'Could not check export access. Reload your report and try again.'; }
 }
 document.getElementById('export-preview').addEventListener('toggle', event => {
