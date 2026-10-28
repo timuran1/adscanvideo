@@ -52,7 +52,8 @@ Stripe billing portal. Sign in with a verified email link to restore analysis ac
 - [Video upload troubleshooting](https://adscanvideo.com/blog/video-link-not-working-upload-file/): file-only workflow, format/size/duration checks, failure-stage triage and a published file-inspection example.
 - [Free video upload troubleshooting CSV](https://adscanvideo.com/blog/assets/video-upload-troubleshooting-checklist.csv): manual checks and a filled metadata example, not an automatic analyzer.
 - [YouTube Shorts ad specs: format, length and preview checks](https://adscanvideo.com/blog/youtube-shorts-ad-specs/): campaign-aware dimensions, duration, placement eligibility, CTA timing and final-preview checks.
-- [Video ad CTA and landing-page audit](https://adscanvideo.com/blog/video-ad-cta-landing-page-audit/)
+- [Video ad CTA and landing-page audit](https://adscanvideo.com/blog/video-ad-cta-landing-page-audit/): trace the spoken ask, on-screen end card, native platform button and destination; includes a hypothetical worked example, campaign measurement notes and a free manual CSV.
+- [Video ad CTA audit CSV worksheet](https://adscanvideo.com/blog/assets/video-ad-cta-audit-worksheet.csv): five-stage manual audit with a clearly labelled hypothetical example and blank template rows; no campaign results or automatic validation.
 - [Video caption quality checklist and free manual QA worksheet](https://adscanvideo.com/blog/video-caption-quality-checklist/): check exact wording, timing and final-version corrections.
 - [Free caption QA CSV worksheet](https://adscanvideo.com/blog/assets/video-caption-qa-worksheet.csv): manual issue log, not an automatic caption validator or SRT/VTT track.
 - [Product demo video audit checklist](https://adscanvideo.com/blog/product-demo-video-audit-checklist/): claim-to-proof review, visible action versus outcome, editorial decision rubric and free manual CSV.
@@ -73,7 +74,7 @@ Stripe billing portal. Sign in with a verified email link to restore analysis ac
 - [Terms of service](https://adscanvideo.com/terms/)
 - [Support, billing and refunds](https://adscanvideo.com/support/)
 
-Last updated: 2026-10-27
+Last updated: 2026-10-29
 Contact: support@adscanvideo.com
 
 - [Google Ads Creative Guidance: review video ads before you test](https://adscanvideo.com/blog/google-ads-creative-guidance-review/): find Creative guidance in Video Analytics, verify platform suggestions against the source file, and record one testable hypothesis with a blank manual CSV worksheet.
