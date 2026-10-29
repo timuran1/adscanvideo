@@ -74,7 +74,9 @@ Stripe billing portal. Sign in with a verified email link to restore analysis ac
 - [Terms of service](https://adscanvideo.com/terms/)
 - [Support, billing and refunds](https://adscanvideo.com/support/)
 
-Last updated: 2026-10-29
+Last updated: 2026-10-30
+
+- [How to review a video ad’s first 3 seconds with retention data](https://adscanvideo.com/blog/why-your-video-ads-fail-in-the-first-3-seconds-and-how-to-fix-it/): Inspect Google Ads audience-retention and video-view metrics, replay a candidate point, and keep creative hypotheses separate from measured campaign outcomes.
 Contact: support@adscanvideo.com
 
 - [Google Ads Creative Guidance: review video ads before you test](https://adscanvideo.com/blog/google-ads-creative-guidance-review/): find Creative guidance in Video Analytics, verify platform suggestions against the source file, and record one testable hypothesis with a blank manual CSV worksheet.
