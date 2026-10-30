@@ -49,7 +49,7 @@ Stripe billing portal. Sign in with a verified email link to restore analysis ac
 - [Video to shot list](https://adscanvideo.com/video-to-shot-list/)
 - [Video to prompt generator](https://adscanvideo.com/video-to-prompt/)
 - [All video-analysis guides](https://adscanvideo.com/blog/)
-- [Video upload troubleshooting](https://adscanvideo.com/blog/video-link-not-working-upload-file/): file-only workflow, format/size/duration checks, failure-stage triage and a published file-inspection example.
+- [Video upload troubleshooting](https://adscanvideo.com/blog/video-link-not-working-upload-file/): file-only workflow, format/size/duration checks, Finder and QuickTime file inspection, optional ffprobe container/codec checks, failure-stage triage and a published file-inspection example.
 - [Free video upload troubleshooting CSV](https://adscanvideo.com/blog/assets/video-upload-troubleshooting-checklist.csv): manual checks and a filled metadata example, not an automatic analyzer.
 - [YouTube Shorts ad specs: format, length and preview checks](https://adscanvideo.com/blog/youtube-shorts-ad-specs/): campaign-aware dimensions, duration, placement eligibility, CTA timing and final-preview checks.
 - [Video ad CTA and landing-page audit](https://adscanvideo.com/blog/video-ad-cta-landing-page-audit/): trace the spoken ask, on-screen end card, native platform button and destination; includes a hypothetical worked example, campaign measurement notes and a free manual CSV.
