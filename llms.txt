@@ -48,6 +48,7 @@ Stripe billing portal. Sign in with a verified email link to restore analysis ac
 - [Video ad analyzer](https://adscanvideo.com/video-ad-analyzer/): uploaded video files only; video links are not accepted.
 - [Video to shot list](https://adscanvideo.com/video-to-shot-list/)
 - [Video to prompt generator](https://adscanvideo.com/video-to-prompt/)
+- [Find a specific moment in a video without the exact quote](https://adscanvideo.com/blog/find-a-specific-moment-in-a-video/): search for a visible action with optional dialogue clues, then replay the source; candidate timestamps are not frame-exact.
 - [All video-analysis guides](https://adscanvideo.com/blog/)
 - [Video upload troubleshooting](https://adscanvideo.com/blog/video-link-not-working-upload-file/): file-only workflow, format/size/duration checks, Finder and QuickTime file inspection, optional ffprobe container/codec checks, failure-stage triage and a published file-inspection example.
 - [Free video upload troubleshooting CSV](https://adscanvideo.com/blog/assets/video-upload-troubleshooting-checklist.csv): manual checks and a filled metadata example, not an automatic analyzer.
@@ -74,7 +75,7 @@ Stripe billing portal. Sign in with a verified email link to restore analysis ac
 - [Terms of service](https://adscanvideo.com/terms/)
 - [Support, billing and refunds](https://adscanvideo.com/support/)
 
-Last updated: 2026-10-30
+Last updated: 2026-11-01
 
 - [How to review a video ad’s first 3 seconds with retention data](https://adscanvideo.com/blog/why-your-video-ads-fail-in-the-first-3-seconds-and-how-to-fix-it/): Inspect Google Ads audience-retention and video-view metrics, replay a candidate point, and keep creative hypotheses separate from measured campaign outcomes.
 Contact: support@adscanvideo.com
