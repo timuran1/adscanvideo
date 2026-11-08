@@ -263,3 +263,37 @@ Draft: “Your shot-list guide distinguishes the planning details a crew needs. 
 Publication context: https://www.provideocoalition.com/about-us/ . Its production and post-production readership is a potential fit for an original practical comparison of sampled descriptions and edit-point detection. Check current editorial contact and contribution requirements first; no acceptance or backlink promised.
 
 Draft: “I would like to suggest a practical post-production topic: how to verify timestamped AI video notes before using them as an editing map. Our public example has nine report entries from 11 retained frames; neither count establishes nine cuts. I can share the source-cleared example and a worksheet covering rounded times, excerpt offsets, quote checks and visible-versus-inferred camera details. I am the founder of AdScanVideo and would disclose that connection. Is this a topic your editorial team would consider? [guide URL]”
+
+## November 8, 2026 — upload timeout and safe retry guide
+
+Drafts only. Nothing was sent, posted, or submitted. Updated resource: https://adscanvideo.com/blog/video-link-not-working-upload-file/ . The guide distinguishes file validation, transfer, job start, preparation, and report generation; it explains why a lost browser confirmation is not proof that a request never arrived and provides controlled checks that do not claim a root cause.
+
+### ProVideo Coalition editorial pitch
+
+Potential fit: a practical post-production checklist for diagnosing a failed video upload without repeatedly sending a large source file. ProVideo Coalition covers production and post workflows. Check current editorial instructions and offer an original piece rather than asking them to republish the AdScanVideo guide. Submission and backlink are not guaranteed. [Editorial information](https://www.provideocoalition.com/press/)
+
+**Subject:** A stage-by-stage checklist for failed video uploads
+
+Hi ProVideo Coalition editors,
+
+I updated a practical troubleshooting guide for creators and editors who get a connection error or timeout while uploading a video for review. It separates file checks from transfer, job-start, preparation, and report-generation failures, and explains why a lost confirmation does not establish that a request never reached the service. The guide links primary browser and HTTP references and avoids treating any one symptom as proof of a root cause: https://adscanvideo.com/blog/video-link-not-working-upload-file/
+
+Would an original, independently useful version of this troubleshooting checklist fit your post-production readers? I founded AdScanVideo, which is mentioned as the context for the guide, and would disclose that relationship. The checklist itself is usable without the product.
+
+Best,
+Timurbek
+
+### No Film School editorial pitch
+
+Potential fit: the guide helps filmmakers distinguish local file problems from browser/network transfer symptoms before they export again. No Film School invites pitches about filmmaking and production; read its current pitch requirements and propose an original story, not a repost or product announcement. Acceptance and a link are not guaranteed. [Pitch guidance](https://nofilmschool.com/pitch-to-no-film-school)
+
+**Subject:** Before re-exporting: a filmmaker's checklist for video upload timeouts
+
+Hi No Film School editors,
+
+A failed upload message can send a filmmaker back to re-exporting a file that may be fine. I prepared a source-backed checklist that separates local playback and size checks from browser/network diagnostics, then asks whether a job actually started before retrying. It labels each result as a clue rather than a diagnosis and includes a short worksheet for recording the error, time, browser, and file properties: https://adscanvideo.com/blog/video-link-not-working-upload-file/
+
+Would you consider an original version for filmmakers who upload work for review? I founded AdScanVideo and would disclose that context. The article's troubleshooting steps are useful without our service, and I would not claim that any one browser or HTTP symptom identifies the cause.
+
+Best,
+Timurbek
