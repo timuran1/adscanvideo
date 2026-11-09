@@ -297,3 +297,68 @@ Would you consider an original version for filmmakers who upload work for review
 
 Best,
 Timurbek
+
+## Outreach prepared November 9, 2026: evidence-led video analysis
+
+Drafts only. Nothing was sent. The owned-site guide is a free practical resource
+for separating visible observations, audible evidence, on-screen text, and
+interpretation in a video review. Its downloadable CSV is a manual worksheet,
+not a generated report or an accuracy claim.
+
+### Videomaker editorial pitch
+
+Opportunity: Videomaker invites new writers to query its editorial team and asks
+for useful, original instruction for video producers. Its guidelines say not to
+submit copy already published elsewhere. Pitch a new article rather than asking
+for a link to the AdScanVideo guide.
+
+Source: https://www.videomaker.com/about-us/writers-guidelines/
+Contact route: editor@videomaker.com, only after founder review.
+
+**Subject:** Article idea: a source-backed evidence log for reviewing a video
+
+Hi Videomaker editors,
+
+I have a practical article idea for editors and producers who need to turn a
+reference clip into notes they can check later. It would show a simple log with
+five fields: candidate time, evidence type, direct observation, interpretation,
+and verification status. The examples would show how to preserve an unclear
+spoken line or a hard-to-read label instead of filling the gap with a guess.
+
+I built AdScanVideo, so I would disclose that connection. The piece would be
+written specifically for Videomaker, with a fresh example and no product pitch.
+I would include a printable worksheet only if it fits your format and would
+follow your editorial guidance on original material.
+
+Would this be useful for your readers? I can send a short outline first.
+
+Best,
+Timurbek
+
+### No Film School editorial pitch
+
+Opportunity: No Film School accepts pitches for educational stories about the
+filmmaking process, including editing and post-production. Keep the article
+focused on a useful editorial method and disclose the founder's product
+connection. Do not pitch a backlink or republish the owned-site article.
+
+Source: https://nofilmschool.com/pitch-to-no-film-school
+Contact route: use its published pitch guidance only after founder review.
+
+**Pitch:** “A video analysis log that separates what the footage shows from
+what the editor infers.” The tutorial would walk through a short, permission-
+cleared clip, demonstrate how to replay around candidate timestamps, and show
+how a second reviewer can resolve unclear text or dialogue. It would explicitly
+avoid claims about frame-exact AI coverage or campaign outcomes. The AdScanVideo
+worksheet could be offered as an optional reference after editorial approval,
+with the commercial connection disclosed.
+
+**Short note:**
+
+I built AdScanVideo and have published a free evidence-log worksheet for
+timestamped video review. I would like to pitch a new, non-promotional editing
+tutorial for No Film School: how to preserve the difference between a visible
+fact, a spoken line, and an editorial interpretation when reviewing a reference
+clip. The example would use footage cleared for publication and show a source
+replay check for uncertain moments. I would disclose my product connection and
+write a fresh piece for your audience. Would an outline be useful?

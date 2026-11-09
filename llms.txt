@@ -36,6 +36,8 @@ Stripe billing portal. Sign in with a verified email link to restore analysis ac
 
 ## Official pages
 
+- [How to analyze a video: build an evidence log](https://adscanvideo.com/blog/how-to-analyze-a-video/): define the question, separate visible and audible evidence from interpretation, replay important moments, and use a free manual CSV log.
+
 - [Video ad hook checklist and free manual CSV worksheet](https://adscanvideo.com/blog/what-makes-great-video-ad-hook/): Review the first three seconds, separate visible objects from offers, and label source observations and editorial edit hypotheses. This is not an automatic product score.
 
 - [Analyze a 45-minute video](https://adscanvideo.com/blog/analyze-45-minute-video/): Premium limits, file preparation, focused questions and a timestamp review worksheet.

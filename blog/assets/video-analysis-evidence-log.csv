@@ -1,0 +1,3 @@
+source_filename,source_version_or_date,analysis_question,candidate_timestamp,evidence_type,observation,interpretation,verification_status,verification_note,next_action
+,,,,,,,,,
+ILLUSTRATIVE EXAMPLE ONLY,not a real report,Does the opening show product proof?,00:12,Visible,"Presenter holds a labeled jar toward the camera.","The label may be the proof point.",Not reviewed,"Replay and read the label before describing contents.",Verify label against source
