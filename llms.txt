@@ -69,7 +69,7 @@ Stripe billing portal. Sign in with a verified email link to restore analysis ac
 - [Animated video shot-breakdown example](https://adscanvideo.com/samples/animated-cat-shot-breakdown/)
 - [Transcript-aware podcast analysis example](https://adscanvideo.com/samples/semiconductor-podcast-analysis/)
 - [Methodology, privacy, and limitations](https://adscanvideo.com/about/)
-- [Extract dialogue, verify selected quotes and download a review worksheet](https://adscanvideo.com/blog/extract-transcript-dialogue-from-video/)
+- [Extract a video transcript from captions or a source file, verify selected quotes, and download a review worksheet](https://adscanvideo.com/blog/extract-transcript-dialogue-from-video/)
 - [Analyze competitor video ads](https://adscanvideo.com/blog/analyze-competitor-video-ads-fast/): research public ad libraries, record observable evidence, separate hypotheses from performance claims, and plan original tests. AdScanVideo accepts video files, not links.
 - [Video to production shot list: real replayable example and free CSV worksheet](https://adscanvideo.com/blog/turn-video-into-production-shot-list/): Separate action ranges from verified cuts; check source evidence before planning camera setups.
 - [Video-to-prompt workflow: actual report review, original prompts and a free revision worksheet](https://adscanvideo.com/blog/ai-video-prompts-recreate-any-shot/)
@@ -77,7 +77,7 @@ Stripe billing portal. Sign in with a verified email link to restore analysis ac
 - [Terms of service](https://adscanvideo.com/terms/)
 - [Support, billing and refunds](https://adscanvideo.com/support/)
 
-Last updated: 2026-11-01
+Last updated: 2026-11-13
 
 - [How to review a video ad’s first 3 seconds with retention data](https://adscanvideo.com/blog/why-your-video-ads-fail-in-the-first-3-seconds-and-how-to-fix-it/): Inspect Google Ads audience-retention and video-view metrics, replay a candidate point, and keep creative hypotheses separate from measured campaign outcomes.
 Contact: support@adscanvideo.com
