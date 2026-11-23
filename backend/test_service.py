@@ -78,6 +78,68 @@ class ServiceTests(unittest.TestCase):
         with module._jobs_conn() as db: db.execute("UPDATE access SET day='2000-01-01'")
         self.assertEqual(self.post().status_code,202)
 
+    def sample_policy(self, **extra):
+        patcher = patch.dict(os.environ, {'ADSCAN_FREE_POLICY': 'sample', **extra})
+        patcher.start(); self.addCleanup(patcher.stop)
+
+    def age_access(self, days):
+        with module._jobs_conn() as db:
+            db.execute("UPDATE access SET day='2000-01-01', created=?", (time.time()-days*86400,))
+
+    def test_default_policy_is_daily(self):
+        usage=self.client.get('/api/usage',headers=HEADERS).json
+        self.assertEqual(usage['free_policy'],'daily')
+        self.assertIsInstance(usage['reset_at'],int)
+
+    def test_sample_policy_has_no_daily_reset(self):
+        self.sample_policy()
+        first=self.post(); self.finish(first)
+        self.age_access(400)
+        blocked=self.post()
+        self.assertEqual(blocked.status_code,402)
+        self.assertNotIn('today',blocked.json['error'])
+        self.assertNotIn('daily',blocked.json['error'])
+        usage=self.client.get('/api/usage',headers=HEADERS).json
+        self.assertEqual((usage['free_remaining'],usage['free_policy'],usage['reset_at']),(0,'sample',None))
+
+    def test_sample_policy_blocks_new_browser_on_recent_network(self):
+        self.sample_policy()
+        first=self.post(); self.finish(first)
+        self.age_access(29)
+        self.assertEqual(self.post({'Authorization':'Bearer '+'b'*64}).status_code,402)
+
+    def test_sample_policy_network_recovers_after_30_days(self):
+        self.sample_policy()
+        first=self.post(); self.finish(first)
+        self.age_access(31)
+        self.assertEqual(self.post({'Authorization':'Bearer '+'b'*64}).status_code,202)
+        self.assertEqual(self.post().status_code,402)
+
+    def test_sample_policy_same_owner_new_ip_cannot_bypass(self):
+        self.sample_policy()
+        first=self.post(); self.finish(first)
+        self.assertEqual(self.post(environ_overrides={'REMOTE_ADDR':'8.8.8.8'}).status_code,402)
+
+    def test_sample_policy_failed_job_restores_sample(self):
+        self.sample_policy()
+        first=self.post(); self.finish(first,'error')
+        self.assertEqual(self.post().status_code,202)
+
+    def test_sample_policy_cutover_ignores_earlier_free_use(self):
+        first=self.post(); self.finish(first)
+        self.age_access(2)
+        self.sample_policy(ADSCAN_SAMPLE_SINCE=str(time.time()-86400))
+        second=self.post(); self.assertEqual(second.status_code,202); self.finish(second)
+        self.assertEqual(self.post().status_code,402)
+
+    def test_sample_policy_paid_credit_still_admits(self):
+        self.sample_policy()
+        first=self.post(); self.finish(first)
+        with module._jobs_conn() as db:
+            who=db.execute('SELECT owner FROM access').fetchone()[0]
+            db.execute('INSERT INTO payments(session,owner,credits,created) VALUES(?,?,?,?)',('cs_sample',who,1,time.time()))
+        self.assertEqual(self.post().status_code,202)
+
     def test_private_results(self):
         first=self.post(); jid=first.json['job_id']; self.finish(first)
         self.assertEqual(len(jid),32)

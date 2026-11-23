@@ -102,9 +102,30 @@ def install(app, jobs, db_path, runner):
 
     auth = email_auth.install(app, connect, owner, ip_key)
 
+    def free_policy():
+        # 'daily' (default): one free analysis per UTC day per browser or network.
+        # 'sample': one free analysis per browser, with a network match that
+        # expires after 30 days so shared networks recover on their own.
+        return 'sample' if os.getenv('ADSCAN_FREE_POLICY') == 'sample' else 'daily'
+
+    def sample_since():
+        # Optional cutover timestamp: free use before it is not counted.
+        try:
+            return float(os.getenv('ADSCAN_SAMPLE_SINCE') or 0)
+        except ValueError:
+            return 0.0
+
     def allowance(db, who, ip):
-        day = time.strftime('%Y-%m-%d', time.gmtime())
-        used = db.execute("SELECT COUNT(*) FROM access a JOIN jobs j ON j.id=a.job WHERE a.day=? AND (a.ip=? OR a.owner=?) AND a.tier='free' AND j.status!='error'", (day, ip, who)).fetchone()[0]
+        policy = free_policy()
+        if policy == 'sample':
+            # LEFT JOIN: a job row that no longer exists still counts as used.
+            used = db.execute("""SELECT COUNT(*) FROM access a LEFT JOIN jobs j ON j.id=a.job
+                WHERE a.tier='free' AND (j.status IS NULL OR j.status!='error') AND a.created>=?
+                AND (a.owner=? OR (a.ip=? AND a.created>?))""",
+                (sample_since(), who, ip, time.time()-30*86400)).fetchone()[0]
+        else:
+            day = time.strftime('%Y-%m-%d', time.gmtime())
+            used = db.execute("SELECT COUNT(*) FROM access a JOIN jobs j ON j.id=a.job WHERE a.day=? AND (a.ip=? OR a.owner=?) AND a.tier='free' AND j.status!='error'", (day, ip, who)).fetchone()[0]
         paid = db.execute('SELECT COALESCE(SUM(credits),0) FROM payments WHERE owner=?', (who,)).fetchone()[0]
         spent = db.execute("SELECT COUNT(*) FROM access a JOIN jobs j ON j.id=a.job WHERE a.owner=? AND a.tier='paid' AND j.status!='error'", (who,)).fetchone()[0]
         spent += db.execute("SELECT COUNT(*) FROM export_unlocks WHERE owner=? AND tier='paid'", (who,)).fetchone()[0]
@@ -118,7 +139,8 @@ def install(app, jobs, db_path, runner):
                 'email_auth_enabled': email_auth.configured(),
                 'bundle_offers': [name for name, env in [('pack3','STRIPE_PRICE_PACK3'),('pack5','STRIPE_PRICE_PACK5')] if billing_enabled() and os.getenv(env)],
                 'manage_billing_url': os.getenv('STRIPE_PORTAL_LOGIN_URL', '') if has_subscription else '',
-                'reset_at': (int(time.time())//86400+1)*86400,
+                'free_policy': policy,
+                'reset_at': None if policy == 'sample' else (int(time.time())//86400+1)*86400,
                 'billing_enabled': billing_enabled(), 'max_duration': 2700 if any(row[2] for row in periods) else 600}
 
     def active_periods(db, who):
@@ -366,7 +388,10 @@ def install(app, jobs, db_path, runner):
             db.execute('BEGIN IMMEDIATE')
             data = allowance(db, who, ip)
             if not data['free_remaining'] and not data['monthly_remaining'] and not data['paid_credits']:
-                return None, (jsonify(error='Your free analysis for today is used. Buy a credit to analyze another video, or return after the daily reset.', code='payment_required', **data), 402)
+                message = ('You have used your free sample report. Buy a credit to analyze another video. Your first report is still available.'
+                           if data['free_policy'] == 'sample' else
+                           'Your free analysis for today is used. Buy a credit to analyze another video, or return after the daily reset.')
+                return None, (jsonify(error=message, code='payment_required', **data), 402)
             recent = db.execute('SELECT COUNT(*) FROM access WHERE (ip=? OR owner=?) AND created>?', (ip, who, time.time()-86400)).fetchone()[0]
             if recent >= (40 if data['monthly_remaining'] or data['paid_credits'] else 20):
                 return None, (jsonify(error='Too many attempts. Please try again tomorrow.', code='rate_limited'), 429)
@@ -497,7 +522,7 @@ def install(app, jobs, db_path, runner):
     @app.post('/api/billing/checkout')
     def checkout():
         if not billing_enabled():
-            return jsonify(error='Payments are coming soon. Your daily free analysis remains available.', code='billing_unavailable'), 503
+            return jsonify(error='Payments are coming soon.' if free_policy() == 'sample' else 'Payments are coming soon. Your daily free analysis remains available.', code='billing_unavailable'), 503
         who, _ = owner(True)
         if not who:
             return jsonify(error='Open the analyzer to initialize your browser session.'), 401
