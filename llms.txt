@@ -28,8 +28,8 @@ only. No account is required.
 
 ## Pricing status
 
-One analysis is free each day per network and resets at midnight UTC. Failed
-analyses restore the allowance. One credit costs USD $3.99 per
+The first analysis is free as a one-time sample, with no signup. Failed
+analyses restore it. One credit costs USD $3.99 per
 video with no subscription; tax is included where applicable. Monthly Premium costs USD $39.99 per month for 20 analyses, up to 45 minutes each.
 Unused monthly analyses expire at the end of the paid period. Cancel using the
 Stripe billing portal. Sign in with a verified email link to restore analysis access.

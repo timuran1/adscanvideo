@@ -71,6 +71,13 @@ owner and network (IPv6 /64); changing the browser token cannot reset an IP's
 allowance. Shared networks share the anonymous free allowance. This is abuse
 mitigation, not a verified one-person identity system.
 
+Setting `ADSCAN_FREE_POLICY=sample` replaces the daily reset with one free
+sample per browser or signed-in account; a matching network counts for a
+limited period only. `ADSCAN_SAMPLE_SINCE` (epoch seconds) ignores free use
+before that time. Unset, the daily behavior above applies. The site copy on
+this branch describes the sample policy, so release the copy and switch the
+setting together.
+
 Nginx must overwrite X-Real-IP and trust CF-Connecting-IP **only** from official
 Cloudflare CIDRs. Gunicorn must remain bound to loopback. Do not trust arbitrary
 X-Forwarded-For values.
