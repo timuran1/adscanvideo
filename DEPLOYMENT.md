@@ -1,5 +1,19 @@
 # AdScanVideo deployment — verified September 20, 2026
 
+## One free sample: November 23, 2026
+
+The daily free allowance ended. `ADSCAN_FREE_POLICY=sample` and
+`ADSCAN_SAMPLE_SINCE` in the server `.env` give each browser or signed-in
+account one free analysis, with a time-limited network match; free use before
+the cutover is not counted. Rollback: remove both lines and restart
+`adscanvideo-api`. Only `service.py` changed on the server; backups are under
+`backups/one-free-sample-20261123-084926/` and
+`backups/sample-message-20261123-092501/`. Production checks: first upload 202
+and done, second request 402 for the same browser and for a new browser on the
+same network, private result 404 without the owner token. Site copy was
+released to Cloudflare Pages the same day; older sections below that mention a
+daily allowance are historical.
+
 ## Marketing dashboard — October 5, 2026
 
 `/dashboard/#marketing` adds the owner's searchable publication library, platform
