@@ -106,7 +106,13 @@ class ServiceTests(unittest.TestCase):
         self.sample_policy()
         first=self.post(); self.finish(first)
         self.age_access(29)
-        self.assertEqual(self.post({'Authorization':'Bearer '+'b'*64}).status_code,402)
+        blocked=self.post({'Authorization':'Bearer '+'b'*64})
+        self.assertEqual(blocked.status_code,402)
+        self.assertIn('on this network',blocked.get_json()['error'])
+        self.assertNotIn('first report',blocked.get_json()['error'])
+        own=self.post()
+        self.assertEqual(own.status_code,402)
+        self.assertIn('Your first report is still available',own.get_json()['error'])
 
     def test_sample_policy_network_recovers_after_30_days(self):
         self.sample_policy()

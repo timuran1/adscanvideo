@@ -388,9 +388,15 @@ def install(app, jobs, db_path, runner):
             db.execute('BEGIN IMMEDIATE')
             data = allowance(db, who, ip)
             if not data['free_remaining'] and not data['monthly_remaining'] and not data['paid_credits']:
-                message = ('You have used your free sample report. Buy a credit to analyze another video. Your first report is still available.'
-                           if data['free_policy'] == 'sample' else
-                           'Your free analysis for today is used. Buy a credit to analyze another video, or return after the daily reset.')
+                if data['free_policy'] != 'sample':
+                    message = 'Your free analysis for today is used. Buy a credit to analyze another video, or return after the daily reset.'
+                elif db.execute("""SELECT COUNT(*) FROM access a LEFT JOIN jobs j ON j.id=a.job
+                        WHERE a.tier='free' AND (j.status IS NULL OR j.status!='error') AND a.created>=? AND a.owner=?""",
+                        (sample_since(), who)).fetchone()[0]:
+                    message = 'You have used your free sample report. Buy a credit to analyze another video. Your first report is still available.'
+                else:
+                    # Blocked by the network match only: this browser has no report of its own.
+                    message = 'A free sample report has already been used on this network. Buy a credit to analyze a video.'
                 return None, (jsonify(error=message, code='payment_required', **data), 402)
             recent = db.execute('SELECT COUNT(*) FROM access WHERE (ip=? OR owner=?) AND created>?', (ip, who, time.time()-86400)).fetchone()[0]
             if recent >= (40 if data['monthly_remaining'] or data['paid_credits'] else 20):
