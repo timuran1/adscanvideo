@@ -42,7 +42,7 @@ cuts per minute       = confirmed cuts / running time (s) x 60</pre></div>
 <h2>Why the count goes wrong</h2>
 <p>Every pacing number depends on how many cuts you counted. Two shortcuts produce wrong counts:</p>
 <ul>
-<li><strong>Treating a detector's output as final.</strong> ffmpeg's <code>select</code> filter gives each frame a scene score between 0 and 1. Its documentation says comparing that score against a value between 0.3 and 0.5 is "generally a sane choice". A sane default is still a guess about your footage.</li>
+<li><strong>Treating a detector's output as final.</strong> ffmpeg's <code>select</code> filter gives each frame a scene score between 0 and 1. Its documentation says comparing that score against a value between 0.3 and 0.5 is "generally a sane choice". A sensible starting value is still a guess about your footage.</li>
 <li><strong>Treating report rows as shots.</strong> An AI shot breakdown describes time ranges. Several rows can describe one continuous shot.</li>
 </ul>
 
