@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How to Measure Average Shot Length Without Miscounting Cuts | AdScanVideo</title>
+<meta name="description" content="Measure average shot length, median shot length and cuts per minute from confirmed cuts. See why one detector threshold turned the same 24-second video into 12, 8 or 4.8 seconds.">
+<link rel="canonical" href="https://adscanvideo.com/blog/average-shot-length/">
+<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to Measure Average Shot Length Without Miscounting Cuts">
+<meta property="og:description" content="The same 24-second video measured 12, 8 or 4.8 seconds per shot. Confirm cuts before you calculate pacing.">
+<meta property="og:url" content="https://adscanvideo.com/blog/average-shot-length/">
+<meta property="og:site_name" content="AdScanVideo">
+<meta property="og:image" content="https://adscanvideo.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How to Measure Average Shot Length Without Miscounting Cuts">
+<meta name="twitter:description" content="Confirm cuts first, then calculate average shot length, median shot length and cuts per minute.">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZS2C1B7429"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-ZS2C1B7429');</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://adscanvideo.com/#organization", "name": "AdScanVideo", "url": "https://adscanvideo.com/"}, {"@type": "Article", "headline": "How to Measure Average Shot Length Without Miscounting Cuts", "description": "Measure average shot length, median shot length and cuts per minute from confirmed cuts. See why one detector threshold turned the same 24-second video into 12, 8 or 4.8 seconds.", "datePublished": "2026-11-25", "dateModified": "2026-11-25", "inLanguage": "en", "url": "https://adscanvideo.com/blog/average-shot-length/", "publisher": {"@id": "https://adscanvideo.com/#organization"}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://adscanvideo.com/blog/average-shot-length/"}}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do you calculate average shot length?", "acceptedAnswer": {"@type": "Answer", "text": "Divide the video's running time in seconds by the number of shots. The number of shots is the number of confirmed cuts plus one. A 24-second video with 4 cuts has 5 shots and an average shot length of 4.8 seconds."}}, {"@type": "Question", "name": "What is the difference between average and median shot length?", "acceptedAnswer": {"@type": "Answer", "text": "Average shot length is the mean of all shot durations. The median is the middle duration when the shots are sorted, so a few very long shots move it less. Report both when shot lengths vary a lot."}}, {"@type": "Question", "name": "Can ffmpeg scene detection count cuts automatically?", "acceptedAnswer": {"@type": "Answer", "text": "It can list candidate cuts, but the count depends on the threshold. In our test, the documented 0.3 threshold found 1 of 4 real cuts in one Short and all 4 in another. Replay every candidate before you use the count."}}, {"@type": "Question", "name": "Is each row of an AI shot breakdown one shot?", "acceptedAnswer": {"@type": "Answer", "text": "No. A row is a time range the report describes. Several rows can describe one continuous shot, and one row can cover a quick cut. Confirm the cut points against the source before calculating pacing."}}]}]}</script>
+<style>
+:root{--paper:#f4f3ed;--ink:#141918;--lime:#d5ff71;--muted:#606963;--line:#d9ddd4;--card:#fffefa;--blue:#244dbb;--font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);line-height:1.7;-webkit-font-smoothing:antialiased}a{color:var(--blue);text-underline-offset:3px}nav{display:flex;justify-content:space-between;align-items:center;max-width:900px;margin:auto;padding:16px 22px;border-bottom:1px solid var(--line)}.brand{color:var(--ink);font-weight:800;text-decoration:none}.brand span{color:#50751b}.navlinks{display:flex;gap:22px}.navlinks a{color:var(--muted);font-size:.9rem;text-decoration:none;font-weight:650}main{max-width:780px;margin:auto;padding:52px 22px 76px}.eyebrow{font:700 .72rem/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#50751b}h1{max-width:720px;margin:13px 0 14px;font-size:clamp(2.3rem,6vw,4.1rem);letter-spacing:-.055em;line-height:1.03}.dek{font-size:1.17rem;color:#3f4943;max-width:66ch}.meta{color:var(--muted);font:500 .76rem/1.5 var(--mono);margin:20px 0 35px}.lead,.callout{background:var(--card);border:1px solid var(--line);border-left:5px solid #9cbd42;border-radius:12px;padding:19px 21px;margin:26px 0}.lead p:last-child,.callout p:last-child{margin-bottom:0}h2{margin:44px 0 13px;letter-spacing:-.03em;line-height:1.2;font-size:1.55rem}h3{margin:24px 0 7px;font-size:1.05rem}p,li{color:#46504a}p{margin:0 0 17px}ul,ol{padding-left:23px;margin:12px 0 22px}li{padding-left:3px;margin:0 0 9px}.tablewrap{overflow-x:auto;margin:24px 0}.evidence{border-collapse:collapse;width:100%;min-width:560px;background:var(--card);border:1px solid var(--line)}.evidence th,.evidence td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:12px 14px}.evidence th{background:#e8ebdf;color:var(--ink);font-size:.84rem}.evidence td{font-size:.91rem}.example,.template{background:#1a211e;color:#eef3e9;border-radius:13px;padding:20px 22px;margin:23px 0;overflow:auto}.example p,.example li{color:#d5ded7}.example strong{color:#fff}.template{font:500 .83rem/1.75 var(--mono);white-space:pre-wrap}.faq{border-top:1px solid var(--line);padding:19px 0}.faq h3{margin:0 0 7px}.faq p{margin:0}.sources{border-top:1px solid var(--line);margin-top:42px;padding-top:22px}.sources h2{font-size:1.2rem;margin:0 0 10px}.sources li{font-size:.9rem}.cta{background:var(--ink);border-radius:16px;padding:32px;margin-top:42px;text-align:center}.cta h2{margin:0 0 9px;color:#fff}.cta p{color:#d5ded7;max-width:54ch;margin:0 auto 20px}.cta a{display:inline-block;background:var(--lime);color:var(--ink);font-weight:800;text-decoration:none;border-radius:9px;padding:12px 18px}footer{border-top:1px solid var(--line);max-width:900px;margin:auto;padding:24px 22px;display:flex;justify-content:space-between;gap:12px;font-size:.83rem;color:var(--muted)}footer a{color:var(--muted);text-decoration:none}@media(max-width:600px){nav{padding:13px 16px}.navlinks{gap:14px}main{padding:36px 17px 58px}footer{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<nav><a class="brand" href="/">AdScan<span>Video</span></a><div class="navlinks"><a href="/video-ad-analyzer/">Video analyzer</a><a href="/blog/">Guides</a></div></nav>
+<main>
+<div class="eyebrow">Editing analysis · Pacing</div>
+<h1>How to measure average shot length without miscounting cuts</h1>
+<p class="dek">Average shot length is simple arithmetic. The hard part is the shot count. Confirm every cut against the source first, then calculate the mean, the median and cuts per minute.</p>
+<div class="meta">Published November 25, 2026 · 6 min read</div>
+<div class="lead"><p><strong>The same video produced three answers.</strong> We ran ffmpeg scene detection on one of our own 24-second Shorts. At three thresholds it reported 1, 2 and 4 cuts, which gives an average shot length of 12, 8 or 4.8 seconds. Only the last matches the project file the video was rendered from.</p></div>
+
+<h2>The formula</h2>
+<p>Film researcher Barry Salt defines average shot length (ASL) as the length of a film in seconds divided by the number of shots in it. The same calculation works for an ad, a Short or a tutorial:</p>
+<div class="template"><pre>shots                 = confirmed cuts + 1
+average shot length   = running time (s) / shots
+median shot length    = middle value of the sorted shot durations
+cuts per minute       = confirmed cuts / running time (s) x 60</pre></div>
+<p>The average is a mean, so one long take pulls it up. Cinemetrics reports the median alongside it for that reason: half the shots are longer than the median and half are shorter. When a video mixes very quick cuts with one long hold, quote both numbers.</p>
+
+<h2>Why the count goes wrong</h2>
+<p>Every pacing number depends on how many cuts you counted. Two shortcuts produce wrong counts:</p>
+<ul>
+<li><strong>Treating a detector's output as final.</strong> ffmpeg's <code>select</code> filter gives each frame a scene score between 0 and 1. Its documentation says comparing that score against a value between 0.3 and 0.5 is "generally a sane choice". A sane default is still a guess about your footage.</li>
+<li><strong>Treating report rows as shots.</strong> An AI shot breakdown describes time ranges. Several rows can describe one continuous shot.</li>
+</ul>
+
+<h2>Test 1: a detector that agreed with the project file</h2>
+<p>Our <a href="https://www.youtube.com/shorts/ppBDzTXX4a8" rel="noopener">November 13 Short</a> is 24.0 seconds at 30 frames per second. Its project file places hard cuts at frames 90, 240, 390 and 540, which is 3, 8, 13 and 18 seconds. At a 0.3 threshold, ffmpeg flagged exactly those four times.</p>
+<div class="tablewrap"><table class="evidence"><thead><tr><th>Shot</th><th>Start</th><th>End</th><th>Length</th></tr></thead><tbody>
+<tr><td>1</td><td>0.0 s</td><td>3.0 s</td><td>3.0 s</td></tr>
+<tr><td>2</td><td>3.0 s</td><td>8.0 s</td><td>5.0 s</td></tr>
+<tr><td>3</td><td>8.0 s</td><td>13.0 s</td><td>5.0 s</td></tr>
+<tr><td>4</td><td>13.0 s</td><td>18.0 s</td><td>5.0 s</td></tr>
+<tr><td>5</td><td>18.0 s</td><td>24.0 s</td><td>6.0 s</td></tr>
+</tbody></table></div>
+<p>Five shots in 24 seconds: an average shot length of 4.8 seconds, a median of 5.0 seconds and 10 cuts per minute.</p>
+
+<h2>Test 2: the same detector missed three cuts</h2>
+<p>A second Short of ours, from November 8, has the same length and also has four hard cuts, at 3, 7, 13 and 18 seconds according to its project file. Its scenes share the same cream background and a similar black-text layout, so the frame-to-frame change at a cut is small.</p>
+<div class="tablewrap"><table class="evidence"><thead><tr><th>Threshold</th><th>Cuts flagged</th><th>Shots</th><th>Average shot length</th></tr></thead><tbody>
+<tr><td>0.3</td><td>3 s</td><td>2</td><td>12.0 s</td></tr>
+<tr><td>0.2</td><td>3 s, 7 s</td><td>3</td><td>8.0 s</td></tr>
+<tr><td>0.1</td><td>3 s, 7 s, 13 s, 18 s</td><td>5</td><td>4.8 s</td></tr>
+</tbody></table></div>
+<p>The two videos have identical pacing, 4.8 seconds per shot, yet the default threshold would report one as more than twice as slow. Lowering the threshold fixed this clip. On footage with fast motion, flashes or whip pans, a low threshold can flag changes that are not cuts, so the threshold is never the final answer.</p>
+<div class="callout"><p><strong>What these tests show.</strong> Two of our own animated Shorts, with cut times known from the project files. They do not show how often detectors fail in general, and other footage may behave differently. They show why each candidate needs a replay.</p></div>
+
+<h2>Test 3: report rows are not shots</h2>
+<p>Our public <a href="/samples/animated-cat-shot-breakdown/">animated cat shot breakdown</a> lists nine timestamped rows for an 8.64-second clip. Dividing gives 0.96 seconds per row, which looks like very fast cutting. It is not a shot length. The last four rows describe the same kitchen action, and the sample page itself notes that near-identical cooking frames stayed separate because the visuals kept changing. The source file is not hosted there, so we have not counted its real cuts. Use rows as a map of where to look, then confirm cuts in the source.</p>
+
+<h2>A repeatable workflow</h2>
+<ol>
+<li><strong>Collect candidates.</strong> Use the report's timestamps, a scene detector, or both. To list detector candidates, run:
+<div class="template"><pre>ffmpeg -i your-video.mp4 -vf "select='gt(scene,0.3)',showinfo" -an -f null - 2&gt;&amp;1 | grep -o "pts_time:[0-9.]*"</pre></div>
+Run it again at a lower value such as 0.1 and compare the lists.</li>
+<li><strong>Replay each candidate.</strong> Step a few frames either side. Mark it a cut only when the shot actually changes; a fast pan, a flash or a text change inside one shot is not a cut.</li>
+<li><strong>Look between candidates.</strong> Scrub any long gap for a cut the detector missed, especially between similar-looking shots.</li>
+<li><strong>Log confirmed cuts.</strong> Record each time and how you confirmed it in the <a href="/blog/assets/shot-length-log.csv">free shot length log</a> (CSV).</li>
+<li><strong>Calculate.</strong> Use the running time and confirmed cuts for the mean, the median and cuts per minute. Note the frame rate and the cut count beside the result so others can check it.</li>
+</ol>
+
+<h2>Where an AI shot breakdown fits</h2>
+<p>A shot breakdown describes what happens in each range: framing, action, setting and camera movement. That makes candidate cuts faster to find and explains what changed at each one. It does not certify a frame-exact boundary, so the confirmed-cut step stays manual. For turning a confirmed shot list into a production plan, see <a href="/blog/turn-video-into-production-shot-list/">turn a video into a production shot list</a>; for how far to trust report timing, see <a href="/blog/ai-video-analysis-frame-by-frame-accuracy/">AI video analysis and frame accuracy</a>.</p>
+
+<h2>Frequently asked questions</h2>
+<div class="faq"><h3>How do you calculate average shot length?</h3><p>Divide the video's running time in seconds by the number of shots. The number of shots is the number of confirmed cuts plus one. A 24-second video with 4 cuts has 5 shots and an average shot length of 4.8 seconds.</p></div>
+<div class="faq"><h3>What is the difference between average and median shot length?</h3><p>Average shot length is the mean of all shot durations. The median is the middle duration when the shots are sorted, so a few very long shots move it less. Report both when shot lengths vary a lot.</p></div>
+<div class="faq"><h3>Can ffmpeg scene detection count cuts automatically?</h3><p>It can list candidate cuts, but the count depends on the threshold. In our test, the documented 0.3 threshold found 1 of 4 real cuts in one Short and all 4 in another. Replay every candidate before you use the count.</p></div>
+<div class="faq"><h3>Is each row of an AI shot breakdown one shot?</h3><p>No. A row is a time range the report describes. Several rows can describe one continuous shot, and one row can cover a quick cut. Confirm the cut points against the source before calculating pacing.</p></div>
+
+<section class="sources"><h2>Sources</h2><ul><li><a href="https://cinemetrics.uchicago.edu/article/9890e39c-ead0-49ff-a800-37d83723836a" rel="noopener">Barry Salt, Statistical Film Analysis (Cinemetrics)</a></li><li><a href="https://cinemetrics.uchicago.edu/article/616e7ecc-7915-4768-b84d-7dec79aa77c2" rel="noopener">Barry Salt, The Metrics in Cinemetrics</a></li><li><a href="https://ffmpeg.org/ffmpeg-filters.html#select" rel="noopener">FFmpeg filters documentation: select</a></li></ul></section>
+<section class="cta"><h2>Map the shots in your own video.</h2><p>Upload a video file you have permission to analyze and choose Shot breakdown. Your first on-screen report is free. Then confirm the cuts against your source before you calculate pacing.</p><a href="/?mode=shots#input-zone" data-cta="average-shot-length-guide">Open the video analyzer</a></section>
+</main>
+<footer><div><a href="/">AdScanVideo</a> · <a href="/blog/">All guides</a> · <a href="/privacy/">Privacy</a></div><div>Upload-only video analysis</div></footer>
+<script>document.querySelectorAll('[data-cta]').forEach(a=>a.addEventListener('click',()=>gtag('event','content_cta_clicked',{content_topic:'average_shot_length',cta_placement:a.dataset.cta})))</script>
+</body>
+</html>
