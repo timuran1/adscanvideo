@@ -48,6 +48,10 @@ account recovery is a follow-up before broadly promoting paid usage.
 - `POST /api/analyze-upload`: multipart file, mode, optional question.
 - `GET /api/status/ID` and `/api/result/ID`: require the owning token.
 - `POST /api/billing/checkout`: returns a Stripe-hosted checkout URL when configured.
+  With email auth enabled it requires a signed-in owner unless the body sets
+  `"guest": true`; guest credits stay with the browser owner token until that
+  browser signs in, which moves them to the account. Monthly checkout always
+  requires sign in.
 - `GET /api/billing/checkout/<session_id>`: returns `pending` or `paid` for a
   Checkout Session owned by the caller, so the return page can confirm that the
   signed webhook granted the credit. Unknown sessions return 404.

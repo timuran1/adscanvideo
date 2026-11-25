@@ -26,6 +26,7 @@ FUNNEL_EVENTS = {
     "report_export_gate_viewed", "report_export_preview_opened",
     "report_export_preview_available",
     "report_export_unlock_clicked", "report_exports_unlocked",
+    "credit_offer_clicked", "checkout_signin_prompt_viewed", "checkout_guest_continue",
 }
 
 

@@ -533,12 +533,14 @@ def install(app, jobs, db_path, runner):
         if not who:
             return jsonify(error='Open the analyzer to initialize your browser session.'), 401
         email = auth['account_email'](who)
-        if email_auth.configured() and not email:
-            return jsonify(error='Sign in with your email before checkout.', code='email_login_required'),401
         # Only the server chooses price and credit quantity. No browser-supplied prices.
         body = request.get_json(silent=True) or {}
         if not isinstance(body, dict):
             return jsonify(error='Invalid credit offer.'), 400
+        # One-time credits may be bought without email sign in: Stripe collects the
+        # receipt email and the credit stays with this browser's owner token.
+        if email_auth.configured() and not email and body.get('guest') is not True:
+            return jsonify(error='Sign in with your email before checkout.', code='email_login_required'),401
         offer = body.get('offer', 'single')
         if not isinstance(offer, str):
             return jsonify(error='Invalid credit offer.'), 400

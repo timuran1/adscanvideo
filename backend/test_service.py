@@ -241,6 +241,48 @@ class ServiceTests(unittest.TestCase):
         with module._jobs_conn() as db:
             self.assertIsNotNone(db.execute('SELECT owner FROM checkouts WHERE session=?',('cs_sandbox_test',)).fetchone())
 
+    def test_credit_checkout_allows_guest_but_monthly_still_requires_sign_in(self):
+        mock_response=Mock()
+        mock_response.json.return_value={'id':'cs_guest_test','url':'https://checkout.stripe.com/guest'}
+        env={'STRIPE_BILLING_ENABLED':'1','STRIPE_SECRET_KEY':'sk_test_placeholder','STRIPE_WEBHOOK_SECRET':'whsec_placeholder','STRIPE_PRICE_VIDEO':'price_test',
+             'STRIPE_SUBSCRIPTION_ENABLED':'1','STRIPE_PRICE_MONTHLY':'price_monthlytest','STRIPE_PORTAL_LOGIN_URL':'https://billing.stripe.com/p/login/testportal',
+             'ADSCAN_EMAIL_AUTH_ENABLED':'1','RESEND_API_KEY':'re_placeholder','RESEND_FROM':'test@example.com'}
+        with patch.dict(os.environ,env), patch('service.requests.post',return_value=mock_response) as stripe_post:
+            blocked=self.client.post('/api/billing/checkout',json={'offer':'single'},headers=HEADERS)
+            self.assertEqual(blocked.status_code,401)
+            self.assertEqual(blocked.json['code'],'email_login_required')
+            self.assertEqual(self.client.post('/api/billing/checkout',json={'offer':'single','guest':'yes'},headers=HEADERS).status_code,401)
+            stripe_post.assert_not_called()
+            guest=self.client.post('/api/billing/checkout',json={'offer':'single','guest':True},headers=HEADERS)
+            self.assertEqual(guest.status_code,200)
+            payload=stripe_post.call_args.kwargs['data']
+            self.assertNotIn('customer_email',payload)
+            self.assertEqual(payload['line_items[0][price]'],'price_test')
+            self.assertEqual(payload['metadata[owner]'],payload['client_reference_id'])
+            monthly=self.client.post('/api/billing/subscription/checkout',json={'guest':True},headers=HEADERS)
+            self.assertEqual(monthly.status_code,401)
+            self.assertEqual(monthly.json['code'],'email_login_required')
+
+    def test_guest_buyer_gets_paid_analysis_and_clean_exports(self):
+        mock_response=Mock(); mock_response.json.return_value={'id':'cs_guest_paid','url':'https://checkout.stripe.com/guest'}
+        env={'STRIPE_BILLING_ENABLED':'1','STRIPE_SECRET_KEY':'sk_test_placeholder','STRIPE_WEBHOOK_SECRET':'whsec_test','STRIPE_PRICE_VIDEO':'price_test',
+             'ADSCAN_EMAIL_AUTH_ENABLED':'1','RESEND_API_KEY':'re_placeholder','RESEND_FROM':'test@example.com',
+             'ADSCAN_EXPORT_PAYWALL':'1','ADSCAN_EXPORT_PAYWALL_FROM':'0'}
+        with patch.dict(os.environ,env), patch('service.requests.post',return_value=mock_response):
+            free=self.post(); self.finish(free)
+            self.assertEqual(self.post().status_code,402)
+            self.assertEqual(self.client.post('/api/billing/checkout',json={'offer':'single','guest':True},headers=HEADERS).status_code,200)
+            who=hashlib.sha256(TOKEN.encode()).hexdigest()
+            event={'type':'checkout.session.completed','data':{'object':{'id':'cs_guest_paid','payment_status':'paid','mode':'payment','client_reference_id':who,'amount_total':399,'currency':'usd'}}}
+            self.assertEqual(self.signed_event(event).status_code,200)
+            usage=self.client.get('/api/usage',headers=HEADERS).json
+            self.assertEqual(usage['paid_credits'],1)
+            self.assertFalse(usage['authenticated'])
+            paid=self.post(); self.assertEqual(paid.status_code,202); self.finish(paid)
+            export=self.client.get('/api/billing/export/'+paid.json['job_id'],headers=HEADERS).json
+            self.assertTrue(export['unlocked']); self.assertFalse(export['watermarked'])
+            self.assertEqual(self.post().status_code,402)
+
     def test_checkout_status_requires_owner_and_signed_webhook(self):
         who=hashlib.sha256(TOKEN.encode()).hexdigest()
         session='cs_test_12345'

@@ -1553,7 +1553,7 @@ nav {
       <h3>Pay as you go</h3>
       <div class="price">$3.99<span>/credit</span></div>
       <p style="font-size:.76rem;color:var(--ink-muted);margin:4px 0 0;">Tax is included where applicable. Local currency may vary at checkout.</p>
-      <p style="font-size:.76rem;color:var(--ink-muted);margin:4px 0 0;">Sign in with an email link before checkout. Your credits stay available across devices.</p>
+      <p style="font-size:.76rem;color:var(--ink-muted);margin:4px 0 0;">Sign in with an email link to keep credits on any device, or buy without signing in and they stay in this browser.</p>
       <ul>
         <li>Videos up to 10 minutes</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Pay per video, no sub</li>
@@ -1672,7 +1672,7 @@ nav {
     </form>
     <p id="email-auth-notice" class="auth-notice" role="status" aria-live="polite"></p>
     <button type="button" id="email-auth-continue" class="plan-cta primary" onclick="continueSignedInAction()" hidden>Continue to checkout</button>
-    <button type="button" class="credit-read-free" id="email-auth-dismiss" onclick="closeEmailLogin()">Keep reading my report</button>
+    <button type="button" class="credit-read-free" id="email-auth-dismiss" onclick="dismissEmailLogin()">Keep reading my report</button>
   </div>
 </div>
 <section id="testimonials" hidden aria-labelledby="testimonials-title"><h2 id="testimonials-title">What customers say</h2><div id="testimonial-quotes"></div></section>
@@ -1900,12 +1900,13 @@ function buyCredit(offer = 'single', exportPurchase = false) {
   if (!exportPurchase) storage.remove('adsv_export_job');
   if (billingEnabled === false || (billingEnabled === true && offer !== 'single' && !bundleOffers.includes(offer))) { showCredits(); document.getElementById('billing-message').textContent = 'This checkout is temporarily unavailable.'; return; }
   checkoutOffer = offer;
+  track('credit_offer_clicked', { offer, signed_in: !!accountSignedIn });
   if (!accountSignedIn) { closeCredits(); openEmailLogin('credit'); return; }
   continueCreditCheckout();
 }
 
-async function continueCreditCheckout() {
-  if (!accountSignedIn) { openEmailLogin('credit'); return; }
+async function continueCreditCheckout(guest = false) {
+  if (!accountSignedIn && !guest) { openEmailLogin('credit'); return; }
   showCredits();
   document.getElementById('credit-offers').hidden = true;
   const offer = checkoutOffer;
@@ -1922,10 +1923,10 @@ async function continueCreditCheckout() {
   track('begin_checkout', { ...exportCheckoutContext(), currency: 'USD', value, items: [{ item_id: offer, item_name: 'AdScanVideo credits', price: value, quantity: 1 }] });
   el.textContent = 'Opening secure checkout…';
   try {
-    const data = await api('/billing/checkout', { method: 'POST', headers: {'Content-Type':'application/json'}, body:JSON.stringify({offer}) });
+    const data = await api('/billing/checkout', { method: 'POST', headers: {'Content-Type':'application/json'}, body:JSON.stringify(guest && !accountSignedIn ? {offer, guest:true} : {offer}) });
     const target = new URL(data.url);
     if (target.protocol !== 'https:' || target.hostname !== 'checkout.stripe.com') throw new Error('Checkout is unavailable.');
-    track('checkout_redirected', { ...exportCheckoutContext(), offer });
+    track('checkout_redirected', { ...exportCheckoutContext(), offer, guest: !!(guest && !accountSignedIn) });
     location.assign(target.href);
   } catch (error) {
     if (error.status === 401) { accountSignedIn = false; closeCredits(); openEmailLogin('credit'); }
@@ -1961,15 +1962,24 @@ function openEmailLogin(intent='account') {
   const checkout = intent === 'credit' || intent === 'monthly';
   if (checkout) storage.set('adsv_pending_checkout',JSON.stringify({kind:intent,offer:checkoutOffer}));
   else storage.remove('adsv_pending_checkout');
-  document.getElementById('email-auth-title').textContent = checkout ? 'Sign in before checkout' : 'Keep your report and credits';
-  document.getElementById('email-auth-intro').textContent = checkout ? 'Use your email to keep your purchase across devices. No password or access key to save.' : 'Sign in to download a free watermarked report and keep access across devices. Your report stays free to read here.';
+  document.getElementById('email-auth-title').textContent = intent === 'credit' && !accountSignedIn ? 'Sign in, or go straight to checkout' : checkout ? 'Sign in before checkout' : 'Keep your report and credits';
+  document.getElementById('email-auth-intro').textContent = intent === 'credit' ? 'Sign in to keep your credits on any device. Or continue without signing in: Stripe asks for your email, and the credit stays in this browser.' : checkout ? 'Use your email to keep your purchase across devices. No password or access key to save.' : 'Sign in to download a free watermarked report and keep access across devices. Your report stays free to read here.';
   document.getElementById('email-auth-form').hidden = accountSignedIn;
   document.getElementById('email-auth-continue').hidden = !accountSignedIn || !checkout;
   document.getElementById('email-auth-notice').textContent = accountSignedIn ? 'Email verified. Continue when you are ready.' : '';
-  document.getElementById('email-auth-dismiss').textContent = reportJobId ? 'Keep reading my report' : 'Continue without signing in';
+  document.getElementById('email-auth-dismiss').textContent = intent === 'credit' && !accountSignedIn ? 'Continue to checkout without signing in' : reportJobId ? 'Keep reading my report' : 'Continue without signing in';
   document.getElementById('email-auth-overlay').classList.remove('hidden');
   (accountSignedIn ? document.getElementById('email-auth-continue') : document.getElementById('email-auth-address')).focus();
   track('email_login_prompt_viewed',{intent});
+  if (checkout) track('checkout_signin_prompt_viewed',{offer: intent === 'monthly' ? 'monthly_20' : checkoutOffer});
+}
+function dismissEmailLogin() {
+  const guestCheckout = authIntent === 'credit' && !accountSignedIn;
+  closeEmailLogin();
+  if (!guestCheckout) return;
+  storage.remove('adsv_pending_checkout');
+  track('checkout_guest_continue',{offer: checkoutOffer});
+  continueCreditCheckout(true);
 }
 function closeEmailLogin() {
   const overlay = document.getElementById('email-auth-overlay');
