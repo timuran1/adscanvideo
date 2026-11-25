@@ -801,6 +801,9 @@ footer {
   font-size: 0.82rem;
   color: var(--ink-muted);
 }
+.footer-workflows { display:flex; flex-wrap:wrap; justify-content:center; gap:8px 18px; max-width:1100px; margin:0 auto; padding:28px 24px 0; font-size:.85rem; }
+.footer-workflows a { color: var(--ink-dim); text-decoration:none; }
+.footer-workflows a:hover { color: var(--accent); }
 .footer-left a { color: var(--ink-dim); text-decoration: none; transition: color 0.15s; }
 .footer-left a:hover { color: var(--accent); }
 .footer-right { display: flex; gap: 8px; }
@@ -1243,7 +1246,7 @@ nav {
       AI-powered · No signup · First report free
     </div>
     <h1>Decode what makes <mark>video work.</mark></h1>
-    <p class="sub">Drop in any ad, reel, interview, or video reference. AdScanVideo turns it into structured intelligence, production-ready prompts, and a blueprint you can use.</p>
+    <p class="sub">Drop in your ad, reel or interview. See second by second what happens on screen, so you know which part to fix before you spend more on it.</p>
     <div class="hero-actions">
       <a class="hero-primary" href="#input-zone">Analyze a video <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       <a class="hero-secondary" href="/samples/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4V8z"/></svg> See real reports</a>
@@ -1264,7 +1267,6 @@ nav {
       </div>
       <div class="scan-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
     </div>
-    <div class="floating-score"><small>HOOK SCORE</small><strong>92<span>/100</span></strong><div><i></i></div></div>
     <div class="floating-insight"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.7 4.3L6 9l4.3 1.7L12 15l1.7-4.3L18 9l-4.3-1.7L12 3Z"/></svg> Pattern break detected <span>00:01.2</span></div>
   </div>
 </section>
@@ -1334,67 +1336,6 @@ nav {
     <p class="progress-note">Keep this page open. Once the job starts, you can reload to reconnect.</p>
   </div>
 </div>
-
-<section class="proof-near-analyzer" aria-labelledby="proof-title">
-  <h2 id="proof-title">See a real report before you try it</h2>
-  <p>These excerpts come from videos processed by the live analyzer. Open each report to see the full output and its limitations.</p>
-  <div class="proof-grid">
-    <a class="proof-card" href="/samples/animated-cat-shot-breakdown/" data-proof="shot_breakdown">
-      <img src="/samples/assets/cat-opening.jpg" alt="Animated cat and duck from the sample video" loading="lazy">
-      <span><small>Shot breakdown · 00:08 video</small><strong>What happened, second by second</strong><q>Medium shot of a cartoon orange cat with a gold chain and a small duck beside him, both standing in a grassy field under a blue sky with clouds.</q><em>Read the full report →</em></span>
-    </a>
-    <a class="proof-card" href="/samples/semiconductor-podcast-analysis/" data-proof="podcast_notes">
-      <img src="/samples/assets/semiconductor-speakers.jpg" alt="Speaker from the sample podcast clip" loading="lazy">
-      <span><small>Podcast notes · 00:23 video</small><strong>Dialogue with speaker cues</strong><q>00:00 — Speaker 1: So this is a semiconductor, and it's the basis of all technology, all computers.</q><em>Read the full report →</em></span>
-    </a>
-  </div>
-</section>
-
-<section class="short-demos" aria-labelledby="short-demos-title">
-  <h2 id="short-demos-title">Watch AdScanVideo in action</h2>
-  <p>Short demos of a file upload, choosing a report, and reviewing the result.</p>
-  <div class="short-demo-grid">
-    <article class="short-demo-card">
-      <div class="short-demo-media"><button type="button" class="short-demo-play" data-video-file="report-demo.mp4" data-short-topic="report" aria-label="Play the video-to-report demo"><img src="/shorts/report-demo.jpg" alt="Preview of the video-to-report demo" loading="lazy" width="1080" height="1920"></button></div>
-      <h3>From video to report</h3><p>See a sample clip become a structured analysis.</p><a href="https://www.youtube.com/shorts/miJJLBoVdPE" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
-    </article>
-    <article class="short-demo-card">
-      <div class="short-demo-media"><button type="button" class="short-demo-play" data-video-file="upload-demo.mp4" data-short-topic="upload" aria-label="Play the file-upload demo"><img src="/shorts/upload-demo.jpg" alt="Preview showing the AdScanVideo file upload" loading="lazy" width="1080" height="1920"></button></div>
-      <h3>Upload the file</h3><p>See why a direct upload is the most reliable start.</p><a href="https://www.youtube.com/shorts/vC6mQlfO2E0" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
-    </article>
-    <article class="short-demo-card">
-      <div class="short-demo-media"><button type="button" class="short-demo-play" data-video-file="modes-demo.mp4" data-short-topic="modes" aria-label="Play the analysis-modes demo"><img src="/shorts/modes-demo.jpg" alt="Preview showing the available analysis modes" loading="lazy" width="1080" height="1920"></button></div>
-      <h3>Choose your outcome</h3><p>Pick a focused workflow for the video you have.</p><a href="https://www.youtube.com/shorts/v6wOxmJedjw" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
-    </article>
-  </div>
-  <p class="short-demos-note">Videos load only when you press Play. <a href="https://www.youtube.com/@AdScanVideo" target="_blank" rel="noopener noreferrer">See all Shorts on YouTube ↗</a></p>
-</section>
-
-<section class="launch-mention" aria-labelledby="launch-mention-title">
-  <div class="launch-mention-card">
-    <div>
-      <span class="launch-mention-label">Sponsored creator feature · LinkedIn</span>
-      <h2 id="launch-mention-title">See the launch conversation</h2>
-      <p>Dipanshu Kushwaha shared a short AdScanVideo walkthrough. Readers are discussing possible uses for podcast notes, scene breakdowns, and ad creative analysis.</p>
-      <a href="https://www.linkedin.com/feed/update/urn:li:activity:7511724542877278209/" target="_blank" rel="noopener noreferrer sponsored" data-external-mention="linkedin">View the post and comments ↗</a>
-      <p class="launch-mention-context">These are public reactions to the launch, not verified customer reviews.</p>
-    </div>
-    <img src="/shorts/upload-demo.jpg" alt="AdScanVideo upload demo featured in the LinkedIn launch post" loading="lazy" width="150" height="190">
-  </div>
-</section>
-
-<section class="workflow-links reveal" aria-labelledby="workflow-title">
-  <h2 id="workflow-title">What do you need from the video?</h2>
-  <p>Use a focused workflow, then open the analyzer with the right mode selected.</p>
-  <div class="workflow-link-list">
-    <a href="/ai-video-analyzer/" data-content-topic="ai_video_analyzer">Analyze any video</a>
-    <a href="/blog/extract-transcript-dialogue-from-video/" data-content-topic="transcript_extraction">Extract dialogue</a>
-    <a href="/video-ad-analyzer/" data-content-topic="competitor_ad_analysis">Analyze an ad</a>
-    <a href="/blog/why-video-ad-intelligence-matters-roi/" data-content-topic="ad_intelligence">Compare creative strategy</a>
-    <a href="/video-to-shot-list/" data-content-topic="production_shot_list">Build a shot list</a>
-    <a href="/video-to-prompt/" data-content-topic="video_to_prompt">Write video prompts</a>
-  </div>
-</section>
 
 <!-- ── Trust strip ─────────────────────────────────── -->
 <div class="trust-strip">
@@ -1736,6 +1677,14 @@ nav {
 </div>
 <section id="testimonials" hidden aria-labelledby="testimonials-title"><h2 id="testimonials-title">What customers say</h2><div id="testimonial-quotes"></div></section>
 <!-- ── Footer ─────────────────────────────────────── -->
+<nav class="footer-workflows" aria-label="Workflows">
+  <a href="/ai-video-analyzer/" data-content-topic="ai_video_analyzer">Analyze any video</a>
+  <a href="/video-ad-analyzer/" data-content-topic="competitor_ad_analysis">Analyze an ad</a>
+  <a href="/video-to-shot-list/" data-content-topic="production_shot_list">Shot lists</a>
+  <a href="/video-to-prompt/" data-content-topic="video_to_prompt">Video prompts</a>
+  <a href="/blog/extract-transcript-dialogue-from-video/" data-content-topic="transcript_extraction">Extract dialogue</a>
+  <a href="/blog/why-video-ad-intelligence-matters-roi/" data-content-topic="ad_intelligence">Creative strategy</a>
+</nav>
 <footer>
   <div class="footer-left">
     <span>AdScanVideo</span>
