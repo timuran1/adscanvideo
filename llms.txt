@@ -28,7 +28,7 @@ The AI studio on the homepage can change or remake a short clip and create image
 
 - Free and $3.99 single-credit video duration: 10 minutes
 - $39.99 monthly premium video duration: 45 minutes; 20 analyses per paid billing month
-- Maximum uploaded file size: 100 MB
+- Maximum uploaded file size: 100 MB. In current Chrome, Edge and Safari, a larger file is automatically reduced to a smaller copy in the browser before upload
 - Video and available audio are analyzed; brief actions and details can be missed
 - Audible dialogue can be included; verify quotes against the original recording
 - Upload the original video file; video links are not accepted

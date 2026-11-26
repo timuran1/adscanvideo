@@ -120,10 +120,17 @@
   }
   async function setSource(file) {
     if (!file) return;
-    if (file.size > 100 * 1000 * 1000 || !/\.(mp4|mov|webm)$/i.test(file.name)) { say('For the AI studio, choose an MP4, MOV or WebM clip up to 100 MB.', 'error'); return; }
+    const original = file;
+    if (!/\.(mp4|mov|webm)$/i.test(file.name)) { say('For the AI studio, choose an MP4, MOV or WebM clip.', 'error'); return; }
     const length = await clipSeconds(file);
     if (!(length >= config.min_seconds && length <= config.max_seconds + .2)) { say('The AI studio works with clips of ' + config.min_seconds + ' to ' + config.max_seconds + ' seconds. Trim your video and choose it again.', 'error'); return; }
-    source = { file, seconds: length, asset: null }; sourceOn = true; say(''); render();
+    if (file.size > 100 * 1000 * 1000) {
+      // Too big to upload as it is: make a smaller copy on this device first.
+      if (!(window.adscanShrink && adscanShrink.supported())) { say('This clip is ' + Math.ceil(file.size / 1e6) + ' MB. The limit is 100 MB. Export a smaller copy and choose it again.', 'error'); return; }
+      try { say('Shrinking your clip on this device so it fits. Keep this tab open.'); file = await adscanShrink.run(file, value => say('Shrinking your clip on this device so it fits · ' + Math.round(value * 100) + '%')); }
+      catch { say('We could not shrink this clip in your browser. Export a copy under 100 MB and choose it again.', 'error'); return; }
+    }
+    source = { file, original, seconds: length, asset: null }; sourceOn = true; say(''); render();
   }
 
   function chip(kindLabel, name, detail, onRemove, editable, thumb) {
@@ -288,7 +295,7 @@
   // Offer the analyzed upload as the source once a report is on screen.
   new MutationObserver(() => {
     if (!config || root.hidden) return;
-    if (reportFile && (!source || source.file !== reportFile)) { source = null; setSource(reportFile).then(() => say('')); }
+    if (reportFile && (!source || source.original !== reportFile)) { source = null; setSource(reportFile).then(() => say('')); }
     render();
   }).observe(document.getElementById('result-content'), { childList: true });
 

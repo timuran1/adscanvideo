@@ -90,5 +90,27 @@ def dev_script():
     return send_from_directory(REPO, 'studio.js', max_age=0)
 
 
+@app.get('/shrink.js')
+def dev_shrink():
+    return send_from_directory(REPO, 'shrink.js', max_age=0)
+
+
+@app.get('/vendor/<path:name>')
+def dev_vendor(name):
+    return send_from_directory(REPO / 'vendor', name)
+
+
+# Optional scratch folder for manual tests: STUDIO_DEV_FILES=/some/folder serves it at
+# /devfiles/ and accepts POST /devfiles/<name> to save a browser-made file there.
+SCRATCH = os.environ.get('STUDIO_DEV_FILES')
+if SCRATCH:
+    @app.route('/devfiles/<path:name>', methods=['GET', 'POST'])
+    def dev_files(name):
+        if request.method == 'POST':
+            (Path(SCRATCH) / Path(name).name).write_bytes(request.get_data())
+            return {'saved': True}
+        return send_from_directory(SCRATCH, name)
+
+
 print('AI studio preview:', 'LIVE Sume key, generations cost money' if LIVE else 'fake Sume, nothing is spent', flush=True)
 app.run('127.0.0.1', 8766, threaded=True)

@@ -1276,13 +1276,13 @@ nav {
 <div class="input-zone" id="input-zone">
   <div class="input-guidance" role="note">
     <strong>Upload your video file.</strong>
-    <span>MP4, MOV, WebM or MKV · up to 10 minutes and 100 MB. Monthly Premium ($39.99/month) supports videos up to 45 minutes. Failed jobs restore your allowance.</span>
+    <span>MP4, MOV, WebM or MKV · up to 10 minutes. Uploads are limited to 100 MB; a larger file is shrunk on your device first, in most current browsers. Monthly Premium ($39.99/month) supports videos up to 45 minutes. Failed jobs restore your allowance.</span>
   </div>
   <div id="upload-input">
     <div class="upload-area" id="drop-zone" onclick="document.getElementById('file').click()">
       <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       <p>Drop a video here or click to browse</p>
-      <p><small>.mp4 .mov .webm .mkv, up to 100MB</small></p>
+      <p><small>.mp4 .mov .webm .mkv · larger than 100 MB? We shrink a copy on your device</small></p>
       <input type="file" id="file" accept="video/*" onchange="fileSelected(event)">
     </div>
     <div class="upload-file" id="file-name"></div>
@@ -2166,6 +2166,15 @@ function showProgress(status) {
   });
   if (wasHidden) requestAnimationFrame(() => panel.scrollIntoView({ behavior: 'smooth', block: 'center' }));
 }
+function showShrinkProgress(value, bytes) {
+  const panel = document.getElementById('progress'), percent = Math.min(99, Math.round(value * 100));
+  panel.style.display = 'block';
+  document.getElementById('progress-heading').textContent = 'Shrinking your video to fit · ' + percent + '%';
+  document.getElementById('progress-text').textContent = 'Your video is ' + Math.ceil(bytes / 1e6) + ' MB and the limit is 100 MB, so a smaller copy is being made on this device. Nothing is uploaded yet. Keep this tab open.';
+  document.getElementById('progress-fill').style.width = percent + '%';
+  document.getElementById('progress-track').setAttribute('aria-valuenow', String(percent));
+  document.querySelectorAll('#progress-stages li').forEach(el => el.classList.remove('active', 'complete'));
+}
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function pollJob(id) {
   busy = true; updateUI();
@@ -2233,7 +2242,9 @@ async function tryFree() {
   const isUpload = true;
   if (isUpload && !file) { track('analysis_validation_failed', { failure_type: 'missing_file', input_method: 'upload' }); message('Choose a video file first.', 'error'); return; }
   if (isUpload && !/\.(mp4|mov|webm|mkv)$/i.test(file.name)) { track('analysis_validation_failed', { failure_type: 'invalid_file', input_method: 'upload', size_bucket: sizeBucket(file) }); message('This file type is not supported. Choose an MP4, MOV, WebM or MKV video.', 'error'); return; }
-  if (isUpload && file.size > MAX_UPLOAD_BYTES) { track('analysis_validation_failed', { failure_type: 'file_too_large', input_method: 'upload', size_bucket: sizeBucket(file) }); message('This video is ' + Math.ceil(file.size / 1e6) + ' MB. The limit is 100 MB. Export a smaller copy (lower resolution or bitrate) or trim it, then try again.', 'error'); return; }
+  const tooLarge = isUpload && file.size > MAX_UPLOAD_BYTES;
+  const tooLargeMessage = 'This video is ' + Math.ceil(file.size / 1e6) + ' MB. The limit is 100 MB. Export a smaller copy (lower resolution or bitrate) or trim it, then try again.';
+  if (tooLarge && !(window.adscanShrink && adscanShrink.supported())) { track('analysis_validation_failed', { failure_type: 'file_too_large', input_method: 'upload', size_bucket: sizeBucket(file) }); message(tooLargeMessage, 'error'); return; }
   if (mode === 'moments' && !document.getElementById('moment-visual').value.trim()) {
     track('analysis_validation_failed', {failure_type:'missing_visual_criterion', input_method:'upload', analysis_mode:mode});
     message('Describe the visual action you want to find.', 'error');
@@ -2241,10 +2252,27 @@ async function tryFree() {
   }
   reportFile = isUpload ? file : null;
   clearVerificationFile();
-  busy = true; updateUI(); message(''); showProgress(isUpload ? 'uploading' : 'submitting');
-  document.getElementById('result').style.display = 'none';
+  busy = true; updateUI(); message(''); document.getElementById('result').style.display = 'none';
+  // A file over the limit is shrunk on this device first. The original stays untouched
+  // and is still what the timestamp player uses.
+  let uploadFile = file;
+  if (tooLarge) {
+    const original = sizeBucket(file), began = Date.now();
+    track('video_shrink_started', { size_bucket: original });
+    showShrinkProgress(0, file.size);
+    try {
+      uploadFile = await adscanShrink.run(file, value => showShrinkProgress(value, file.size));
+      track('video_shrink_completed', { size_bucket: original, result_bucket: sizeBucket(uploadFile), duration_bucket: Math.round((Date.now() - began) / 1000) < 60 ? 'under-1min' : Math.round((Date.now() - began) / 60000) < 5 ? '1-5min' : 'over-5min' });
+    } catch (error) {
+      track('video_shrink_failed', { size_bucket: original, failure_type: error.code || 'unknown' });
+      busy = false; document.getElementById('progress').style.display = 'none'; updateUI();
+      message(error.code === 'too_long' ? 'This video is too long to shrink under 100 MB at a usable quality. Trim it or split it into parts, then try again.' : 'We could not shrink this video in your browser. ' + tooLargeMessage, 'error');
+      return;
+    }
+  }
+  showProgress(isUpload ? 'uploading' : 'submitting');
   try {
-    const body = new FormData(); body.append('file', file); body.append('question', q()); body.append('mode', mode);
+    const body = new FormData(); body.append('file', uploadFile); body.append('question', q()); body.append('mode', mode);
     const data = await api('/analyze-upload', { method: 'POST', body });
     if (!data.job_id) throw new Error('The server did not start an analysis. Please try again.');
     jobId = data.job_id;
@@ -2508,6 +2536,7 @@ ${reportWatermarked ? '<p style="margin-top:32px;padding-top:12px;border-top:1px
 }
 </script>
 <!-- Bump the version whenever studio.js changes, so a cached copy never meets a newer page. -->
-<script src="/studio.js?v=20261126e" defer></script>
+<script src="/shrink.js?v=20261126a" defer></script>
+<script src="/studio.js?v=20261126f" defer></script>
 </body>
 </html>
