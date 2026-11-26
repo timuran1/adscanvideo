@@ -10,9 +10,9 @@
 
 .studio-wrap{max-width:1080px;margin:0 auto;padding:0 24px}#studio-output img{display:block;max-width:100%;max-height:640px;border-radius:12px}
 #studio h3{font-size:1.25rem;letter-spacing:-.02em;margin:0 0 6px}
-#studio .studio-example{margin:0 0 18px;max-width:640px}#studio .studio-example img{display:block;width:100%;height:auto;border-radius:10px}#studio .studio-example figcaption{font-size:.8rem;color:var(--ink-dim);margin-top:6px}
+#studio .studio-sub a{color:inherit}
 #studio .studio-rates,.studio-intro .studio-rates{font-size:.82rem;color:var(--ink-dim);margin:0 0 14px;max-width:70ch}
-.studio-intro{max-width:1080px;margin:56px auto 20px;padding:0 24px}.studio-intro h2{font-size:1.7rem;letter-spacing:-.03em;margin:0 0 8px}.studio-intro>p{color:var(--ink-dim);margin:0 0 22px;max-width:62ch}.studio-intro-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}.studio-intro-card{border:1px solid var(--border-strong);border-radius:14px;background:var(--surface);padding:14px;margin:0}.studio-intro-card img{display:block;width:100%;height:auto;border-radius:9px}.studio-intro-card h3{font-size:1.02rem;margin:12px 0 4px}.studio-intro-card p{font-size:.86rem;color:var(--ink-dim);margin:0 0 6px}.studio-intro a.studio-go{display:inline-block;margin-top:20px;text-decoration:none}
+.studio-intro{scroll-margin-top:90px;max-width:1080px;margin:56px auto 20px;padding:0 24px}.studio-intro h2{font-size:1.7rem;letter-spacing:-.03em;margin:0 0 8px}.studio-intro>p{color:var(--ink-dim);margin:0 0 22px;max-width:62ch}.studio-intro-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}.studio-intro-card{border:1px solid var(--border-strong);border-radius:14px;background:var(--surface);padding:14px;margin:0}.studio-intro-card img{display:block;width:100%;height:auto;border-radius:9px}.studio-intro-card h3{font-size:1.02rem;margin:12px 0 4px}.studio-intro-card p{font-size:.86rem;color:var(--ink-dim);margin:0 0 6px}.studio-intro a.studio-go{display:inline-block;margin-top:20px;text-decoration:none}
 #studio .studio-sub{color:var(--ink-dim);font-size:.9rem;margin:0 0 16px;max-width:62ch}
 .studio-tabs{display:inline-flex;gap:4px;padding:4px;border-radius:10px;background:var(--surface2);margin-bottom:16px}
 .studio-tabs button{border:0;background:none;padding:8px 14px;border-radius:7px;font:600 .85rem var(--font);color:var(--ink-dim);cursor:pointer}
@@ -46,13 +46,12 @@
   document.head.append(style);
   root.innerHTML = `
   <h3 id="studio-title">AI studio</h3>
-  <p class="studio-sub">Swap a person or product inside a clip, make a new video from a prompt, or create images. You do not need to analyze a video first. It runs on AI Credits, the same credits sold under Pricing.</p>
+  <p class="studio-sub">Pick what to make, add your files and write a prompt. No analysis needed. It runs on <a href="#pricing">AI Credits</a>.</p>
   <div class="studio-tabs" role="group" aria-label="What to make">
     <button type="button" data-studio-mode="swap" aria-pressed="true">Swap in video</button>
     <button type="button" data-studio-mode="recreate" aria-pressed="false">Recreate</button>
     <button type="button" data-studio-mode="image" aria-pressed="false">Create image</button>
   </div>
-  <figure class="studio-example"><img id="studio-example-image" alt="" loading="lazy" width="1200" height="493"><figcaption id="studio-example-text"></figcaption></figure>
   <p id="studio-rates" class="studio-rates"></p>
   <div class="studio-box">
     <div class="studio-chips" id="studio-chips"></div>
@@ -157,8 +156,6 @@
     if (mode !== 'image') add('+ Create an image', () => { mode = 'image'; say(''); render(); $('studio-prompt').focus(); });
     document.querySelectorAll('[data-studio-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.studioMode === mode)));
     $('studio-prompt').placeholder = placeholders[mode];
-    document.querySelector('#studio .studio-example').hidden = !examples[mode];
-    if (examples[mode]) { $('studio-example-image').src = examples[mode].src; $('studio-example-image').alt = examples[mode].alt; $('studio-example-text').textContent = examples[mode].text + ' ' + disclosure; }
     $('studio-rates').textContent = rates(mode);
     $('studio-duration').hidden = mode !== 'recreate'; $('studio-aspect').hidden = mode === 'swap'; $('studio-style').hidden = mode !== 'swap'; $('studio-model').hidden = mode !== 'image';
     $('studio-use-report').hidden = !document.getElementById('result-content').textContent.trim();

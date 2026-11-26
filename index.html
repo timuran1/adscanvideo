@@ -642,7 +642,7 @@ nav {
   position: relative;
 }
 .plan.featured::before {
-  content: 'Credits from $3.99';
+  content: 'AI Credits from $3.99';
   position: absolute;
   top: -11px;
   left: 50%;
@@ -1233,6 +1233,7 @@ nav {
     <a href="#usecases">Use cases</a>
     <a href="#how">How it works</a>
     <a href="/blog/">Guides</a>
+    <a href="#studio-intro">AI studio</a>
     <a href="#pricing">Pricing</a>
     <a href="#input-zone" class="nav-cta">Try free</a>
   </div>
@@ -1281,7 +1282,7 @@ nav {
     <div class="upload-area" id="drop-zone" onclick="document.getElementById('file').click()">
       <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       <p>Drop a video here or click to browse</p>
-      <p><small>.mp4 .mov .webm .mkv — up to 200MB</small></p>
+      <p><small>.mp4 .mov .webm .mkv, up to 200MB</small></p>
       <input type="file" id="file" accept="video/*" onchange="fileSelected(event)">
     </div>
     <div class="upload-file" id="file-name"></div>
@@ -1309,7 +1310,7 @@ nav {
   <div class="analyzer-outcomes" aria-label="Analysis output details">
     <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Timestamps and visual detail</span>
     <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Dialogue when audio is available</span>
-    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Free watermarked exports after email sign in; clean exports cost 1 credit</span>
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Free watermarked exports after email sign in; clean exports cost 1 AI Credit</span>
   </div>
 
   <div class="actions">
@@ -1400,7 +1401,7 @@ nav {
       <p>Email sign in unlocks free watermarked exports. One credit removes the watermark from Copy, Word and PDF. Buy a credit for $3.99 or use one you have. No rerun or subscription required.</p>
     </details>
     <button type="button" id="free-export-login" class="report-primary" onclick="openEmailLogin('export')" hidden>Sign in for free watermarked exports</button>
-    <button id="export-unlock" class="report-primary" onclick="unlockReportExports()" hidden>Unlock exports · 1 credit</button>
+    <button id="export-unlock" class="report-primary" onclick="unlockReportExports()" hidden>Unlock exports · 1 AI Credit</button>
   </section>
   <div class="result-actions">
     <button class="btn-ghost" onclick="copyResult()">
@@ -1429,7 +1430,7 @@ nav {
 <div class="use-cases reveal" id="usecases">
   <div class="section-header">
     <h2>Built for real-world video</h2>
-    <p>Not just ads. Any video — dashcam footage, podcasts, tutorials, competitor content — becomes structured intelligence.</p>
+    <p>Not just ads. Dashcam footage, podcasts, tutorials and competitor content all become a structured, timestamped report.</p>
   </div>
   <div class="usecase-grid">
     <div class="usecase-card">
@@ -1444,14 +1445,14 @@ nav {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-3"/></svg>
       </div>
       <h3>Ad intelligence</h3>
-      <p>Reverse-engineer competitor ads. Hook analysis, pacing, CTA structure, target audience — know what works before you spend.</p>
+      <p>Reverse-engineer competitor ads. See the hook, pacing, CTA structure and target audience before you spend.</p>
     </div>
     <div class="usecase-card">
       <div class="usecase-icon" style="background: var(--green-soft); color: var(--green);">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
       </div>
       <h3>Podcasts &amp; interviews</h3>
-      <p>Upload a podcast: up to 10 minutes free or with a single credit, or 45 minutes with Monthly Premium. Get notes and audible dialogue with timestamps; check quotes against the original recording.</p>
+      <p>Upload a podcast: up to 10 minutes free or with one AI Credit, or 45 minutes with Monthly Premium. Get notes and audible dialogue with timestamps; check quotes against the original recording.</p>
     </div>
     <div class="usecase-card">
       <div class="usecase-icon" style="background: var(--amber-soft); color: var(--amber);">
@@ -1473,7 +1474,7 @@ nav {
     <div class="info-item">
       <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="12" cy="12" r="4"/></svg></div>
       <h3>Shot-by-shot analysis</h3>
-      <p>Every camera angle, cut, and transition — identified with timestamps. Know exactly how a video is built.</p>
+      <p>Camera angles, cuts and transitions, listed with timestamps, so you can see how a video is built.</p>
     </div>
     <div class="info-item">
       <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
@@ -1483,12 +1484,12 @@ nav {
     <div class="info-item">
       <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></div>
       <h3>Podcast &amp; interview notes</h3>
-      <p>Analyze a podcast: up to 10 minutes free or with a single credit, or 45 minutes with Monthly Premium. Review timestamped notes and audible quotes alongside your recording.</p>
+      <p>Analyze a podcast: up to 10 minutes free or with one AI Credit, or 45 minutes with Monthly Premium. Review timestamped notes and audible quotes alongside your recording.</p>
     </div>
     <div class="info-item">
       <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
       <h3>Marketing assets</h3>
-      <p>Turn any video into social captions, LinkedIn posts, blog headlines, and hooks — ready to publish.</p>
+      <p>Turn any video into social captions, LinkedIn posts, blog headlines and hooks.</p>
     </div>
     <div class="info-item">
       <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
@@ -1537,7 +1538,7 @@ nav {
 <div class="pricing reveal" id="pricing">
   <div class="section-header">
     <h2>Simple pricing</h2>
-    <p>Your first on-screen report is free. Buy individual credits or save with a bundle. Each credit runs an analysis with exports, or unlocks exports for an existing free report. A failed job does not use up your free sample.</p>
+    <p>Your first on-screen report is free. Buy AI Credits one at a time or save with a bundle. Each AI Credit runs an analysis with exports, unlocks exports for an existing free report, or is spent in the AI studio. A failed job does not use up your free sample.</p>
   </div>
   <div class="pricing-row">
     <div class="plan">
@@ -1547,30 +1548,31 @@ nav {
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Your first report</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Videos up to 10 min</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>All modes · report on screen</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Watermarked exports with email sign in; clean exports for 1 credit</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Watermarked exports with email sign in; clean exports for 1 AI Credit</li>
         <li>No signup</li>
       </ul>
       <a href="#input-zone" class="plan-cta secondary">Start free</a>
     </div>
     <div class="plan featured">
       <h3>Pay as you go</h3>
-      <div class="price">$3.99<span>/credit</span></div>
+      <div class="price">$3.99<span>/AI Credit</span></div>
       <p style="font-size:.76rem;color:var(--ink-muted);margin:4px 0 0;">Tax is included where applicable. Local currency may vary at checkout.</p>
-      <p style="font-size:.76rem;color:var(--ink-muted);margin:4px 0 0;">Sign in with an email link to keep credits on any device, or buy without signing in and they stay in this browser.</p>
-      <p style="font-size:.76rem;color:var(--ink-muted);margin:4px 0 0;">Credits are also your AI Credits: spend them in the <a href="#studio">AI studio</a> on swaps, new videos and images. Monthly Premium covers analyses only.</p>
+      <p style="font-size:.76rem;color:var(--ink-muted);margin:4px 0 0;">Sign in with an email link to keep AI Credits on any device, or buy without signing in and they stay in this browser.</p>
+      <p style="font-size:.76rem;color:var(--ink-muted);margin:4px 0 0;">AI Credits also work in the <a href="#studio" style="color:inherit">AI studio</a> for swaps, new videos and images. Monthly Premium covers analyses only.</p>
       <ul>
         <li>Videos up to 10 minutes</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Pay per video, no sub</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>AI studio: swaps, new videos and images</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>One analysis, or one free-report export unlock</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Export to Word &amp; PDF</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>No subscription</li>
       </ul>
-      <button type="button" class="plan-cta primary" onclick="buyCredit()" data-checkout>Buy 1 credit · $3.99</button>
+      <button type="button" class="plan-cta primary" onclick="buyCredit()" data-checkout>Buy 1 AI Credit · $3.99</button>
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
-        <button class="plan-cta secondary" style="flex:1" onclick="buyCredit('pack3')" data-checkout data-offer="pack3">3 credits · $9.99</button>
-        <button class="plan-cta secondary" style="flex:1" onclick="buyCredit('pack5')" data-checkout data-offer="pack5">5 credits · $14.99</button>
+        <button class="plan-cta secondary" style="flex:1" onclick="buyCredit('pack3')" data-checkout data-offer="pack3">3 AI Credits · $9.99</button>
+        <button class="plan-cta secondary" style="flex:1" onclick="buyCredit('pack5')" data-checkout data-offer="pack5">5 AI Credits · $14.99</button>
       </div>
-      <p style="font-size:.76rem;color:var(--ink-muted);margin-top:10px">Save $1.98 with 3 credits or $4.96 with 5 compared with single credits. No subscription. Bundle analyses remain limited to 10 minutes and 200 MB.</p>
+      <p style="font-size:.76rem;color:var(--ink-muted);margin-top:10px">Save $1.98 with 3 AI Credits or $4.96 with 5 compared with buying them one at a time. No subscription. Bundle analyses remain limited to 10 minutes and 200 MB.</p>
     </div>
     <div class="plan" id="monthly-plan">
       <h3 id="monthly-title">Monthly Premium</h3>
@@ -1645,18 +1647,18 @@ nav {
   <div class="credit-modal" role="dialog" aria-modal="true" aria-labelledby="credit-title" aria-describedby="billing-message" tabindex="-1">
     <button class="modal-close" onclick="closeCredits()" aria-label="Close">&times;</button>
     <p class="credit-context" id="credit-context">Pay only when you need more</p>
-    <h3 id="credit-title">Get analysis credits</h3>
+    <h3 id="credit-title">Get AI Credits</h3>
     <p id="billing-message" role="status">Your free report stays free. Use a credit for another analysis or to unlock exports.</p>
     <div class="credit-benefits"><span>Copy text</span><span>Word document</span><span>PDF report</span></div>
     <div class="credit-offers" id="credit-offers">
-      <button type="button" class="plan-cta primary" onclick="buyCredit('single', !!storage.get('adsv_export_job'))" data-checkout>Buy 1 credit · $3.99</button>
+      <button type="button" class="plan-cta primary" onclick="buyCredit('single', !!storage.get('adsv_export_job'))" data-checkout>Buy 1 AI Credit · $3.99</button>
       <div class="credit-bundles">
-        <button type="button" class="plan-cta secondary" onclick="buyCredit('pack3', !!storage.get('adsv_export_job'))" data-checkout data-offer="pack3">3 credits · $9.99</button>
-        <button type="button" class="plan-cta secondary" onclick="buyCredit('pack5', !!storage.get('adsv_export_job'))" data-checkout data-offer="pack5">5 credits · $14.99</button>
+        <button type="button" class="plan-cta secondary" onclick="buyCredit('pack3', !!storage.get('adsv_export_job'))" data-checkout data-offer="pack3">3 AI Credits · $9.99</button>
+        <button type="button" class="plan-cta secondary" onclick="buyCredit('pack5', !!storage.get('adsv_export_job'))" data-checkout data-offer="pack5">5 AI Credits · $14.99</button>
       </div>
       <p class="credit-fineprint">One time purchase. No subscription.</p>
     </div>
-    <p class="credit-terms">1 credit = 1 analysis with exports, or exports for 1 existing free report. No rerun needed.<br>Credit analyses: up to 10 minutes and 200 MB.</p>
+    <p class="credit-terms">1 AI Credit = 1 analysis with exports, or exports for 1 existing free report, or AI studio use at the rates shown there. No rerun needed.<br>Analyses: up to 10 minutes and 200 MB.</p>
     <button type="button" class="credit-read-free" onclick="closeCredits()">Keep reading my free report</button>
 
   </div>
@@ -1877,7 +1879,7 @@ async function refreshUsage() {
     const data = await api('/usage');
     if (data.owner_token && data.owner_token !== ownerToken) { ownerToken = data.owner_token; storage.set('adsv_owner', ownerToken); }
     accountSignedIn = data.authenticated === true; accountEmail = data.account_email || ''; emailAuthEnabled = data.email_auth_enabled === true;
-    document.getElementById('account-status').textContent = accountSignedIn ? 'Signed in as ' + accountEmail : 'Sign in with email to keep credits and reports across devices.';
+    document.getElementById('account-status').textContent = accountSignedIn ? 'Signed in as ' + accountEmail : 'Sign in with email to keep AI Credits and reports across devices.';
     document.getElementById('account-signin-button').hidden = accountSignedIn;
     document.getElementById('email-preferences-button').hidden = !accountSignedIn; document.getElementById('logout-button').hidden = !accountSignedIn;
     freeCount = data.free_remaining; freePolicy = data.free_policy === 'sample' ? 'sample' : 'daily'; paidCredits = data.paid_credits; monthlyRemaining = data.monthly_remaining || 0;
@@ -2107,15 +2109,15 @@ function q() {
 }
 
 function updateUI() {
-  document.getElementById('free-count').textContent = (freePolicy === 'sample' ? (freeCount ? 'Free sample available' : 'Free sample used') : freeCount + ' free today') + (monthlyRemaining ? ' · ' + monthlyRemaining + ' monthly left' : '') + (paidCredits ? ' · ' + paidCredits + ' paid credits' : '');
+  document.getElementById('free-count').textContent = (freePolicy === 'sample' ? (freeCount ? 'Free sample available' : 'Free sample used') : freeCount + ' free today') + (monthlyRemaining ? ' · ' + monthlyRemaining + ' monthly left' : '') + (paidCredits ? ' · ' + paidCredits + (paidCredits === 1 ? ' AI Credit' : ' AI Credits') : '');
   document.getElementById('try-btn').disabled = busy;
-  document.getElementById('analyze-button-label').textContent = busy ? 'Analyzing…' : monthlyRemaining ? 'Analyze · use 1 monthly analysis' : freeCount ? 'Analyze free' : paidCredits ? 'Analyze · use 1 paid credit' : 'Analyze video';
+  document.getElementById('analyze-button-label').textContent = busy ? 'Analyzing…' : monthlyRemaining ? 'Analyze · use 1 monthly analysis' : freeCount ? 'Analyze free' : paidCredits ? 'Analyze · use 1 AI Credit' : 'Analyze video';
   document.querySelectorAll('.tab-btn,.mode-ch').forEach(el => { el.disabled = busy; });
   document.getElementById('file').disabled = busy;
   document.querySelectorAll('[data-checkout]').forEach(el => {
     const offer = el.dataset.offer || 'single';
     el.disabled = usageState === 'loading' || billingEnabled === false || (billingEnabled === true && offer !== 'single' && !bundleOffers.includes(offer));
-    el.textContent = {single:'Buy 1 credit · $3.99',pack3:'3 credits · $9.99',pack5:'5 credits · $14.99'}[offer];
+    el.textContent = {single:'Buy 1 AI Credit · $3.99',pack3:'3 AI Credits · $9.99',pack5:'5 AI Credits · $14.99'}[offer];
   });
   document.getElementById('monthly-title').textContent = monthlyEnabled === false ? 'Monthly Premium · unavailable' : 'Monthly Premium';
   document.getElementById('monthly-price-label').textContent = '/month';
@@ -2344,8 +2346,8 @@ function showCredits() {
   if (document.getElementById('credit-overlay').classList.contains('hidden')) previousFocus = document.activeElement;
   const exportIntent = !!storage.get('adsv_export_job');
   document.getElementById('credit-context').textContent = exportIntent ? 'Your report is ready' : 'Pay only when you need more';
-  document.getElementById('credit-title').textContent = exportIntent ? 'Unlock this report’s exports' : 'Get analysis credits';
-  document.getElementById('billing-message').textContent = exportIntent ? 'Keep the full report in Copy, Word and PDF. One credit unlocks all three, without a new analysis.' : 'Your free report stays free. Use a credit for another analysis or to unlock exports.';
+  document.getElementById('credit-title').textContent = exportIntent ? 'Unlock this report’s exports' : 'Get AI Credits';
+  document.getElementById('billing-message').textContent = exportIntent ? 'Keep the full report in Copy, Word and PDF. One AI Credit unlocks all three, without a new analysis.' : 'Your free report stays free. Use AI Credits for another analysis, to unlock exports, or in the AI studio.';
   document.getElementById('credit-offers').hidden = false;
 
   document.querySelector('.credit-read-free').hidden = !reportJobId;
@@ -2382,7 +2384,7 @@ async function refreshExportAccess() {
     canExportReport = data.ready && (data.can_export || data.unlocked); reportWatermarked = data.watermarked !== false;
     document.getElementById('free-export-login').hidden = !data.ready || !data.free_export_enabled || canExportReport;
     label.textContent = exportsUnlocked ? 'Your paid report exports are ready, without a watermark.' : canExportReport ? 'Free exports include an AdScanVideo watermark. Use one credit for clean Copy, Word and PDF.' : 'Read your full report here. Sign in with email for free watermarked exports, or use one credit for clean exports.';
-    button.textContent = paidCredits > 0 || monthlyRemaining > 0 ? 'Remove watermark · use 1 credit' : 'Get clean exports · $3.99';
+    button.textContent = paidCredits > 0 || monthlyRemaining > 0 ? 'Remove watermark · use 1 AI Credit' : 'Get clean exports · $3.99';
     button.hidden = exportsUnlocked || !data.ready;
     const preview = document.getElementById('export-preview');
     preview.hidden = exportsUnlocked || !data.ready;
