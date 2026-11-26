@@ -163,8 +163,9 @@ rollback; do not replace the live database during a code rollback.
 
 ## AI studio (built, not launched)
 
-`studio.py` adds swap-in-video and recreate through the Sume API, and `/studio.js`
-adds the composer under a report. Everything answers 503 and the composer stays
+`studio.py` adds swap-in-video, recreate and image creation through the Sume API,
+and `/studio.js` adds the composer as its own section on the homepage (no report
+needed; a report adds its video and prompt). Everything answers 503 and the composer stays
 hidden unless `SUME_ENABLED=1` and `SUME_API_KEY` are set. Production keeps it off
 until pricing is approved and one live generation has been checked.
 
@@ -176,8 +177,11 @@ until pricing is approved and one live generation has been checked.
   (`asset` and `label`), optional `source`, `duration`, `aspect`, `rights: true`.
   The user's reference names (`@Nigora`) become the model's positional names
   (`@Image1`, `@Audio1`, `@Video1`).
-- `POST /api/studio/image`: creates a reference image. Costs no credit but needs
-  a paid balance and has a daily cap.
+- `POST /api/studio/image`: `prompt`, `aspect`, `model` (one of `IMAGE_MODELS`),
+  optional `refs` (up to 4 image asset ids, with `rights: true`). Images come out
+  of a pack: one paid credit opens a pack of 20, taken in the same transaction as
+  the job when the pack is empty. Nano Banana Pro uses 3 per image. A failed image
+  returns its place in the pack. The result is also stored as a reference asset.
 - `GET /api/studio/jobs/<id>` and `/api/studio/jobs`: owner only.
 
 Only paid credits are spent, rounded up: one per 15 seconds of recreate, per 10

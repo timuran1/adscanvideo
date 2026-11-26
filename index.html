@@ -1402,7 +1402,6 @@ nav {
     <button type="button" id="free-export-login" class="report-primary" onclick="openEmailLogin('export')" hidden>Sign in for free watermarked exports</button>
     <button id="export-unlock" class="report-primary" onclick="unlockReportExports()" hidden>Unlock exports · 1 credit</button>
   </section>
-  <section id="studio" aria-labelledby="studio-title" hidden></section>
   <div class="result-actions">
     <button class="btn-ghost" onclick="copyResult()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -1424,6 +1423,7 @@ nav {
 </div>
 
 <section id="studio-intro" aria-label="Remake a video with AI" hidden></section>
+<div class="studio-wrap"><section id="studio" aria-labelledby="studio-title" hidden></section></div>
 
 <!-- ── Use cases ───────────────────────────────────── -->
 <div class="use-cases reveal" id="usecases">
@@ -1557,6 +1557,7 @@ nav {
       <div class="price">$3.99<span>/credit</span></div>
       <p style="font-size:.76rem;color:var(--ink-muted);margin:4px 0 0;">Tax is included where applicable. Local currency may vary at checkout.</p>
       <p style="font-size:.76rem;color:var(--ink-muted);margin:4px 0 0;">Sign in with an email link to keep credits on any device, or buy without signing in and they stay in this browser.</p>
+      <p style="font-size:.76rem;color:var(--ink-muted);margin:4px 0 0;">Credits are also your AI Credits: spend them in the <a href="#studio">AI studio</a> on swaps, new videos and images. Monthly Premium covers analyses only.</p>
       <ul>
         <li>Videos up to 10 minutes</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Pay per video, no sub</li>

@@ -214,16 +214,34 @@ class StudioTests(unittest.TestCase):
         self.credit(1, hashlib.sha256(('b' * 64).encode()).hexdigest())
         self.assertEqual(self.generate(headers=OTHER, refs=[{'asset': face, 'label': 'x'}]).status_code, 400)
 
-    def test_generated_image_becomes_a_reference_and_costs_no_credit(self):
-        self.assertEqual(self.client.post('/api/studio/image', headers=HEADERS, json={'prompt': 'A red bottle'}).status_code, 402)
-        self.credit()
-        r = self.client.post('/api/studio/image', headers=HEADERS, json={'prompt': 'A red bottle', 'aspect': '1:1'})
-        self.assertEqual((r.status_code, r.json['credits']), (202, 0))
-        self.assertTrue(self.calls[-1][1].endswith('/v1/image-router/generate'))
+    def test_images_come_from_a_pack_that_one_credit_opens(self):
+        image = lambda **body: self.client.post('/api/studio/image', headers=HEADERS, json={'prompt': 'A red bottle', 'aspect': '1:1', **body})
+        left = lambda: self.client.get('/api/studio/jobs', headers=HEADERS).json['images_left']
+        r = image(); self.assertEqual((r.status_code, r.json['credits_needed']), (402, 1)); self.assertEqual(self.calls, [])
+        self.credit(2)
+        r = image(model='gpt-image-2')
+        self.assertEqual(r.status_code, 202)
+        sent = self.calls[-1]
+        self.assertTrue(sent[1].endswith('/v1/image-router/generate'))
+        self.assertEqual((sent[2]['json']['model'], sent[2]['json']['quality']), ('gpt-image-2', 'medium'))
+        # The first image opened a pack: one credit gone, 19 images left.
+        self.assertEqual((self.paid(), left()), (1, 19))
         self.state = 'completed'; self.age(r.json['job_id'])
         done = self.client.get('/api/studio/jobs/' + r.json['job_id'], headers=HEADERS).json
-        self.assertEqual((done['status'], done['asset_id'], self.paid()), ('done', r.json['job_id'], 1))
+        self.assertEqual((done['status'], done['asset_id']), ('done', r.json['job_id']))
+        # Later images use the pack, not credits. The pro model counts as three.
+        self.state = 'processing'
+        r = image(model='nano-banana-pro', refs=[done['asset_id']], rights=True)
+        self.assertEqual(self.calls[-1][2]['json']['image_urls'], ['https://media.sume.com/artifacts/artf_1/video.mp4'])
+        self.assertEqual((self.paid(), left()), (1, 16))
+        # A failed image gives its place in the pack back.
+        self.state = 'failed'; self.age(r.json['job_id']); self.client.get('/api/studio/jobs/' + r.json['job_id'], headers=HEADERS)
+        self.assertEqual(left(), 19)
+        self.assertEqual(image(model='not-a-model').status_code, 400)
+        self.assertEqual(image(refs=[done['asset_id']]).status_code, 400)  # references need the rights box
+        # The generated image works as a video reference.
         self.assertEqual(self.generate(refs=[{'asset': done['asset_id'], 'label': 'bottle'}]).status_code, 202)
+        self.assertEqual(self.paid(), 0)
 
 
 if __name__ == '__main__':

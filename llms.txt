@@ -17,11 +17,11 @@ only. No account is required.
 
 ## AI studio: swap in video and recreate
 
-After a report, the AI studio can change or remake a short clip. It uses paid credits only.
+The AI studio on the homepage can change or remake a short clip and create images. It works on its own or after a report and runs on AI Credits, which are the same one-time credits (USD $3.99 for 1, $9.99 for 3, $14.99 for 5). Monthly Premium analyses cannot be used in the AI studio.
 
-- Swap in video: replace a person, product or object in an uploaded clip of 4 to 30 seconds using 1 to 8 reference photos, or give a reference character the clip's motion. 1 credit per 10 seconds for clips up to 15 seconds; 1 credit per 4 seconds for longer clips.
-- Recreate: make a new 1080p video of 5 to 30 seconds from a prompt, with optional reference photos, a reference clip and voice or sound references. 1 credit per 15 seconds.
-- Reference images can be generated from a text description.
+- Swap in video: replace a person, product or object in an uploaded clip of 4 to 30 seconds using 1 to 8 reference photos, or give a reference character the clip's motion. 1 AI Credit per 10 seconds for clips up to 15 seconds; 1 AI Credit per 4 seconds for longer clips.
+- Recreate: make a new 1080p video of 5 to 30 seconds from a prompt, with optional reference photos, a reference clip and voice or sound references. 1 AI Credit per 15 seconds.
+- Create image: make an image from a description, optionally from up to 4 uploaded photos, with Nano Banana 2.1, Nano Banana Pro, GPT Image 2.6 or ChatGPT Image 2. 1 AI Credit opens a pack of 20 images; Nano Banana Pro uses 3 per image. Generated images can be used as references in a swap or a new video.
 - Uploads for the AI studio are processed by Sume (sume.com). Users need the rights to what they upload and the consent of identifiable people. Output is AI-generated and should be reviewed before publishing.
 
 ## Limits and accuracy

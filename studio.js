@@ -6,11 +6,13 @@
   if (!root) return;
   const style = document.createElement('style');
   style.textContent = `
-#studio{margin:24px 0;padding:24px;border:1px solid var(--border-strong);border-radius:14px;background:var(--surface);box-shadow:var(--shadow-md)}
+#studio{scroll-margin-top:90px;margin:24px 0;padding:24px;border:1px solid var(--border-strong);border-radius:14px;background:var(--surface);box-shadow:var(--shadow-md)}
+
+.studio-wrap{max-width:1080px;margin:0 auto;padding:0 24px}#studio-output img{display:block;max-width:100%;max-height:640px;border-radius:12px}
 #studio h3{font-size:1.25rem;letter-spacing:-.02em;margin:0 0 6px}
 #studio .studio-example{margin:0 0 18px;max-width:640px}#studio .studio-example img{display:block;width:100%;height:auto;border-radius:10px}#studio .studio-example figcaption{font-size:.8rem;color:var(--ink-dim);margin-top:6px}
 #studio .studio-rates,.studio-intro .studio-rates{font-size:.82rem;color:var(--ink-dim);margin:0 0 14px;max-width:70ch}
-.studio-intro{max-width:1080px;margin:56px auto;padding:0 24px}.studio-intro h2{font-size:1.7rem;letter-spacing:-.03em;margin:0 0 8px}.studio-intro>p{color:var(--ink-dim);margin:0 0 22px;max-width:62ch}.studio-intro-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}.studio-intro-card{border:1px solid var(--border-strong);border-radius:14px;background:var(--surface);padding:14px;margin:0}.studio-intro-card img{display:block;width:100%;height:auto;border-radius:9px}.studio-intro-card h3{font-size:1.02rem;margin:12px 0 4px}.studio-intro-card p{font-size:.86rem;color:var(--ink-dim);margin:0 0 6px}.studio-intro a.studio-go{display:inline-block;margin-top:20px;text-decoration:none}
+.studio-intro{max-width:1080px;margin:56px auto 20px;padding:0 24px}.studio-intro h2{font-size:1.7rem;letter-spacing:-.03em;margin:0 0 8px}.studio-intro>p{color:var(--ink-dim);margin:0 0 22px;max-width:62ch}.studio-intro-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}.studio-intro-card{border:1px solid var(--border-strong);border-radius:14px;background:var(--surface);padding:14px;margin:0}.studio-intro-card img{display:block;width:100%;height:auto;border-radius:9px}.studio-intro-card h3{font-size:1.02rem;margin:12px 0 4px}.studio-intro-card p{font-size:.86rem;color:var(--ink-dim);margin:0 0 6px}.studio-intro a.studio-go{display:inline-block;margin-top:20px;text-decoration:none}
 #studio .studio-sub{color:var(--ink-dim);font-size:.9rem;margin:0 0 16px;max-width:62ch}
 .studio-tabs{display:inline-flex;gap:4px;padding:4px;border-radius:10px;background:var(--surface2);margin-bottom:16px}
 .studio-tabs button{border:0;background:none;padding:8px 14px;border-radius:7px;font:600 .85rem var(--font);color:var(--ink-dim);cursor:pointer}
@@ -26,9 +28,7 @@
 .studio-chip.is-busy{opacity:.6}
 .studio-add{border:1px dashed #b0bed6;border-radius:10px;background:none;padding:0 14px;min-height:48px;font:600 .82rem var(--font);color:var(--ink-dim);cursor:pointer}
 .studio-add:hover{border-color:var(--accent);color:var(--ink)}
-#studio textarea,#studio-image-prompt{width:100%;border:0;background:none;resize:vertical;font:inherit;font-size:.95rem;line-height:1.55;color:var(--ink);min-height:110px;outline:none}
-#studio-image-row{display:flex;gap:8px;margin:0 0 10px;padding:8px;border-radius:10px;background:var(--surface2)}
-#studio-image-prompt{min-height:0;flex:1;background:#fff;border:1px solid #cbd5e3;border-radius:8px;padding:8px 10px;font-size:.88rem}
+#studio textarea{width:100%;border:0;background:none;resize:vertical;font:inherit;font-size:.95rem;line-height:1.55;color:var(--ink);min-height:110px;outline:none}
 .studio-controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
 .studio-controls select{border:1px solid #cbd5e3;border-radius:8px;background:#fff;padding:8px 10px;font:600 .82rem var(--font);color:var(--ink)}
 .studio-controls .studio-link{border:0;background:none;color:var(--accent-hover);font:600 .82rem var(--font);cursor:pointer;padding:8px 4px}
@@ -45,24 +45,22 @@
 @media (max-width:640px){#studio{padding:16px}#studio-cost{margin-left:0;width:100%}.studio-go{width:100%}}`;
   document.head.append(style);
   root.innerHTML = `
-  <h3 id="studio-title">Remake this video with AI</h3>
-  <p class="studio-sub">Swap a person or product inside your clip, or recreate the ad as a new video from its prompt. Clips up to 30 seconds.</p>
+  <h3 id="studio-title">AI studio</h3>
+  <p class="studio-sub">Swap a person or product inside a clip, make a new video from a prompt, or create images. You do not need to analyze a video first. It runs on AI Credits, the same credits sold under Pricing.</p>
   <div class="studio-tabs" role="group" aria-label="What to make">
     <button type="button" data-studio-mode="swap" aria-pressed="true">Swap in video</button>
     <button type="button" data-studio-mode="recreate" aria-pressed="false">Recreate</button>
+    <button type="button" data-studio-mode="image" aria-pressed="false">Create image</button>
   </div>
   <figure class="studio-example"><img id="studio-example-image" alt="" loading="lazy" width="1200" height="493"><figcaption id="studio-example-text"></figcaption></figure>
   <p id="studio-rates" class="studio-rates"></p>
   <div class="studio-box">
     <div class="studio-chips" id="studio-chips"></div>
-    <div id="studio-image-row" hidden>
-      <input id="studio-image-prompt" type="text" maxlength="1000" placeholder="Describe the image to create, for example: a red glass bottle on white" aria-label="Image description">
-      <button type="button" class="studio-secondary" id="studio-image-go">Create image</button>
-    </div>
     <label class="sr-only" for="studio-prompt" style="position:absolute;left:-9999px">Prompt</label>
     <textarea id="studio-prompt" maxlength="2000"></textarea>
     <div class="studio-controls">
       <select id="studio-style" aria-label="Kind of swap"><option value="swap">Swap a person or object</option><option value="motion">Give my character this motion</option></select>
+      <select id="studio-model" aria-label="Image model"></select>
       <select id="studio-duration" aria-label="Length"></select>
       <select id="studio-aspect" aria-label="Aspect ratio"></select>
       <button type="button" class="studio-link" id="studio-use-report">Use my report as the prompt</button>
@@ -71,9 +69,9 @@
   </div>
   <label class="studio-rights"><input type="checkbox" id="studio-rights"><span>I have the right to use the people, voices and footage I upload, and their consent where it is needed.</span></label>
   <button type="button" class="studio-go" id="studio-go">Generate</button>
-  <button type="button" class="studio-secondary" id="studio-buy" hidden>Buy credits</button>
+  <button type="button" class="studio-secondary" id="studio-buy" hidden>Buy AI Credits</button>
   <p id="studio-message" role="status" aria-live="polite"></p>
-  <div id="studio-output" hidden><video id="studio-video" controls playsinline preload="metadata"></video><a id="studio-download" target="_blank" rel="noopener">Open the video file</a></div>
+  <div id="studio-output" hidden><video id="studio-video" controls playsinline preload="metadata"></video><img id="studio-image" alt="Your generated image" hidden><a id="studio-download" target="_blank" rel="noopener">Open the file</a></div>
   <input type="file" id="studio-file" accept="image/jpeg,image/png,image/webp,audio/mpeg,audio/wav,.mp3,.wav" multiple hidden>
   <input type="file" id="studio-source-file" accept="video/mp4,video/quicktime,video/webm,.mp4,.mov,.webm" hidden>`;
 
@@ -86,24 +84,28 @@
   };
   const disclosure = 'Every person in these examples is AI generated.';
   function rates(kind) {
-    const per = n => '1 credit per ' + n + ' seconds';
+    const per = n => '1 AI Credit per ' + n + ' seconds';
+    if (kind === 'image') return 'Images: 1 AI Credit opens a pack of ' + config.image_pack + ' images. ' + config.image_models.filter(m => m.units > 1).map(m => m.name + ' uses ' + m.units + ' per image.').join(' ');
     return kind === 'swap'
       ? 'Swaps: ' + per(config.swap_light_seconds_per_credit) + ' for clips up to ' + config.swap_light_max + ' seconds. Longer clips, up to ' + config.max_seconds + ' seconds, run on a heavier model and cost more: ' + per(config.swap_seconds_per_credit) + '.'
       : 'New videos: ' + per(config.seconds_per_credit) + ', up to ' + config.max_seconds + ' seconds, in ' + config.resolution + '.';
   }
   const placeholders = {
     swap: 'Optional: say what to change. Example: Replace the woman with @image1 and keep the background.',
-    recreate: 'Describe the new ad shot by shot. Name your references. Example: @image1 opens the box on a kitchen table, close-up, soft morning light.'
+    recreate: 'Describe the new ad shot by shot. Name your references. Example: @image1 opens the box on a kitchen table, close-up, soft morning light.',
+    image: 'Describe the image. Example: studio photo of a red glass bottle on a white table, soft light. Add photos to edit or combine them.'
   };
-  let config = null, mode = 'swap', working = false, refs = [], counter = 0;
+  let config = null, mode = 'swap', working = false, refs = [], counter = 0, imagesLeft = 0;
   // source: the clip to edit (swap) or to follow as a motion reference (recreate).
   let source = null, sourceOn = false;
 
   function say(text, state = '') { const el = $('studio-message'); el.textContent = text; el.dataset.state = state; }
   function clean(name) { return name.replace(/[^A-Za-z0-9_]/g, '').slice(0, 24); }
-  function sourceActive() { return Boolean(source) && (mode === 'swap' || sourceOn); }
+  function sourceActive() { return mode !== 'image' && Boolean(source) && (mode === 'swap' || sourceOn); }
+  function imageUnits() { return (config.image_models.find(m => m.id === $('studio-model').value) || { units: 1 }).units; }
   function seconds() { const length = Number($('studio-duration').value); return mode === 'swap' ? (source ? Math.min(config.max_seconds, Math.ceil(source.seconds)) : 0) : length + (sourceActive() && config.reference_clip_billed ? Math.max(source.seconds, length * 2 / 3) : 0); }
   function credits() {
+    if (mode === 'image') return config && imagesLeft < imageUnits() ? 1 : 0;
     if (!config || !seconds()) return 0;
     const rate = mode !== 'swap' ? config.seconds_per_credit : seconds() <= config.swap_light_max ? config.swap_light_seconds_per_credit : config.swap_seconds_per_credit;
     return Math.ceil(seconds() / rate);
@@ -142,6 +144,7 @@
     const list = $('studio-chips'); list.replaceChildren();
     if (sourceActive()) list.append(chip('video', 'video', (mode === 'swap' ? 'clip to change' : 'motion reference') + ' · ' + Math.round(source.seconds) + ' s', () => { if (mode === 'swap') source = null; sourceOn = false; render(); }, false).el);
     for (const ref of refs) {
+      if (mode === 'image' && ref.kind !== 'image') continue;
       const item = chip(ref.kind === 'audio' ? 'audio' : 'photo', ref.label, ref.busy ? 'uploading…' : ref.kind === 'audio' ? 'voice or sound' : 'photo', () => { refs = refs.filter(r => r !== ref); render(); }, true, ref.thumb);
       item.el.classList.toggle('is-busy', Boolean(ref.busy));
       item.field.onchange = () => { const next = clean(item.field.value); ref.label = next && next.toLowerCase() !== 'video' && !refs.some(r => r !== ref && r.label.toLowerCase() === next.toLowerCase()) ? next : ref.label; item.field.value = ref.label; };
@@ -149,18 +152,25 @@
       list.append(item.el);
     }
     const add = (label, action) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'studio-add'; b.textContent = label; b.onclick = action; list.append(b); };
-    if (!sourceActive()) add(mode === 'swap' ? '+ Video to change' : '+ Video as motion reference', () => { if (source) { sourceOn = true; render(); } else $('studio-source-file').click(); });
-    add(mode === 'swap' ? '+ Photo' : '+ Photo or audio', () => $('studio-file').click());
-    add('+ Create an image', () => { $('studio-image-row').hidden = !$('studio-image-row').hidden; if (!$('studio-image-row').hidden) $('studio-image-prompt').focus(); });
+    if (mode !== 'image' && !sourceActive()) add(mode === 'swap' ? '+ Video to change' : '+ Video as motion reference', () => { if (source) { sourceOn = true; render(); } else $('studio-source-file').click(); });
+    add(mode === 'recreate' ? '+ Photo or audio' : '+ Photo', () => $('studio-file').click());
+    if (mode !== 'image') add('+ Create an image', () => { mode = 'image'; say(''); render(); $('studio-prompt').focus(); });
     document.querySelectorAll('[data-studio-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.studioMode === mode)));
     $('studio-prompt').placeholder = placeholders[mode];
-    $('studio-example-image').src = examples[mode].src; $('studio-example-image').alt = examples[mode].alt;
-    $('studio-example-text').textContent = examples[mode].text + ' ' + disclosure; $('studio-rates').textContent = rates(mode);
-    $('studio-duration').hidden = $('studio-aspect').hidden = mode === 'swap'; $('studio-style').hidden = mode !== 'swap';
+    document.querySelector('#studio .studio-example').hidden = !examples[mode];
+    if (examples[mode]) { $('studio-example-image').src = examples[mode].src; $('studio-example-image').alt = examples[mode].alt; $('studio-example-text').textContent = examples[mode].text + ' ' + disclosure; }
+    $('studio-rates').textContent = rates(mode);
+    $('studio-duration').hidden = mode !== 'recreate'; $('studio-aspect').hidden = mode === 'swap'; $('studio-style').hidden = mode !== 'swap'; $('studio-model').hidden = mode !== 'image';
+    $('studio-use-report').hidden = !document.getElementById('result-content').textContent.trim();
     const need = credits();
-    $('studio-cost').textContent = need ? 'Uses ' + need + (need === 1 ? ' credit' : ' credits') + ' · ' + Math.round(seconds()) + ' s billed · you have ' + paidCredits : mode === 'swap' ? 'Add the video you want to change' : '';
-    $('studio-go').textContent = working ? 'Working…' : need ? 'Generate · ' + need + (need === 1 ? ' credit' : ' credits') : 'Generate';
-    $('studio-go').disabled = working; $('studio-image-go').disabled = working;
+    if (mode === 'image') {
+      $('studio-cost').textContent = need ? 'Opens a pack of ' + config.image_pack + ' images · 1 AI Credit · you have ' + paidCredits : 'Uses ' + imageUnits() + ' of your ' + imagesLeft + ' images';
+      $('studio-go').textContent = working ? 'Working…' : need ? 'Create image · 1 AI Credit' : 'Create image';
+    } else {
+      $('studio-cost').textContent = need ? 'Uses ' + need + (need === 1 ? ' AI Credit' : ' AI Credits') + ' · ' + Math.round(seconds()) + ' s billed · you have ' + paidCredits : mode === 'swap' ? 'Add the video you want to change' : '';
+      $('studio-go').textContent = working ? 'Working…' : need ? 'Generate · ' + need + (need === 1 ? ' AI Credit' : ' AI Credits') : 'Generate';
+    }
+    $('studio-go').disabled = working;
   }
   function insert(text) {
     const area = $('studio-prompt'), at = area.selectionStart ?? area.value.length;
@@ -173,7 +183,7 @@
   }
   async function addReference(file) {
     const kind = file.type.startsWith('image/') ? 'image' : 'audio';
-    if (kind === 'audio' && mode === 'swap') { say('Swap keeps the sound of your video. Switch to Recreate to add a voice or sound.', 'error'); return; }
+    if (kind === 'audio' && mode !== 'recreate') { say(mode === 'swap' ? 'Swap keeps the sound of your video. Switch to Recreate to add a voice or sound.' : 'Images take photos only.', 'error'); return; }
     if (refs.filter(r => r.kind === kind).length >= (kind === 'image' ? (mode === 'swap' ? config.max_swap_images : config.max_images) : config.max_audio)) { say('You can add up to ' + config.max_images + ' photos and ' + config.max_audio + ' audio files.', 'error'); return; }
     const ref = { kind, label: (kind === 'image' ? 'image' : 'audio') + (++counter), busy: true, asset: null, thumb: kind === 'image' ? URL.createObjectURL(file) : null };
     refs.push(ref); render();
@@ -195,13 +205,17 @@
     throw new Error('This is taking longer than expected. Reload the page later to see the result.');
   }
   function needCredits(error) {
-    say(error.message + ' Buy credits, then generate again.', 'error'); $('studio-buy').hidden = false;
+    say(error.message + ' Buy AI Credits, then generate again.', 'error'); $('studio-buy').hidden = false;
     track('studio_payment_required', { studio_mode: mode });
   }
-  function show(job) {
-    $('studio-video').src = job.url; $('studio-download').href = job.url; $('studio-output').hidden = false;
-    $('studio-output').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  function display(job) {
+    const image = job.kind === 'image';
+    $('studio-video').hidden = image; $('studio-image').hidden = !image;
+    if (image) { $('studio-video').removeAttribute('src'); $('studio-image').src = job.url; } else $('studio-video').src = job.url;
+    $('studio-download').href = job.url; $('studio-download').textContent = image ? 'Open the image file' : 'Open the video file'; $('studio-output').hidden = false;
   }
+  function show(job) { display(job); $('studio-output').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  async function refreshImages() { try { imagesLeft = (await api('/studio/jobs')).images_left || 0; } catch {} }
   // The server keeps every job, so a lost reply or a reload can always find it again.
   async function activeJob() { return (await api('/studio/jobs')).jobs.find(job => job.status === 'submitting' || job.status === 'running') || null; }
   async function run(kind, start) {
@@ -224,11 +238,12 @@
       if (error.code === 'payment_required') needCredits(error); else say(error.message, 'error');
       if (error.code !== 'payment_required') track('studio_generation_failed', { studio_mode: kind });
       return null;
-    } finally { working = false; await refreshUsage(); render(); }
+    } finally { working = false; await refreshUsage(); await refreshImages(); render(); }
   }
 
   $('studio-go').onclick = async () => {
     const prompt = $('studio-prompt').value.trim();
+    if (mode === 'image') { createImage(prompt); return; }
     if (mode === 'swap' && !source) { say('Add the video you want to change.', 'error'); return; }
     if (mode === 'swap' && !refs.some(r => r.kind === 'image')) { say('Add a photo of the person, product or object to put into the video.', 'error'); return; }
     if (mode === 'recreate' && !prompt) { say('Write what the video should show.', 'error'); $('studio-prompt').focus(); return; }
@@ -246,15 +261,20 @@
     });
     if (done) { say('Your video is ready. Check it before you publish it.'); show(done); }
   };
-  $('studio-image-go').onclick = async () => {
-    const prompt = $('studio-image-prompt').value.trim();
-    if (!prompt) { $('studio-image-prompt').focus(); return; }
+  async function createImage(prompt) {
+    const photos = refs.filter(r => r.kind === 'image');
+    if (!prompt) { say('Describe the image you want.', 'error'); $('studio-prompt').focus(); return; }
+    if (photos.some(r => r.busy)) { say('Wait for your photos to finish uploading.', 'error'); return; }
+    if (photos.length > config.max_image_refs) { say('An image can use up to ' + config.max_image_refs + ' photos. Remove some first.', 'error'); return; }
+    if (photos.length && !$('studio-rights').checked) { say('Confirm that you have the right to use what you uploaded.', 'error'); return; }
+    track('studio_generate_clicked', { studio_mode: 'image', credits: credits() });
     say('Creating your image…');
-    const done = await run('image', () => api('/studio/image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt, aspect: $('studio-aspect').value }) }));
+    const body = { prompt, aspect: $('studio-aspect').value, model: $('studio-model').value, refs: photos.map(r => r.asset), rights: photos.length > 0 };
+    const done = await run('image', () => api('/studio/image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }));
     if (!done) return;
     refs.push({ kind: 'image', label: 'image' + (++counter), busy: false, asset: done.asset_id, thumb: done.url });
-    $('studio-image-prompt').value = ''; $('studio-image-row').hidden = true; say('Image added as a reference.'); render();
-  };
+    say('Your image is ready. It is also in your references now, so you can use it in a swap or a new video.'); render(); show(done);
+  }
   $('studio-buy').onclick = () => buyCredit('single');
   $('studio-file').onchange = async event => { const files = [...event.target.files]; event.target.value = ''; for (const file of files) await addReference(file); };
   $('studio-source-file').onchange = event => { const file = event.target.files[0]; event.target.value = ''; setSource(file); };
@@ -266,6 +286,7 @@
   };
   $('studio-duration').onchange = render;
   document.querySelectorAll('[data-studio-mode]').forEach(button => button.onclick = () => { mode = button.dataset.studioMode; sourceOn = false; say(''); render(); });
+  $('studio-model').onchange = render;
 
   // Offer the analyzed upload as the source once a report is on screen.
   new MutationObserver(() => {
@@ -279,13 +300,21 @@
     if (!config.enabled) return;
     for (let s = 5; s <= config.max_seconds; s += 5) $('studio-duration').add(new Option(s + ' s', s, s === 10, s === 10));
     for (const aspect of config.aspects) $('studio-aspect').add(new Option(aspect, aspect));
+    for (const model of config.image_models) $('studio-model').add(new Option(model.name, model.id));
     root.hidden = false; render();
+    // A finished report gets a shortcut down to the studio, with its video already attached.
+    const actions = document.querySelector('#result .result-actions');
+    if (actions) {
+      const jump = Object.assign(document.createElement('button'), { type: 'button', className: 'btn-ghost', textContent: 'Remake with AI' });
+      jump.onclick = () => root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      actions.prepend(jump);
+    }
     // Explain the feature to visitors before they have a report.
     const intro = document.getElementById('studio-intro');
     if (intro) {
       intro.className = 'studio-intro';
       const heading = Object.assign(document.createElement('h2'), { textContent: 'Remake a video with AI' });
-      const lead = Object.assign(document.createElement('p'), { textContent: 'After your report, swap a person or product inside your clip, or turn the shot breakdown into a new video. ' + disclosure });
+      const lead = Object.assign(document.createElement('p'), { textContent: 'Swap a person or product inside a clip, make a new video from a prompt, or create images. Use it on its own or after a report. ' + disclosure });
       const grid = Object.assign(document.createElement('div'), { className: 'studio-intro-grid' });
       for (const kind of ['swap', 'recreate']) {
         const card = Object.assign(document.createElement('figure'), { className: 'studio-intro-card' });
@@ -294,22 +323,21 @@
         caption.append(Object.assign(document.createElement('h3'), { textContent: examples[kind].title }), Object.assign(document.createElement('p'), { textContent: examples[kind].text }), Object.assign(document.createElement('p'), { className: 'studio-rates', textContent: rates(kind) }));
         card.append(image, caption); grid.append(card);
       }
-      const start = Object.assign(document.createElement('a'), { className: 'studio-go', href: '#input-zone', textContent: 'Start with a video' });
-      intro.append(heading, lead, grid, start); intro.hidden = false;
+      intro.append(heading, lead, grid); intro.hidden = false;
     }
     track('studio_available');
     // After a reload, pick up a generation that is still running, or show the last finished video.
     let jobs = [];
-    try { jobs = (await api('/studio/jobs')).jobs; } catch { return; }
+    try { const listed = await api('/studio/jobs'); jobs = listed.jobs; imagesLeft = listed.images_left || 0; render(); } catch { return; }
     const pending = jobs.find(job => job.status === 'submitting' || job.status === 'running');
-    const last = jobs.find(job => job.kind !== 'image');
+    const last = jobs[0];
     if (pending) {
       working = true; render(); say('Reconnecting to your generation…');
-      try { const done = await wait(pending.job_id); if (done.kind !== 'image') { say('Your video is ready. Check it before you publish it.'); show(done); } else say(''); }
+      try { const done = await wait(pending.job_id); say(done.kind === 'image' ? 'Your image is ready.' : 'Your video is ready. Check it before you publish it.'); show(done); }
       catch (error) { say(error.message, 'error'); }
-      finally { working = false; await refreshUsage(); render(); }
+      finally { working = false; await refreshUsage(); await refreshImages(); render(); }
     } else if (last && last.status === 'done') {
-      $('studio-video').src = last.url; $('studio-download').href = last.url; $('studio-output').hidden = false; say('Your last generated video is below.');
+      display(last); say('Your last generation is below.');
     }
   })();
 })();

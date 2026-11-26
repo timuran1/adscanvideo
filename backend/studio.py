@@ -45,14 +45,25 @@ SWAP_LIGHT_MAX = 15
 # of the lowest net credit price (about $2.85 in the 5 pack after card fees).
 RATES = {'recreate': ('SUME_SECONDS_PER_CREDIT', 15), 'swap_light': ('SUME_SWAP_LIGHT_SECONDS_PER_CREDIT', 10), 'swap_full': ('SUME_SWAP_SECONDS_PER_CREDIT', 4)}
 MIN_SECONDS, MAX_SECONDS = 4, 30
-SUBMIT_ERRORS = {
-    'invalid_request': 'The video model refused this request. Check the prompt and references, then try again. Your credits were restored.',
-    'insufficient_funds': 'Video generation is temporarily unavailable. Your credits were restored.',
-    'unauthorized': 'Video generation is temporarily unavailable. Your credits were restored.',
-    'queue_full': 'The video generator is busy. Please try again in a few minutes. Your credits were restored.',
-    'rate_limited': 'The video generator is busy. Please try again in a few minutes. Your credits were restored.',
+# Image models on offer and how many images of a pack each one uses. One paid
+# credit opens a pack of IMAGE_PACK images; at these weights a full pack costs at
+# most about $1.06 at Sume's list prices of 26 Nov 2026.
+IMAGE_MODELS = {
+    'nano-banana-2.1': {'name': 'Nano Banana 2.1', 'units': 1, 'extra': {}},
+    'gpt-image-2.6': {'name': 'GPT Image 2.6', 'units': 1, 'extra': {'quality': 'medium'}},
+    'gpt-image-2': {'name': 'ChatGPT Image 2', 'units': 1, 'extra': {'quality': 'medium'}},
+    'nano-banana-pro': {'name': 'Nano Banana Pro', 'units': 3, 'extra': {}},
 }
-FAILED = 'The generation failed. Your credits were restored.'
+IMAGE_PACK = 20
+MAX_IMAGE_REFS = 4
+SUBMIT_ERRORS = {
+    'invalid_request': 'The video model refused this request. Check the prompt and references, then try again. Your AI Credits were restored.',
+    'insufficient_funds': 'Video generation is temporarily unavailable. Your AI Credits were restored.',
+    'unauthorized': 'Video generation is temporarily unavailable. Your AI Credits were restored.',
+    'queue_full': 'The video generator is busy. Please try again in a few minutes. Your AI Credits were restored.',
+    'rate_limited': 'The video generator is busy. Please try again in a few minutes. Your AI Credits were restored.',
+}
+FAILED = 'The generation failed. Your AI Credits were restored.'
 # Each upload holds a request thread while it streams to Sume; keep two free for everything else.
 UPLOADS = threading.BoundedSemaphore(2)
 
@@ -79,6 +90,15 @@ def install_schema(db):
     CREATE TABLE IF NOT EXISTS studio_jobs (id TEXT PRIMARY KEY, owner TEXT NOT NULL, kind TEXT NOT NULL, status TEXT NOT NULL, credits INTEGER NOT NULL, seconds REAL NOT NULL DEFAULT 0, sume_job TEXT NOT NULL DEFAULT '', request TEXT NOT NULL, result_url TEXT NOT NULL DEFAULT '', error TEXT NOT NULL DEFAULT '', created REAL NOT NULL, updated REAL NOT NULL, checked REAL NOT NULL DEFAULT 0);
     CREATE INDEX IF NOT EXISTS studio_jobs_owner ON studio_jobs(owner,created);
     ''')
+    if 'units' not in {row[1] for row in db.execute('PRAGMA table_info(studio_jobs)')}:
+        db.execute('ALTER TABLE studio_jobs ADD COLUMN units INTEGER NOT NULL DEFAULT 0')
+
+
+def images_left(db, who):
+    """Images still available from the packs this owner opened. Failed images give theirs back."""
+    packs = db.execute("SELECT COUNT(*) FROM studio_jobs WHERE owner=? AND kind='image_pack'", (who,)).fetchone()[0]
+    used = db.execute("SELECT COALESCE(SUM(units),0) FROM studio_jobs WHERE owner=? AND kind='image' AND status!='failed'", (who,)).fetchone()[0]
+    return max(0, packs * IMAGE_PACK - used)
 
 
 def spent(db, who):
@@ -184,7 +204,7 @@ def install(app, connect, owner, ip_key, allowance):
         kind, status, sume_job, created, updated, checked, who = row
         now = time.time()
         if status in ACTIVE and now - created > 3600:
-            return fail(jid, 'The generation took too long. Your credits were restored.')
+            return fail(jid, 'The generation took too long. Your AI Credits were restored.')
         if status == 'submitting' and now - updated > 15:
             with connect() as db:
                 db.execute('UPDATE studio_jobs SET updated=? WHERE id=?', (now, jid))
@@ -223,7 +243,7 @@ def install(app, connect, owner, ip_key, allowance):
         for jid in active:
             refresh(jid)
 
-    def reserve(who, kind, credits, seconds, body):
+    def reserve(who, kind, credits, seconds, body, units=0):
         """Hold credits and record the job in one transaction, before anything is sent."""
         refresh_active(who)
         jid = secrets.token_hex(16)
@@ -233,15 +253,20 @@ def install(app, connect, owner, ip_key, allowance):
             if db.execute("SELECT 1 FROM studio_jobs WHERE owner=? AND status IN ('submitting','running')", (who,)).fetchone():
                 return None, (jsonify(error='Your previous generation is still running. Wait for it to finish.', code='busy'), 409)
             paid = allowance(db, who, ip_key())['paid_credits']
-            if paid < max(credits, 1):
-                need = max(credits, 1)
-                return None, (jsonify(error=f'This needs {need} paid credit{"" if need == 1 else "s"}. You have {paid}.', code='payment_required', credits_needed=need, paid_credits=paid), 402)
-            limit = number('SUME_IMAGES_PER_DAY', 10) if kind == 'image' else number('SUME_VIDEOS_PER_DAY', 20)
+            # An image comes out of the owner's pack; an empty pack costs one credit to refill.
+            open_pack = kind == 'image' and images_left(db, who) < units
+            need = 1 if open_pack else credits
+            if paid < need:
+                what = f'A pack of {IMAGE_PACK} images costs 1 AI Credit.' if kind == 'image' else f'This needs {need} AI Credit{"" if need == 1 else "s"}.'
+                return None, (jsonify(error=f'{what} You have {paid}.', code='payment_required', credits_needed=need, paid_credits=paid), 402)
+            limit = number('SUME_IMAGES_PER_DAY', 100) if kind == 'image' else number('SUME_VIDEOS_PER_DAY', 20)
             group = "kind='image'" if kind == 'image' else "kind!='image'"
             if db.execute('SELECT COUNT(*) FROM studio_jobs WHERE owner=? AND created>? AND ' + group, (who, now - 86400)).fetchone()[0] >= limit:
                 return None, (jsonify(error='Daily generation limit reached. Please try again tomorrow.', code='rate_limited'), 429)
-            db.execute('INSERT INTO studio_jobs(id,owner,kind,status,credits,seconds,request,created,updated) VALUES(?,?,?,?,?,?,?,?,?)',
-                       (jid, who, kind, 'submitting', credits, seconds, json.dumps(body), now, now))
+            if open_pack:
+                db.execute("INSERT INTO studio_jobs(id,owner,kind,status,credits,request,created,updated) VALUES(?,?,'image_pack','done',1,'{}',?,?)", (secrets.token_hex(16), who, now, now))
+            db.execute('INSERT INTO studio_jobs(id,owner,kind,status,credits,seconds,request,created,updated,units) VALUES(?,?,?,?,?,?,?,?,?,?)',
+                       (jid, who, kind, 'submitting', credits, seconds, json.dumps(body), now, now, units))
         return jid, None
 
     def started(jid):
@@ -253,7 +278,8 @@ def install(app, connect, owner, ip_key, allowance):
     @app.get('/api/studio/config')
     def studio_config():
         return jsonify(enabled=enabled(), seconds_per_credit=seconds_per_credit(), swap_light_seconds_per_credit=seconds_per_credit('swap_light'), swap_seconds_per_credit=seconds_per_credit('swap_full'),
-                       swap_light_max=SWAP_LIGHT_MAX, reference_clip_billed=os.getenv('SUME_VIDEO_MODEL', 'magi-2').startswith('seedance'), max_swap_images=MAX_SWAP_IMAGES, min_seconds=MIN_SECONDS, max_seconds=MAX_SECONDS,
+                       swap_light_max=SWAP_LIGHT_MAX, reference_clip_billed=os.getenv('SUME_VIDEO_MODEL', 'magi-2').startswith('seedance'), max_swap_images=MAX_SWAP_IMAGES, image_pack=IMAGE_PACK, max_image_refs=MAX_IMAGE_REFS,
+                       image_models=[{'id': key, 'name': value['name'], 'units': value['units']} for key, value in IMAGE_MODELS.items()], min_seconds=MIN_SECONDS, max_seconds=MAX_SECONDS,
                        aspects=list(ASPECTS), resolution=os.getenv('SUME_VIDEO_RESOLUTION', '1080p'), max_images=MAX_IMAGES, max_audio=MAX_AUDIO)
 
     @app.post('/api/studio/assets')
@@ -412,13 +438,23 @@ def install(app, connect, owner, ip_key, allowance):
         if error:
             return error
         data = request.get_json(silent=True)
-        prompt = data.get('prompt') if isinstance(data, dict) else None
-        aspect = data.get('aspect', '9:16') if isinstance(data, dict) else None
-        if not isinstance(prompt, str) or not 1 <= len(prompt.strip()) <= 1000 or aspect not in ASPECTS:
-            return jsonify(error='Describe the image in up to 1,000 characters and choose a listed aspect ratio.', code='invalid_input'), 400
-        body = {'model': os.getenv('SUME_IMAGE_MODEL', 'nano-banana-2.1'), 'prompt': prompt.strip(), 'aspect_ratio': aspect}
-        # Images cost no credits but need a paid balance, and are capped per day.
-        jid, error = reserve(who, 'image', 0, 0, body)
+        data = data if isinstance(data, dict) else {}
+        prompt, aspect, refs = data.get('prompt'), data.get('aspect', '9:16'), data.get('refs', [])
+        model = data.get('model') or os.getenv('SUME_IMAGE_MODEL', 'nano-banana-2.1')
+        if not isinstance(prompt, str) or not 1 <= len(prompt.strip()) <= 2000 or aspect not in ASPECTS or model not in IMAGE_MODELS:
+            return jsonify(error='Describe the image in up to 2,000 characters and choose a listed model and aspect ratio.', code='invalid_input'), 400
+        if not isinstance(refs, list) or len(refs) > MAX_IMAGE_REFS or not all(isinstance(r, str) for r in refs):
+            return jsonify(error=f'Use up to {MAX_IMAGE_REFS} reference photos.', code='invalid_input'), 400
+        body = {'model': model, 'prompt': prompt.strip(), 'aspect_ratio': aspect, **IMAGE_MODELS[model]['extra']}
+        if refs:
+            if data.get('rights') is not True:
+                return jsonify(error='Confirm that you have the rights to the photos you uploaded.', code='invalid_input'), 400
+            with connect() as db:
+                urls = {row[0]: row[1] for row in db.execute("SELECT id,url FROM studio_assets WHERE owner=? AND kind='image' AND id IN (" + ','.join('?' * len(refs)) + ')', (who, *refs))}
+            if len(urls) != len(set(refs)):
+                return jsonify(error='A reference photo is missing. Upload it again.', code='invalid_input'), 400
+            body['image_urls'] = [urls[r] for r in refs]
+        jid, error = reserve(who, 'image', 0, 0, body, IMAGE_MODELS[model]['units'])
         return error or started(jid)
 
     @app.get('/api/studio/jobs/<jid>')
@@ -444,5 +480,6 @@ def install(app, connect, owner, ip_key, allowance):
             return error
         refresh_active(who)
         with connect() as db:
-            rows = db.execute('SELECT id,kind,status,credits,seconds,result_url,error FROM studio_jobs WHERE owner=? ORDER BY created DESC LIMIT 20', (who,)).fetchall()
-        return jsonify(jobs=[public(row) for row in rows])
+            rows = db.execute("SELECT id,kind,status,credits,seconds,result_url,error FROM studio_jobs WHERE owner=? AND kind!='image_pack' ORDER BY created DESC LIMIT 20", (who,)).fetchall()
+            left = images_left(db, who)
+        return jsonify(jobs=[public(row) for row in rows], images_left=left)
