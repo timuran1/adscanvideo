@@ -20,6 +20,7 @@ import requests
 import report_email
 import contact_inbox
 import email_auth
+import studio
 from flask import request, jsonify
 from network_guard import validate_url
 
@@ -57,6 +58,7 @@ def install(app, jobs, db_path, runner):
         CREATE INDEX IF NOT EXISTS subscription_periods_owner ON subscription_periods(owner,starts,ends);
         ''')
         db.execute('CREATE TABLE IF NOT EXISTS export_unlocks (job TEXT PRIMARY KEY, owner TEXT NOT NULL, tier TEXT NOT NULL, subscription_invoice TEXT NOT NULL DEFAULT \'\', created REAL NOT NULL)')
+        studio.install_schema(db)
         checkout_columns = {row[1] for row in db.execute('PRAGMA table_info(checkouts)')}
         if 'credits' not in checkout_columns:
             db.execute('ALTER TABLE checkouts ADD COLUMN credits INTEGER NOT NULL DEFAULT 1')
@@ -129,6 +131,8 @@ def install(app, jobs, db_path, runner):
         paid = db.execute('SELECT COALESCE(SUM(credits),0) FROM payments WHERE owner=?', (who,)).fetchone()[0]
         spent = db.execute("SELECT COUNT(*) FROM access a JOIN jobs j ON j.id=a.job WHERE a.owner=? AND a.tier='paid' AND j.status!='error'", (who,)).fetchone()[0]
         spent += db.execute("SELECT COUNT(*) FROM export_unlocks WHERE owner=? AND tier='paid'", (who,)).fetchone()[0]
+        # AI studio generations spend paid credits too; failed ones give them back.
+        spent += studio.spent(db, who)
         periods = active_periods(db, who)
         has_subscription = db.execute("SELECT 1 FROM subscriptions WHERE owner=? AND status!='canceled'", (who,)).fetchone()
         return {'free_remaining': max(0, 1-used), 'paid_credits': max(0, paid-spent),
@@ -192,6 +196,7 @@ def install(app, jobs, db_path, runner):
         return response
 
     report_email.install(app, connect, jobs, owner, ip_key)
+    studio.install(app, connect, owner, ip_key, allowance)
     contact_inbox.install(app, connect)
 
     @app.get('/api/usage')

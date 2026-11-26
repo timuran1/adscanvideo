@@ -161,6 +161,51 @@ bound to the separate Cloudflare Pages project. Deploy only static assets there,
 not backend/, .git/, .env or deployment configuration. Retain the backup for
 rollback; do not replace the live database during a code rollback.
 
+## AI studio (built, not launched)
+
+`studio.py` adds swap-in-video and recreate through the Sume API, and `/studio.js`
+adds the composer under a report. Everything answers 503 and the composer stays
+hidden unless `SUME_ENABLED=1` and `SUME_API_KEY` are set. Production keeps it off
+until pricing is approved and one live generation has been checked.
+
+- `GET /api/studio/config`: enabled flag and limits. Public.
+- `POST /api/studio/assets`: multipart `file` and `kind` (image, audio, video).
+  Checked locally (image size, 4 to 30 second clips, 2 to 30 second audio), then
+  stored at Sume. Returns an `asset_id`; the Sume URL stays on the server.
+- `POST /api/studio/generate`: `mode` swap or recreate, `prompt`, `refs`
+  (`asset` and `label`), optional `source`, `duration`, `aspect`, `rights: true`.
+  The user's reference names (`@Nigora`) become the model's positional names
+  (`@Image1`, `@Audio1`, `@Video1`).
+- `POST /api/studio/image`: creates a reference image. Costs no credit but needs
+  a paid balance and has a daily cap.
+- `GET /api/studio/jobs/<id>` and `/api/studio/jobs`: owner only.
+
+Only paid credits are spent, rounded up: one per 15 seconds of recreate, per 10
+seconds of a swap up to 15 seconds, and per 4 seconds of a longer swap (see
+`.env.example`). The composer states both swap rates. The
+rates keep model cost at or under half of the lowest net credit price. Credits are held
+in the same transaction that records the job and return when a job fails. A job
+is sent once under its own Idempotency-Key and only polled afterwards; never add
+a code path that submits a second job for the same request, because Sume charges
+each one. One generation runs per owner at a time.
+
+Swap runs on Sume Remix, listed in the API as Genjutsu: `higgsfield-genjutsu-object-swap`
+(replace a person, product or object) and `higgsfield-genjutsu` (motion transfer).
+Both take one clip and 1 to 8 images, a `duration` equal to the clip's length
+rounded up, and no aspect ratio or audio fields. Clips up to 15 seconds go to the
+Light variants, longer clips (up to 30 seconds) to full Remix. Recreate runs on MAGI-2 (1080p only,
+$0.08 per second, references not billed extra).
+Listed 480p prices on 26 Nov 2026: Remix $0.318 per second, Remix Light $0.10 per
+second (first 15 seconds of the clip only), Seedance 2.5 $0.098 per second. A live
+4 second Light object swap on 26 Nov 2026 completed in 162 seconds and was
+charged $0.40. A live 4 second MAGI-2 recreate with one image reference
+(`@Image1`) completed in 151 seconds, returned 1080x1920 with sound, and was
+charged $0.32. Motion transfer, full Remix, and video or audio references on
+MAGI-2 have not been run live.
+
+Before launch: confirm credits per second for each mode, update the terms and privacy policy (uploads go to
+Sume; face and voice swaps need consent), then set the env values on the server.
+
 ## Find moments (beta)
 
 `mode=moments` uses the existing question field for visual and optional dialogue

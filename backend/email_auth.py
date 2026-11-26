@@ -111,7 +111,7 @@ def install(app, connect, owner, ip_key):
             # different signed-in account or retain an old anonymous key as login.
             migrated=False
             if source and source==requested_source and source!=canonical and not db.execute('SELECT 1 FROM email_accounts WHERE owner=?',(source,)).fetchone():
-                for table in ('access','payments','checkouts','subscription_checkouts','subscriptions','subscription_periods','export_unlocks','report_emails'):
+                for table in ('access','payments','checkouts','subscription_checkouts','subscriptions','subscription_periods','export_unlocks','report_emails','studio_assets','studio_jobs'):
                     db.execute('UPDATE '+table+' SET owner=? WHERE owner=?',(canonical,source))
                 db.execute('INSERT OR REPLACE INTO email_owner_aliases VALUES(?,?)',(source,canonical));migrated=True
             db.execute('UPDATE email_login_links SET consumed=? WHERE hash=?',(now,digest(raw)))
