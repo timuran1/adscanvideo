@@ -2497,6 +2497,7 @@ ${reportWatermarked ? '<p style="margin-top:32px;padding-top:12px;border-top:1px
   }).then(() => track('result_downloaded', { analysis_mode: mode, export_format: 'pdf' })).catch(() => message('PDF export failed. Please try again.')).finally(() => el.remove());
 }
 </script>
-<script src="/studio.js" defer></script>
+<!-- Bump the version whenever studio.js changes, so a cached copy never meets a newer page. -->
+<script src="/studio.js?v=20261126d" defer></script>
 </body>
 </html>

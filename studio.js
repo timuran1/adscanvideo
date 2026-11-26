@@ -76,9 +76,9 @@
 
   const $ = id => document.getElementById(id);
   const examples = {
-    swap: { src: '/samples/swap-example.jpg', alt: 'Four frames side by side: a reference photo of a woman, the original shot of a man opening a box at a kitchen table, and two frames of the same shot with the woman in his place.',
+    swap: { src: '/samples/swap-example.jpg?v=2', alt: 'Four frames side by side: a reference photo of a woman, the original shot of a man opening a box at a kitchen table, and two frames of the same shot with the woman in his place.',
       title: 'Swap in video', text: 'Reference photo, original shot, then two frames of the result. The kitchen, the box and the hand movement stay; only the person changes. Works for products and objects too.' },
-    recreate: { src: '/samples/recreate-example.jpg', alt: 'A reference photo of a man, followed by three frames of a new video in which he opens a box at a kitchen table.',
+    recreate: { src: '/samples/recreate-example.jpg?v=2', alt: 'A reference photo of a man, followed by three frames of a new video in which he opens a box at a kitchen table.',
       title: 'Recreate', text: 'Reference photo, then three frames of a new 1080p video made from one sentence. Add photos, a clip for the camera move, or a voice.' }
   };
   const disclosure = 'Every person in these examples is AI generated.';
