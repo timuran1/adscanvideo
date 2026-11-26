@@ -28,7 +28,7 @@ The AI studio on the homepage can change or remake a short clip and create image
 
 - Free and $3.99 single-credit video duration: 10 minutes
 - $39.99 monthly premium video duration: 45 minutes; 20 analyses per paid billing month
-- Maximum uploaded file size: 200 MB
+- Maximum uploaded file size: 100 MB
 - Video and available audio are analyzed; brief actions and details can be missed
 - Audible dialogue can be included; verify quotes against the original recording
 - Upload the original video file; video links are not accepted
@@ -96,7 +96,7 @@ Contact: support@adscanvideo.com
 - [Google Ads Creative Guidance: review video ads before you test](https://adscanvideo.com/blog/google-ads-creative-guidance-review/): find Creative guidance in Video Analytics, verify platform suggestions against the source file, and record one testable hypothesis with a blank manual CSV worksheet.
 
 ## Credit bundles and exports
-One-time credits: $3.99 for 1, $9.99 for 3, $14.99 for 5. A credit runs one analysis up to 10 minutes with Copy, Word and PDF included, or unlocks these actions for an existing free report without rerunning AI. Free reports are readable on screen without login; verified email login enables watermarked Copy, Word and PDF. One credit removes the watermark without rerunning the report. Earlier reports keep export access. Use email login to restore unused credits. Monthly Premium remains $39.99 for 20 analyses per paid billing month, up to 45 minutes per upload and 200 MB. Unused monthly analyses expire; one-time bundles do not renew.
+One-time credits: $3.99 for 1, $9.99 for 3, $14.99 for 5. A credit runs one analysis up to 10 minutes with Copy, Word and PDF included, or unlocks these actions for an existing free report without rerunning AI. Free reports are readable on screen without login; verified email login enables watermarked Copy, Word and PDF. One credit removes the watermark without rerunning the report. Earlier reports keep export access. Use email login to restore unused credits. Monthly Premium remains $39.99 for 20 analyses per paid billing month, up to 45 minutes per upload and 100 MB. Unused monthly analyses expire; one-time bundles do not renew.
 
 - [Free manual prompt revision CSV](https://adscanvideo.com/blog/assets/video-prompt-revision-worksheet.csv): Separate source evidence, generated report excerpts, editorial changes and measured generation results.
 

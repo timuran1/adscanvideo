@@ -30,7 +30,8 @@ MONTHLY_ANALYSES = 20
 
 ROOT = Path(__file__).parent
 TERMINAL = ('done', 'error')
-MAX_FILE = 200 * 1024 * 1024
+# 100 MB (decimal): Cloudflare in front of the API rejects larger request bodies.
+MAX_FILE = 100 * 1000 * 1000
 
 
 def start_worker(target, payload):
@@ -518,7 +519,7 @@ def install(app, jobs, db_path, runner):
                 while chunk := f.stream.read(1024*1024):
                     count += len(chunk)
                     if count > MAX_FILE:
-                        return jsonify(error='Maximum video size is 200 MB.'), 413
+                        return jsonify(error='Maximum video size is 100 MB.'), 413
                     out.write(chunk)
             if count == 0:
                 return jsonify(error='The uploaded file is empty.'), 400

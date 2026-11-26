@@ -122,7 +122,7 @@ OR_BASE = "https://openrouter.ai/api/v1"
 
 app = Flask(__name__)
 CORS(app, origins=["https://adscanvideo.com", "https://www.adscanvideo.com"], allow_headers=["Content-Type", "Authorization"], expose_headers=["Retry-After"])
-app.config["MAX_CONTENT_LENGTH"] = 201 * 1024 * 1024  # 200 MB file plus multipart overhead
+app.config["MAX_CONTENT_LENGTH"] = 101 * 1000 * 1000  # 100 MB file plus multipart overhead
 
 @app.errorhandler(413)
 def too_large(e):

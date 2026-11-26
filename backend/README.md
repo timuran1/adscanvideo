@@ -94,7 +94,7 @@ open network protocols. Remote downloads use a local forward proxy that rejects
 non-public DNS answers and connects directly to the validated address. URLs are
 HTTP(S)-only; proxy redirects must pass the same checks.
 
-Maximum upload: 200 MB; maximum duration: 600 seconds for every tier at launch.
+Maximum upload: 100 MB; maximum duration: 600 seconds for every tier at launch.
 Up to 60 raw frames are sampled across the full duration and at most 20 retained.
 Transient errors are user-readable and don't expose filesystem paths. Completion
 writes result and terminal status together. Restart recovery marks unfinished

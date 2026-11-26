@@ -120,7 +120,7 @@
   }
   async function setSource(file) {
     if (!file) return;
-    if (file.size > 100 * 1024 * 1024 || !/\.(mp4|mov|webm)$/i.test(file.name)) { say('For the AI studio, choose an MP4, MOV or WebM clip up to 100 MB.', 'error'); return; }
+    if (file.size > 100 * 1000 * 1000 || !/\.(mp4|mov|webm)$/i.test(file.name)) { say('For the AI studio, choose an MP4, MOV or WebM clip up to 100 MB.', 'error'); return; }
     const length = await clipSeconds(file);
     if (!(length >= config.min_seconds && length <= config.max_seconds + .2)) { say('The AI studio works with clips of ' + config.min_seconds + ' to ' + config.max_seconds + ' seconds. Trim your video and choose it again.', 'error'); return; }
     source = { file, seconds: length, asset: null }; sourceOn = true; say(''); render();

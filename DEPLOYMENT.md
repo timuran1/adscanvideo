@@ -85,7 +85,7 @@ contract, test command, limits and Stripe activation checklist.
 Nginx trusts CF-Connecting-IP only from official Cloudflare address ranges in
 `/etc/nginx/snippets/adscan-cloudflare-real-ip.conf`, then overwrites X-Real-IP.
 The upload request cap is 201 MB to allow multipart overhead; the application
-caps actual video bytes at 200 MB. /admin and /admin/ are IP-restricted. Recovery
+caps actual video bytes at 100 MB. /admin and /admin/ are IP-restricted. Recovery
 and reap endpoints require a server-side admin bearer token.
 
 ## Safe deployment
@@ -139,7 +139,7 @@ validation. Demo QA records are not evidence of new customer activity.
 
 ## Native video release — October 4, 2026
 
-Production uses `ADSCAN_VIDEO_PROVIDER=gemini` with `gemini-3.8-flash` through the native Files API, including video audio. `GEMINI_API_KEY` is private in the server .env. Existing OpenRouter settings remain available for an explicit configuration rollback; provider failures restore allowance through existing job handling, not automatic duplicate calls. Limits remain 10 minutes / 200 MB. Token preflight enforces a conservative $0.25 maximum reservation per generation request.
+Production uses `ADSCAN_VIDEO_PROVIDER=gemini` with `gemini-3.8-flash` through the native Files API, including video audio. `GEMINI_API_KEY` is private in the server .env. Existing OpenRouter settings remain available for an explicit configuration rollback; provider failures restore allowance through existing job handling, not automatic duplicate calls. Limits remain 10 minutes / 100 MB. Token preflight enforces a conservative $0.25 maximum reservation per generation request.
 
 Customer result/status responses omit internal inference cost. Reports request plain text. Dashcam timeline provides observations and uncertainty without determining fault or legal responsibility. The existing dashboard retains estimated internal costs; a missing separate transcript is labelled as unmeasured for native jobs. Privacy describes native video/audio processing.
 
@@ -147,7 +147,7 @@ Native processing does not extract a separate transcript or count locally sample
 
 ## Upload-only 45-minute release — October 4, 2026
 
-`ADSCAN_UPLOAD_ONLY=1` rejects URL admissions before quota reservation. `ADSCAN_MAX_DURATION=2700` is shared by validation and usage metadata. The public analyzer accepts files only, up to 45 minutes / 200 MB. `ADSCAN_NATIVE_REQUEST_CAP_USD=0.75` allows native long-video preflight; `ADSCAN_JOB_TIMEOUT=720` and `ADSCAN_STUCK_SECONDS=900` bound longer processing. Existing prices and daily allowances remain.
+`ADSCAN_UPLOAD_ONLY=1` rejects URL admissions before quota reservation. `ADSCAN_MAX_DURATION=2700` is shared by validation and usage metadata. The public analyzer accepts files only, up to 45 minutes / 100 MB. `ADSCAN_NATIVE_REQUEST_CAP_USD=0.75` allows native long-video preflight; `ADSCAN_JOB_TIMEOUT=720` and `ADSCAN_STUCK_SECONDS=900` bound longer processing. Existing prices and daily allowances remain.
 
 ## Premium duration gate — October 4, 2026
 

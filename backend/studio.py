@@ -28,7 +28,7 @@ ACTIVE = ('submitting', 'running')
 KINDS = {
     'image': ({'.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp'}, 10 * 1024 * 1024),
     'audio': ({'.mp3': 'audio/mpeg', '.wav': 'audio/wav'}, 20 * 1024 * 1024),
-    'video': ({'.mp4': 'video/mp4', '.mov': 'video/quicktime', '.webm': 'video/webm'}, 100 * 1024 * 1024),
+    'video': ({'.mp4': 'video/mp4', '.mov': 'video/quicktime', '.webm': 'video/webm'}, 100 * 1000 * 1000),
 }
 MAX_IMAGES, MAX_AUDIO, MAX_SWAP_IMAGES = 9, 3, 8
 # Sume Remix (Genjutsu): 'swap' replaces people, products or objects in the clip;
@@ -308,7 +308,7 @@ def install(app, connect, owner, ip_key, allowance):
                 while chunk := f.stream.read(1024 * 1024):
                     count += len(chunk)
                     if count > limit:
-                        return jsonify(error=f'Maximum {kind} size is {limit // (1024 * 1024)} MB.', code='too_large'), 413
+                        return jsonify(error=f'Maximum {kind} size is {limit // (1000 * 1000) if kind == "video" else limit // (1024 * 1024)} MB.', code='too_large'), 413
                     out.write(chunk)
             if count == 0:
                 return jsonify(error='The uploaded file is empty.', code='invalid_input'), 400

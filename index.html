@@ -18,7 +18,7 @@
 <meta name="twitter:description" content="Upload a video file for a timestamped shot breakdown, video ad analysis, transcript notes, or production prompts. Your first on-screen report is free.">
 <meta name="twitter:image" content="https://adscanvideo.com/og-image.png">
 <meta name="adscan-api-base" content="https://api.adscanvideo.com/api">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://adscanvideo.com/#organization","name":"AdScanVideo","url":"https://adscanvideo.com/"},{"@type":"WebApplication","@id":"https://adscanvideo.com/#app","name":"AdScanVideo","url":"https://adscanvideo.com/","operatingSystem":"Any","applicationCategory":"BusinessApplication","description":"Upload a video file for a timestamped report covering visible scenes, available dialogue, prompts, advertising strategy or production details.","featureList":["General video analysis","Video ad analysis","Video to prompt","Video to shot list","Transcript-aware reports","Word and PDF export"],"offers":[{"@type":"Offer","price":"0","priceCurrency":"USD","description":"First on-screen report free, up to 10 minutes; Watermarked Copy, Word and PDF after verified email login; clean exports cost one credit."},{"@type":"Offer","price":"3.99","priceCurrency":"USD","description":"One credit: one analysis with exports, or export unlock for one existing free report."},{"@type":"Offer","price":"9.99","priceCurrency":"USD","description":"Three non-subscription credits; analysis limit 10 minutes and 200 MB."},{"@type":"Offer","price":"14.99","priceCurrency":"USD","description":"Five non-subscription credits; analysis limit 10 minutes and 200 MB."},{"@type":"Offer","price":"39.99","priceCurrency":"USD","description":"Monthly Premium: 20 analyses per paid billing month, up to 45 minutes and 200 MB per upload."}],"publisher":{"@id":"https://adscanvideo.com/#organization"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://adscanvideo.com/#organization","name":"AdScanVideo","url":"https://adscanvideo.com/"},{"@type":"WebApplication","@id":"https://adscanvideo.com/#app","name":"AdScanVideo","url":"https://adscanvideo.com/","operatingSystem":"Any","applicationCategory":"BusinessApplication","description":"Upload a video file for a timestamped report covering visible scenes, available dialogue, prompts, advertising strategy or production details.","featureList":["General video analysis","Video ad analysis","Video to prompt","Video to shot list","Transcript-aware reports","Word and PDF export"],"offers":[{"@type":"Offer","price":"0","priceCurrency":"USD","description":"First on-screen report free, up to 10 minutes; Watermarked Copy, Word and PDF after verified email login; clean exports cost one credit."},{"@type":"Offer","price":"3.99","priceCurrency":"USD","description":"One credit: one analysis with exports, or export unlock for one existing free report."},{"@type":"Offer","price":"9.99","priceCurrency":"USD","description":"Three non-subscription credits; analysis limit 10 minutes and 100 MB."},{"@type":"Offer","price":"14.99","priceCurrency":"USD","description":"Five non-subscription credits; analysis limit 10 minutes and 100 MB."},{"@type":"Offer","price":"39.99","priceCurrency":"USD","description":"Monthly Premium: 20 analyses per paid billing month, up to 45 minutes and 100 MB per upload."}],"publisher":{"@id":"https://adscanvideo.com/#organization"}}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -1276,13 +1276,13 @@ nav {
 <div class="input-zone" id="input-zone">
   <div class="input-guidance" role="note">
     <strong>Upload your video file.</strong>
-    <span>MP4, MOV, WebM or MKV · up to 10 minutes and 200 MB. Monthly Premium ($39.99/month) supports videos up to 45 minutes. Failed jobs restore your allowance.</span>
+    <span>MP4, MOV, WebM or MKV · up to 10 minutes and 100 MB. Monthly Premium ($39.99/month) supports videos up to 45 minutes. Failed jobs restore your allowance.</span>
   </div>
   <div id="upload-input">
     <div class="upload-area" id="drop-zone" onclick="document.getElementById('file').click()">
       <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       <p>Drop a video here or click to browse</p>
-      <p><small>.mp4 .mov .webm .mkv, up to 200MB</small></p>
+      <p><small>.mp4 .mov .webm .mkv, up to 100MB</small></p>
       <input type="file" id="file" accept="video/*" onchange="fileSelected(event)">
     </div>
     <div class="upload-file" id="file-name"></div>
@@ -1499,7 +1499,7 @@ nav {
     <div class="info-item">
       <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
       <h3>Upload your video</h3>
-      <p>Upload an MP4, MOV, WebM, or MKV file up to 200 MB. Free and single credits: 10 minutes. Monthly Premium: 45 minutes.</p>
+      <p>Upload an MP4, MOV, WebM, or MKV file up to 100 MB. Free and single credits: 10 minutes. Monthly Premium: 45 minutes.</p>
     </div>
   </div>
 </div>
@@ -1514,7 +1514,7 @@ nav {
       <div class="step-num">1</div>
       <div class="step-body">
         <h3>Drop your video</h3>
-        <p>Upload an MP4, MOV, WebM, or MKV file up to 200 MB. Free and single credits: 10 minutes. Monthly Premium: 45 minutes.</p>
+        <p>Upload an MP4, MOV, WebM, or MKV file up to 100 MB. Free and single credits: 10 minutes. Monthly Premium: 45 minutes.</p>
       </div>
     </div>
     <div class="step">
@@ -1572,7 +1572,7 @@ nav {
         <button class="plan-cta secondary" style="flex:1" onclick="buyCredit('pack3')" data-checkout data-offer="pack3">3 AI Credits · $9.99</button>
         <button class="plan-cta secondary" style="flex:1" onclick="buyCredit('pack5')" data-checkout data-offer="pack5">5 AI Credits · $14.99</button>
       </div>
-      <p style="font-size:.76rem;color:var(--ink-muted);margin-top:10px">Save $1.98 with 3 AI Credits or $4.96 with 5 compared with buying them one at a time. No subscription. Bundle analyses remain limited to 10 minutes and 200 MB.</p>
+      <p style="font-size:.76rem;color:var(--ink-muted);margin-top:10px">Save $1.98 with 3 AI Credits or $4.96 with 5 compared with buying them one at a time. No subscription. Bundle analyses remain limited to 10 minutes and 100 MB.</p>
     </div>
     <div class="plan" id="monthly-plan">
       <h3 id="monthly-title">Monthly Premium</h3>
@@ -1637,7 +1637,7 @@ nav {
   <div class="cta-banner-inner">
     <h2>Got a video to analyze?</h2>
     <p>Your first analysis is free. No credit card, no signup.</p>
-    <p style="color:var(--ink-dim);font-size:0.82rem;margin-top:4px;">Videos up to 10 minutes and 200 MB</p>
+    <p style="color:var(--ink-dim);font-size:0.82rem;margin-top:4px;">Videos up to 10 minutes and 100 MB</p>
     <a href="#input-zone" class="btn">Try it free →</a>
   </div>
 </div>
@@ -1658,7 +1658,7 @@ nav {
       </div>
       <p class="credit-fineprint">One time purchase. No subscription.</p>
     </div>
-    <p class="credit-terms">1 AI Credit = 1 analysis with exports, or exports for 1 existing free report, or AI studio use at the rates shown there. No rerun needed.<br>Analyses: up to 10 minutes and 200 MB.</p>
+    <p class="credit-terms">1 AI Credit = 1 analysis with exports, or exports for 1 existing free report, or AI studio use at the rates shown there. No rerun needed.<br>Analyses: up to 10 minutes and 100 MB.</p>
     <button type="button" class="credit-read-free" onclick="closeCredits()">Keep reading my free report</button>
 
   </div>
@@ -1829,6 +1829,13 @@ function durationBucket(value) {
   if (seconds <= 180) return '1_3m';
   if (seconds <= 600) return '3_10m';
   return 'over_10m';
+}
+// 100 MB (decimal) is the largest upload the network in front of the API accepts.
+const MAX_UPLOAD_BYTES = 100 * 1000 * 1000;
+// Coarse size range for analytics. Never the exact size or the file name.
+function sizeBucket(file) {
+  const mb = file ? file.size / 1e6 : 0;
+  return mb <= 0 ? 'none' : mb <= 10 ? '0-10mb' : mb <= 25 ? '10-25mb' : mb <= 50 ? '25-50mb' : mb <= 75 ? '50-75mb' : mb <= 100 ? '75-100mb' : mb <= 200 ? '100-200mb' : 'over-200mb';
 }
 function requestFailureType(error) {
   if (error?.code === 'payment_required') return 'quota_blocked';
@@ -2225,7 +2232,8 @@ async function tryFree() {
   jobId = null;
   const isUpload = true;
   if (isUpload && !file) { track('analysis_validation_failed', { failure_type: 'missing_file', input_method: 'upload' }); message('Choose a video file first.', 'error'); return; }
-  if (isUpload && (file.size > 200 * 1024 * 1024 || !/\.(mp4|mov|webm|mkv)$/i.test(file.name))) { track('analysis_validation_failed', { failure_type: 'invalid_file', input_method: 'upload' }); message('Choose an MP4, MOV, WebM or MKV video up to 200 MB.', 'error'); return; }
+  if (isUpload && !/\.(mp4|mov|webm|mkv)$/i.test(file.name)) { track('analysis_validation_failed', { failure_type: 'invalid_file', input_method: 'upload', size_bucket: sizeBucket(file) }); message('This file type is not supported. Choose an MP4, MOV, WebM or MKV video.', 'error'); return; }
+  if (isUpload && file.size > MAX_UPLOAD_BYTES) { track('analysis_validation_failed', { failure_type: 'file_too_large', input_method: 'upload', size_bucket: sizeBucket(file) }); message('This video is ' + Math.ceil(file.size / 1e6) + ' MB. The limit is 100 MB. Export a smaller copy (lower resolution or bitrate) or trim it, then try again.', 'error'); return; }
   if (mode === 'moments' && !document.getElementById('moment-visual').value.trim()) {
     track('analysis_validation_failed', {failure_type:'missing_visual_criterion', input_method:'upload', analysis_mode:mode});
     message('Describe the visual action you want to find.', 'error');
@@ -2244,7 +2252,8 @@ async function tryFree() {
     setJobContext(jobId, mode, isUpload ? 'upload' : 'url');
     trackJobOnce('analysis_started', jobId, {
       analysis_mode: mode,
-      input_method: isUpload ? 'upload' : 'url'
+      input_method: isUpload ? 'upload' : 'url',
+      size_bucket: sizeBucket(isUpload ? file : null)
     });
     await pollJob(jobId);
   } catch (error) {
@@ -2265,7 +2274,8 @@ async function tryFree() {
       track('analysis_submission_failed', {
         analysis_mode: mode,
         input_method: isUpload ? 'upload' : 'url',
-        failure_type: failureType
+        failure_type: failureType,
+        size_bucket: sizeBucket(isUpload ? file : null)
       });
     }
   } finally { busy = false; document.getElementById('progress').style.display = 'none'; updateUI(); await refreshUsage(); }
@@ -2498,6 +2508,6 @@ ${reportWatermarked ? '<p style="margin-top:32px;padding-top:12px;border-top:1px
 }
 </script>
 <!-- Bump the version whenever studio.js changes, so a cached copy never meets a newer page. -->
-<script src="/studio.js?v=20261126d" defer></script>
+<script src="/studio.js?v=20261126e" defer></script>
 </body>
 </html>

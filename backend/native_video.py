@@ -48,7 +48,7 @@ def analyze(path, mode, question, progress=lambda stage: None):
         progress('extracting')
         size=os.path.getsize(path); mime=mimetypes.guess_type(str(path))[0] or 'video/mp4'
         if mime not in ('video/mp4','video/quicktime','video/webm','video/x-matroska'): mime='video/mp4'
-        if size>200*1024*1024: raise NativeUnavailable('Video files must be 200 MB or smaller.')
+        if size>100*1000*1000: raise NativeUnavailable('Video files must be 100 MB or smaller.')
         r=call('POST','https://generativelanguage.googleapis.com/upload/v1beta/files',headers={
             'X-Goog-Upload-Protocol':'resumable','X-Goog-Upload-Command':'start',
             'X-Goog-Upload-Header-Content-Length':str(size),'X-Goog-Upload-Header-Content-Type':mime},
