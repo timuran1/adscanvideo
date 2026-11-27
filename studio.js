@@ -325,6 +325,7 @@
         const image = Object.assign(document.createElement('img'), { src: examples[kind].src, alt: examples[kind].alt, loading: 'lazy', width: 1200, height: 493 });
         const caption = document.createElement('figcaption');
         caption.append(Object.assign(document.createElement('h3'), { textContent: examples[kind].title }), Object.assign(document.createElement('p'), { textContent: examples[kind].text }), Object.assign(document.createElement('p'), { className: 'studio-rates', textContent: rates(kind) }));
+        caption.append(Object.assign(document.createElement('a'), { href: kind === 'swap' ? '/swap-person-in-video/' : '/recreate-video-ad/', textContent: kind === 'swap' ? 'How swapping works' : 'How recreating works', style: 'font-size:.85rem;font-weight:600;color:var(--accent-hover)' }));
         card.append(image, caption); grid.append(card);
       }
       intro.append(heading, lead, grid); intro.hidden = false;

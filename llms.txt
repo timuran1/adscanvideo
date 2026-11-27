@@ -59,6 +59,9 @@ Stripe billing portal. Sign in with a verified email link to restore analysis ac
 - [Video ad analyzer](https://adscanvideo.com/video-ad-analyzer/): uploaded video files only; video links are not accepted.
 - [Video to shot list](https://adscanvideo.com/video-to-shot-list/)
 - [Video to prompt generator](https://adscanvideo.com/video-to-prompt/)
+- [Swap a person or product in a video](https://adscanvideo.com/swap-person-in-video/): clips of 4 to 30 seconds, 1 to 8 reference photos, 480p result, with a real example and the credit rates.
+- [Recreate a video ad with AI](https://adscanvideo.com/recreate-video-ad/): a new 1080p video of 5 to 30 seconds from a prompt and optional references, with a real example.
+- [Face swap, character swap or recreate: which AI video tool do you need?](https://adscanvideo.com/blog/face-swap-vs-character-swap-vs-recreate/): what each job changes and keeps, six deciding questions and a pre-run checklist.
 - [Find a specific moment in a video without the exact quote](https://adscanvideo.com/blog/find-a-specific-moment-in-a-video/): search for a visible action with optional dialogue clues, then replay the source; candidate timestamps are not frame-exact.
 - [All video-analysis guides](https://adscanvideo.com/blog/)
 - [Video upload troubleshooting](https://adscanvideo.com/blog/video-link-not-working-upload-file/): file-only workflow, format/size/duration checks, Finder and QuickTime file inspection, optional ffprobe container/codec checks, browser/network diagnostics, ambiguous timeout guidance, safe retry checks and a published file-inspection example.
@@ -88,7 +91,7 @@ Stripe billing portal. Sign in with a verified email link to restore analysis ac
 - [Terms of service](https://adscanvideo.com/terms/)
 - [Support, billing and refunds](https://adscanvideo.com/support/)
 
-Last updated: 2026-11-26
+Last updated: 2026-11-27
 
 - [How to review a video ad’s first 3 seconds with retention data](https://adscanvideo.com/blog/why-your-video-ads-fail-in-the-first-3-seconds-and-how-to-fix-it/): Inspect Google Ads audience-retention and video-view metrics, replay a candidate point, and keep creative hypotheses separate from measured campaign outcomes.
 Contact: support@adscanvideo.com
